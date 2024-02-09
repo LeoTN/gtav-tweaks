@@ -1,0 +1,129 @@
+name: Build VideoDownloader Installer Archive
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "Release Version"
+        type: string
+        default: "0.0.0"
+        required: true
+
+      is_pre_release:
+        type: boolean
+        description: "Pre-Release"
+        default: true
+        required: true
+        
+  workflow_call:
+    inputs:
+      version:
+        description: "Release Version"
+        type: string
+        default: "0.0.0"
+        required: true
+
+      is_pre_release:
+        type: boolean
+        description: "Pre-Release"
+        default: true
+        required: true
+
+env:
+  FINAL_EXECUTABLE_NAME: GTAV_Tweaks.exe
+  FINAL_INSTALLER_ARCHIVE_NAME: GTAV_Tweaks.zip
+  RELEASE_VERSION: ${{ inputs.version }}
+  RELEASE_NAME: ""
+  IS_PRE_RELEASE: ${{ inputs.is_pre_release }}
+
+jobs:
+  build_exe_files:
+    name: Build and Upload Executable Artifacts
+    runs-on: windows-2019
+
+    steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v2
+
+    - name: Extract Autohotkey Compiler
+      run: |
+        # Set Variables
+        $ahkFolder = "${{ github.workspace }}\ahk"
+        $ahkV2Folder = "${{ github.workspace }}\ahk-v2"
+
+        # Extract the files.
+        Expand-Archive -Path "${{ github.workspace }}\compiler\ahk.zip" -DestinationPath $ahkFolder
+        Expand-Archive -Path "${{ github.workspace }}\compiler\ahk-v2.zip" -DestinationPath $ahkV2Folder
+
+    - name: Compile Autohotkey Main Script
+      run: |
+        # Set the paths to execute more easily.
+        $scriptPathIn = "${{ github.workspace }}\GTAV_Tweaks.ahk"
+        $scriptPathOut = "${{ github.workspace }}\$env:FINAL_EXECUTABLE_NAME"
+
+        # Compile the script.
+        ahk\Compiler\Ahk2Exe.exe /in $scriptPathIn /out $scriptPathOut /base "ahk-v2\AutoHotkey64.exe" /silent
+        echo "The executable will be saved to $scriptPathOut"
+
+    - name: Upload Main Executable as Artifact
+      uses: actions/upload-artifact@v2
+      with:
+        name: ${{ env.FINAL_EXECUTABLE_NAME }}
+        path: ${{ github.workspace }}\${{ env.FINAL_EXECUTABLE_NAME }}
+ 
+  create_release:
+    name: Download Executable Artifacts and Create Release
+    needs: build_exe_files
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v3
+
+    - name: Download Installer Artifact
+      uses: actions/download-artifact@v3
+      with:
+        name: ${{ env.FINAL_EXECUTABLE_NAME }}
+        path: ${{ github.workspace }}\library\build\${{ env.FINAL_EXECUTABLE_NAME }}
+
+    - name: Compress Installer Archive
+      run: |
+        cd "${{ github.workspace }}/library/build"
+        zip -r "${{ github.workspace }}/${{ env.FINAL_INSTALLER_ARCHIVE_NAME }}" .
+
+    - name: Set Release Name
+      run: |
+        if [ "${{ env.IS_PRE_RELEASE }}" == "true" ]; then
+          releaseName="v${{ env.RELEASE_VERSION }}-beta"
+        else
+          releaseName="v${{ env.RELEASE_VERSION }}"
+        fi
+          echo "RELEASE_NAME=$releaseName" >> $GITHUB_ENV
+
+    - name: Print Release Name
+      run: echo "The release name is ${{ env.RELEASE_NAME }}"
+
+    - name: Update Release Tag
+      uses: richardsimko/update-tag@v1
+      with:
+        tag_name: ${{ env.RELEASE_NAME }}
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        
+    - name: Create Draft Main Release
+      uses: ncipollo/release-action@v1
+      with:
+        allowUpdates: true
+        artifacts: ${{ github.workspace }}/${{ env.FINAL_INSTALLER_ARCHIVE_NAME }}
+        artifactErrorsFailBuild: true
+        artifactContentType: "application/executable"
+        removeArtifacts: true
+        replacesArtifacts: true
+        body: "Download the ${{ env.FINAL_INSTALLER_ARCHIVE_NAME }} file, extract it and execute ${{ env.FINAL_EXECUTABLE_NAME }}. Have fun :)"
+        generateReleaseNotes: true
+        makeLatest: true
+        prerelease: ${{ env.IS_PRE_RELEASE == 'true' }}
+        name: ${{ env.RELEASE_NAME }}
+        tag: ${{ env.RELEASE_NAME }}
