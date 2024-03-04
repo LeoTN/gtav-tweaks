@@ -1,3 +1,5 @@
 *.lnk
+*.ini
+*.ini_old
 GTAV_Tweaks.exe
 .vscode/
