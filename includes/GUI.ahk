@@ -70,8 +70,22 @@ createMainGUI()
     allMenus.Add("&Info", helpMenu)
     allMenus.SetIcon("&Info", "shell32.dll", 24)
 
-    mainGUI := Gui(, "Tweaks - Control Panel")
+    mainGUI := Gui(, "GTAV Tweaks")
     mainGUI.MenuBar := allMenus
+    ; When closing the main window, the changes are applied.
+    mainGUI.OnEvent("Close", (*) => handleMainGUI_writeValuesToConfigFile())
+
+    ; This part begins to fill the GUI with checkboxes and all that stuff.
+    applyChangesText := mainGUI.Add("Text", "", "Changes will be applied once you close this window.")
+    startupBehaviorGroupbox := mainGUI.Add("GroupBox", "yp+20 w292 R3.3", "Startup behavior")
+    launchWithWindowsCheckbox := mainGUI.Add("Checkbox", "xp+10 yp+20 vLaunchWithWindowsCheckbox", "Start with windows")
+    launchMinimzedToTrayCheckbox := mainGUI.Add("Checkbox", "yp+20 vLaunchMinimzedToTrayCheckbox", "Launch minimized to tray")
+    showLaunchMessageCheckbox := mainGUI.Add("Checkbox", "yp+20 vShowLaunchMessageCheckbox", "Display a launch message")
+
+    gameOptionsGroupbox := mainGUI.Add("GroupBox", "xp-10 yp+30 w292 R3.3", "Game Options")
+    muteGameWhileLaunchCheckbox := mainGUI.Add("Checkbox", "xp+10 yp+20 vMuteGameWhileLaunchCheckbox", "Mute GTA during launch")
+    setGameProcessPriorityHighCheckbox := mainGUI.Add("Checkbox", "yp+20 vSetGameProcessPriorityHighCheckbox", "Increase GTA process priority [WIP]")
+    showGTALaunchMessageCheckbox := mainGUI.Add("Checkbox", "yp+20 vShowGTALaunchMessageCheckbox", "Display GTA launch message")
 }
 
 /*
@@ -83,8 +97,52 @@ GUI SUPPORT FUNCTIONS
 mainGUI_onInit()
 {
     createMainGUI()
-    mainGUI.Show() ; REMOVE
+    If (!readConfigFile("LAUNCH_MINIMIZED"))
+    {
+        mainGUI.Show()
+    }
     handleMainGUI_ApplyCheckmarksFromConfigFile("activeHotkeyMenu")
+    handleMainGUI_applyValuesFromConfigFile()
+    ; Adds a tray menu point to open the main GUI.
+    A_TrayMenu.Insert("1&", "Open Main Window", (*) => mainGUI.Show())
+    ; When clicking on the tray icon twice, this will make sure, that the main GUI is shown to the user.
+    A_TrayMenu.Default := "Open Main Window"
+    setAutostart(readConfigFile("LAUNCH_WITH_WINDOWS"))
+}
+
+handleMainGUI_writeValuesToConfigFile()
+{
+    Try
+    {
+        editConfigFile("LAUNCH_WITH_WINDOWS", launchWithWindowsCheckbox.Value)
+        editConfigFile("LAUNCH_MINIMIZED", launchMinimzedToTrayCheckbox.Value)
+        editConfigFile("DISPLAY_LAUNCH_NOTIFICATION", showLaunchMessageCheckbox.Value)
+        editConfigFile("MUTE_GAME_WHILE_LAUNCH", muteGameWhileLaunchCheckbox.Value)
+        editConfigFile("INCREASE_GAME_PRIORITY", setGameProcessPriorityHighCheckbox.Value)
+        editConfigFile("DISPLAY_GTA_LAUNCH_NOTIFICATION", showGTALaunchMessageCheckbox.Value)
+        setAutostart(readConfigFile("LAUNCH_WITH_WINDOWS"))
+    }
+    Catch As error
+    {
+        displayErrorMessage(error)
+    }
+}
+
+handleMainGUI_applyValuesFromConfigFile()
+{
+    Try
+    {
+        launchWithWindowsCheckbox.Value := readConfigFile("LAUNCH_WITH_WINDOWS")
+        launchMinimzedToTrayCheckbox.Value := readConfigFile("LAUNCH_MINIMIZED")
+        showLaunchMessageCheckbox.Value := readConfigFile("DISPLAY_LAUNCH_NOTIFICATION")
+        muteGameWhileLaunchCheckbox.Value := readConfigFile("MUTE_GAME_WHILE_LAUNCH")
+        setGameProcessPriorityHighCheckbox.Value := readConfigFile("INCREASE_GAME_PRIORITY")
+        showGTALaunchMessageCheckbox.Value := readConfigFile("DISPLAY_GTA_LAUNCH_NOTIFICATION")
+    }
+    Catch As error
+    {
+        displayErrorMessage(error)
+    }
 }
 
 /*
@@ -153,7 +211,7 @@ handleMainGUI_MenuCheckHandler(pMenuName := unset, pSubMenuPosition := unset, pB
     menuCheckArray_activeHotKeyMenu := stringToArray(readConfigFile("HOTKEY_STATE_ARRAY"))
 
     ; Returns the menu check array if those parameters are omitted.
-    If (!IsSet(pMenuName) || !isSet(pSubMenuPosition))
+    If (!IsSet(pMenuName) || !IsSet(pSubMenuPosition))
     {
         Return menuCheckArray_activeHotKeyMenu
     }

@@ -40,6 +40,7 @@ hotkey_createSoloLobby()
 
 hotkey_afkCayoPericoFlight()
 {
+    SetNumLockState("On")
     static toggle := false
     toggle := !toggle
 

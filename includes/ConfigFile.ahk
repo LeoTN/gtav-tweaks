@@ -25,12 +25,24 @@ Otherwise this can lead to fatal errors and failures!
 config_onInit()
 {
     ; Determines the location of the script's configuration file.
-    global configFileLocation := A_ScriptDir . "\GTAV_Tweaks.ini"
+    global configFileLocation := A_ScriptDir . "\GTAV_Tweaks\GTAV_Tweaks.ini"
 
     ; Defines if the script should ask the user for a brief explaination of it's core functions.
     global ASK_FOR_TUTORIAL := true
-    ; Toggle if the main GUI should be shown on launch.
-    global SHOW_MAIN_GUI_ON_LAUNCH := true
+    ; Launch script with windows.
+    global LAUNCH_WITH_WINDOWS := true
+    ; Launch minimized.
+    global LAUNCH_MINIMIZED := false
+    ; Display a notification when launching.
+    global DISPLAY_LAUNCH_NOTIFICATION := true
+
+    ; Mute GTA during launch.
+    global MUTE_GAME_WHILE_LAUNCH := false
+    ; (Possibly) increase GTA performance by increasing it's process priority.
+    global INCREASE_GAME_PRIORITY := false
+    ; Show a notification when GTA has been detected.
+    global DISPLAY_GTA_LAUNCH_NOTIFICATION := true
+
     ; Stores which hotkeys are enabled / disabled via the GUI.
     global HOTKEY_STATE_ARRAY := "[1, 1, 0, 1]"
     ; Just a list of all standard hotkeys.
@@ -54,7 +66,12 @@ config_onInit()
         [
             "booleanDebugMode",
             "ASK_FOR_TUTORIAL",
-            "SHOW_MAIN_GUI_ON_LAUNCH",
+            "LAUNCH_WITH_WINDOWS",
+            "LAUNCH_MINIMIZED",
+            "DISPLAY_LAUNCH_NOTIFICATION",
+            "MUTE_GAME_WHILE_LAUNCH",
+            "INCREASE_GAME_PRIORITY",
+            "DISPLAY_GTA_LAUNCH_NOTIFICATION",
             "HOTKEY_STATE_ARRAY",
             "AFK_PERCIO_FLIGHT_HK",
             "SOLO_LOBBY_HK",
@@ -69,6 +86,11 @@ config_onInit()
             "DebugSettings",
             "GeneralSettings",
             "GeneralSettings",
+            "GeneralSettings",
+            "GeneralSettings",
+            "GameSettings",
+            "GameSettings",
+            "GameSettings",
             "Hotkeys",
             "Hotkeys",
             "Hotkeys",
