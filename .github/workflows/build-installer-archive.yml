@@ -1,4 +1,4 @@
-name: Build VideoDownloader Installer Archive
+name: Build GTAV_Tweaks Archive
 
 on:
   workflow_dispatch:
