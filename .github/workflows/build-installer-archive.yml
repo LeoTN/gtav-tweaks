@@ -95,8 +95,8 @@ jobs:
         else
           releaseName="v${{ env.RELEASE_VERSION }}"
         fi
-          echo "RELEASE_NAME=$releaseName" >> $GITHUB_ENV
-          cat <<"EOF" > "${{ github.workspace }}/library/build/version.txt"      
+        echo "RELEASE_NAME=$releaseName" >> $GITHUB_ENV
+        cat <<"EOF" > "${{ github.workspace }}/library/build/version.txt"
 
           ************************************************************
           *                                                          *
@@ -127,7 +127,7 @@ jobs:
           *      `\/__/  \/____/ \/_/ \/___/  \/_/\/___/  \/_/\/_/   *
           *                                                          *
           ************************************************************
-          
+      
           REPLACE_HERE
         EOF
 
