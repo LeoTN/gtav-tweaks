@@ -62,7 +62,7 @@ jobs:
         $scriptPathOut = "${{ github.workspace }}\$env:FINAL_EXECUTABLE_NAME"
 
         # Compile the script.
-        Start-Process -Path ".\ahk\Compiler\Ahk2Exe.exe" -ArgumentList '/in $scriptPathIn /out $scriptPathOut /base ".\ahk-v2\AutoHotkey64.exe" /silent verbose' -Wait 
+        Start-Process -Path "${{ github.workspace }}\ahk\Compiler\Ahk2Exe.exe" -ArgumentList '/in $scriptPathIn /out $scriptPathOut /base "${{ github.workspace }}\ahk-v2\AutoHotkey64.exe" /silent verbose' -Wait 
         # Unblock the AutoHotkey executable and delete the now left over soundvolumeview file.
         Unblock-File -Path $scriptPathOut
         Remove-Item -Path ".\library\build\soundvolumeview-x64.zip"
