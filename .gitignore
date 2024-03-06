@@ -2,7 +2,7 @@
 *.ini
 *.ini_old
 GTAV_Tweaks.exe
-library\soundvolumeview-x64.zip
+library\build\soundvolumeview-x64.zip
 .vscode/
 compiler/
 GTAV_Tweaks/
