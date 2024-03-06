@@ -1,3 +1,8 @@
+;@Ahk2Exe-SetCompanyName Made by LeoTN
+;@Ahk2Exe-SetCopyright You can find the licence on my GitHub project
+;@Ahk2Exe-SetDescription More information on GitHub (https://github.com/LeoTN/gtav-tweaks)
+;@Ahk2Exe-SetName GTAV Tweaks
+
 #SingleInstance Force
 #MaxThreadsPerHotkey 2
 SendMode "Input"
