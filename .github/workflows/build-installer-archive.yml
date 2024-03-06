@@ -62,7 +62,7 @@ jobs:
         $scriptPathOut = "${{ github.workspace }}\$env:FINAL_EXECUTABLE_NAME"
 
         # Compile the script.
-        ahk\Compiler\Ahk2Exe.exe /in $scriptPathIn /out $scriptPathOut /base "ahk-v2\AutoHotkey64.exe" /silent
+        Start-Process -FilePath ".\ahk\Compiler\Ahk2Exe.exe" -ArgumentList "/in $scriptPathIn /out $scriptPathOut /base "".\ahk-v2\AutoHotkey64.exe"" /silent verbose" -Wait
         echo "The executable will be saved to $scriptPathOut"
 
     - name: Upload Main Executable as Artifact
@@ -86,12 +86,51 @@ jobs:
       uses: actions/download-artifact@v3
       with:
         name: ${{ env.FINAL_EXECUTABLE_NAME }}
-        path: ${{ github.workspace }}\library\build\${{ env.FINAL_EXECUTABLE_NAME }}
+        path: ${{ github.workspace }}/library/build
+
+    - name: Set Release Name
+      run: |
+        if [ "${{ env.IS_PRE_RELEASE }}" == "true" ]; then
+          releaseName="v${{ env.RELEASE_VERSION }}-beta"
+        else
+          releaseName="v${{ env.RELEASE_VERSION }}"
+        fi
+        echo "RELEASE_NAME=$releaseName" >> $GITHUB_ENV
+        cat <<"EOF" > "${{ github.workspace }}/library/build/version.txt"
+
+          ####################################################
+          #                                                  #
+          #  ______________________      ___    __           #
+          #  __  ____/__  __/__    |     __ |  / /           #
+          #  _  / __ __  /  __  /| |     __ | / /            #
+          #  / /_/ / _  /   _  ___ |     __ |/ /             #
+          #  \____/  /_/    /_/  |_|     _____/              #
+          #                                                  #
+          #  ________                     ______             #
+          #  ___  __/__      ____________ ___  /_________    #
+          #  __  /  __ | /| / /  _ \  __ `/_  //_/_  ___/    #
+          #  _  /   __ |/ |/ //  __/ /_/ /_  ,<  _(__  )     #
+          #  /_/    ____/|__/ \___/\__,_/ /_/|_| /____/      #
+          #                                                  #
+          #  ___    __                  _____                #
+          #  __ |  / /_____________________(_)____________   #
+          #  __ | / /_  _ \_  ___/_  ___/_  /_  __ \_  __ \  #
+          #  __ |/ / /  __/  /   _(__  )_  / / /_/ /  / / /  #
+          #  _____/  \___//_/    /____/ /_/  \____//_/ /_/   #
+          #                                                  #
+          ####################################################
+
+          REPLACE_HERE
+        EOF
+
+        sed -i "s/REPLACE_HERE/This installer archive contains version $releaseName of GTAV_Tweaks./g" "${{ github.workspace }}/library/build/version.txt"
+        rm "${{ github.workspace }}/library/build/soundvolumeview-x64.zip"
 
     - name: Compress Installer Archive
       run: |
         cd "${{ github.workspace }}/library/build"
         zip -r "${{ github.workspace }}/${{ env.FINAL_INSTALLER_ARCHIVE_NAME }}" .
+
 
     - name: Set Release Name
       run: |

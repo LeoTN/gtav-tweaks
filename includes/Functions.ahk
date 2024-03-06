@@ -250,6 +250,11 @@ Adds / removes the script from the autostart folder.
 */
 setAutostart(pBooleanEnableAutostart)
 {
+    ; Creating an autostart for the .AHK file doesn't make sense in this case.
+    If (!A_IsCompiled)
+    {
+        Return
+    }
     SplitPath(A_ScriptName, , , , &outNameNoExt)
     If (pBooleanEnableAutostart)
     {

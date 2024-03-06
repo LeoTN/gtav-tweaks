@@ -1,3 +1,8 @@
+;@Ahk2Exe-SetCompanyName Made by LeoTN
+;@Ahk2Exe-SetCopyright You can find the licence on my GitHub project
+;@Ahk2Exe-SetDescription More information on GitHub (https://github.com/LeoTN/gtav-tweaks)
+;@Ahk2Exe-SetName GTAV Tweaks
+
 #SingleInstance Force
 #MaxThreadsPerHotkey 2
 SendMode "Input"
@@ -25,7 +30,7 @@ onInit()
     }
     If (!FileExist(audioHookFileLocation) && A_IsCompiled)
     {
-        FileInstall("library\soundvolumeview-x64.zip", A_ScriptDir . "\GTAV_Tweaks\soundvolumeview-x64.zip", true)
+        FileInstall("library\build\soundvolumeview-x64.zip", A_ScriptDir . "\GTAV_Tweaks\soundvolumeview-x64.zip", true)
         RunWait('powershell.exe -Command "Expand-Archive -Path "' . A_ScriptDir
             . '\GTAV_Tweaks\soundvolumeview-x64.zip" -DestinationPath "' . A_ScriptDir . '\GTAV_Tweaks\soundvolumeview-x64" -Force"', , "Hide")
         FileDelete(A_ScriptDir . "\GTAV_Tweaks\soundvolumeview-x64.zip")
