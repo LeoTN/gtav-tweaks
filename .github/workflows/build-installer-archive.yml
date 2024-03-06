@@ -86,7 +86,7 @@ jobs:
       uses: actions/download-artifact@v3
       with:
         name: ${{ env.FINAL_EXECUTABLE_NAME }}
-        path: ${{ github.workspace }}\library\build\${{ env.FINAL_EXECUTABLE_NAME }}
+        path: ${{ github.workspace }}/library/build/${{ env.FINAL_EXECUTABLE_NAME }}
 
     - name: Set Release Name
       run: |
