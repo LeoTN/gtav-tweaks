@@ -1,7 +1,8 @@
 ;@Ahk2Exe-SetCompanyName Made by LeoTN
-;@Ahk2Exe-SetCopyright You can find the licence on my GitHub project
-;@Ahk2Exe-SetDescription More information on GitHub (https://github.com/LeoTN/gtav-tweaks)
+;@Ahk2Exe-SetCopyright Licence available on my GitHub project (https://github.com/LeoTN/gtav-tweaks)
+;@Ahk2Exe-SetDescription GTAV Tweaks
 ;@Ahk2Exe-SetName GTAV Tweaks
+;@Ahk2Exe-UpdateManifest 0, GTAV Tweaks, , 0
 
 #SingleInstance Force
 #MaxThreadsPerHotkey 2
