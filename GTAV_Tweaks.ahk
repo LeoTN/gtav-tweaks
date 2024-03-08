@@ -7,7 +7,7 @@
 #SingleInstance Force
 #MaxThreadsPerHotkey 2
 SendMode "Input"
-CoordMode "Mouse", "Window"
+CoordMode "Mouse", "Screen"
 
 ; Imports important functions and variables.
 ; Sets the directory for all following files.
@@ -21,20 +21,33 @@ onInit()
 
 onInit()
 {
-    global version := "0.1.0"
+    global version := "0.1.1"
     global booleanFirstTimeLaunch := false
+    global ahkBaseFileLocation := A_ScriptDir . "\GTAV_Tweaks\AutoHotkey32.exe"
+    global readmeFileLocation := A_ScriptDir . "\GTAV_Tweaks\README.txt"
     global audioHookFileLocation := A_ScriptDir . "\GTAV_Tweaks\soundvolumeview-x64\SoundVolumeView.exe"
-    ; Includes the PowerShell audio hook file into the script.
-    If (!DirExist(A_ScriptDir . "\GTAV_Tweaks"))
+    global depositLessThan100kMacroFileLocation := A_ScriptDir . "\GTAV_Tweaks\macros\depositLessThan100kMacro.ahk"
+    global depositMoreThan100kMacroFileLocation := A_ScriptDir . "\GTAV_Tweaks\macros\depositMoreThan100kMacro.ahk"
+
+    If (!DirExist(A_ScriptDir . "\GTAV_Tweaks\macros"))
     {
-        DirCreate(A_ScriptDir . "\GTAV_Tweaks")
+        DirCreate(A_ScriptDir . "\GTAV_Tweaks\macros")
     }
+    ; Copies a bunch of support files into a folder relative to the script directory.
     If (!FileExist(audioHookFileLocation) && A_IsCompiled)
     {
         FileInstall("library\build\soundvolumeview-x64.zip", A_ScriptDir . "\GTAV_Tweaks\soundvolumeview-x64.zip", true)
         RunWait('powershell.exe -Command "Expand-Archive -Path "' . A_ScriptDir
             . '\GTAV_Tweaks\soundvolumeview-x64.zip" -DestinationPath "' . A_ScriptDir . '\GTAV_Tweaks\soundvolumeview-x64" -Force"', , "Hide")
         FileDelete(A_ScriptDir . "\GTAV_Tweaks\soundvolumeview-x64.zip")
+    }
+    If (!FileExist(ahkBaseFileLocation) && A_IsCompiled)
+    {
+        FileInstall("library\build\AutoHotkey32.exe", ahkBaseFileLocation, true)
+    }
+    If (!FileExist(readmeFileLocation) && A_IsCompiled)
+    {
+        FileInstall("library\build\README.txt", readmeFileLocation, true)
     }
     config_onInit()
     functions_onInit()

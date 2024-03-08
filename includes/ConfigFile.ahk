@@ -44,12 +44,12 @@ config_onInit()
     global DISPLAY_GTA_LAUNCH_NOTIFICATION := true
 
     ; Stores which hotkeys are enabled / disabled via the GUI.
-    global HOTKEY_STATE_ARRAY := "[1, 1, 0, 1]"
+    global HOTKEY_STATE_ARRAY := "[1, 1, 1, 1]"
     ; Just a list of all standard hotkeys.
-    global AFK_PERCIO_FLIGHT_HK := "+F9"
-    global SOLO_LOBBY_HK := "+F10"
-    global DEPOSIT_MONEY_LESS_100K_HK := "+F11"
-    global DEPOSIT_MONEY_MORE_100K_HK := "+F12"
+    global AFK_PERCIO_FLIGHT_HK := "^F9"
+    global SOLO_LOBBY_HK := "^F10"
+    global DEPOSIT_MONEY_LESS_100K_HK := "^F11"
+    global DEPOSIT_MONEY_MORE_100K_HK := "^F12"
     ;------------------------------------------------
 
     ; Will contain all config values matching with each variable name in the array below.

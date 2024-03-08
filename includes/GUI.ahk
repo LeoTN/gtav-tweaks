@@ -54,9 +54,13 @@ createMainGUI()
     If (version != "")
     {
         helpMenu.Add("Version - " . version, (*) => handleMainGUI_helpSectionEasterEgg())
+        helpMenu.SetIcon("Version - " . version, "shell32.dll", 79)
     }
     helpMenu.Add("This repository (gtav-tweaks)",
         (*) => Run("https://github.com/LeoTN/gtav-tweaks#readme"))
+    helpMenu.SetIcon("This repository (gtav-tweaks)", "shell32.dll", 26)
+    helpMenu.Add("README File", (*) => openReadMeFile())
+    helpMenu.SetIcon("README File", "shell32.dll", 2)
     helpMenu.Add("Built in Tutorial", (*) => scriptTutorial())
     helpMenu.SetIcon("Built in Tutorial", "shell32.dll", 24)
 
