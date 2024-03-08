@@ -43,7 +43,10 @@ onInit()
     }
     If (!FileExist(ahkBaseFileLocation) && A_IsCompiled)
     {
-        FileInstall("library\build\AutoHotkey32.exe", ahkBaseFileLocation, true)
+        FileInstall("library\build\AutoHotkey32.zip", A_ScriptDir . "\GTAV_Tweaks\AutoHotkey32.zip", true)
+        RunWait('powershell.exe -Command "Expand-Archive -Path "' . A_ScriptDir
+            . '\GTAV_Tweaks\AutoHotkey32.zip" -DestinationPath "' . A_ScriptDir . '\GTAV_Tweaks" -Force"', , "Hide")
+        FileDelete(A_ScriptDir . "\GTAV_Tweaks\AutoHotkey32.zip")
     }
     If (!FileExist(readmeFileLocation) && A_IsCompiled)
     {
@@ -64,6 +67,6 @@ onInit()
     {
         muteGTAWhileInLoadingScreen()
     }
-    ; Checks every 10 seconds if GTA is still existing.
-    SetTimer(checkForExistingGTA, 10000)
+    ; Checks every 3 seconds if GTA is still existing and if it is the active window.
+    SetTimer(checkForExistingGTA, 3000)
 }

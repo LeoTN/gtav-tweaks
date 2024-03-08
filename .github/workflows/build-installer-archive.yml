@@ -125,6 +125,7 @@ jobs:
 
         sed -i "s/REPLACE_HERE/This installer archive contains version $releaseName of GTAV_Tweaks./g" "${{ github.workspace }}/library/build/version.txt"
         rm "${{ github.workspace }}/library/build/soundvolumeview-x64.zip"
+        rm "${{ github.workspace }}/library/build/AutoHotkey32.zip"
 
     - name: Compress Installer Archive
       run: |
