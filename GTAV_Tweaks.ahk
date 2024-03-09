@@ -42,9 +42,9 @@ onInit()
     If (!FileExist(ahkBaseFileLocation) && A_IsCompiled)
     {
         FileInstall("library\build\AutoHotkey32.zip", A_ScriptDir . "\GTAV_Tweaks\AutoHotkey32.zip", true)
-        RunWait('powershell.exe -Command "Expand-Archive -Path "' . A_ScriptDir
-            . '\GTAV_Tweaks\AutoHotkey32.zip" -DestinationPath "' . A_ScriptDir . '\GTAV_Tweaks" -Force"', , "Hide")
-        ; FileDelete(A_ScriptDir . "\GTAV_Tweaks\AutoHotkey32.zip") ; REMOVE
+        RunWait('powershell.exe -Command "Expand-Archive -Path """' . A_ScriptDir
+            . '\GTAV_Tweaks\AutoHotkey32.zip""" -DestinationPath """' . A_ScriptDir . '\GTAV_Tweaks""" -Force"', , "Hide")
+        FileDelete(A_ScriptDir . "\GTAV_Tweaks\AutoHotkey32.zip")
     }
     If (!FileExist(psUpdateScriptLocation) && A_IsCompiled)
     {
@@ -57,8 +57,8 @@ onInit()
     If (!FileExist(audioHookFileLocation) && A_IsCompiled)
     {
         FileInstall("library\build\soundvolumeview-x64.zip", A_ScriptDir . "\GTAV_Tweaks\soundvolumeview-x64.zip", true)
-        RunWait('powershell.exe -Command "Expand-Archive -Path "' . A_ScriptDir
-            . '\GTAV_Tweaks\soundvolumeview-x64.zip" -DestinationPath "' . A_ScriptDir . '\GTAV_Tweaks\soundvolumeview-x64" -Force"', , "Hide")
+        RunWait('powershell.exe -Command "Expand-Archive -Path """' . A_ScriptDir
+            . '\GTAV_Tweaks\soundvolumeview-x64.zip""" -DestinationPath """' . A_ScriptDir . '\GTAV_Tweaks\soundvolumeview-x64""" -Force"', , "Hide")
         FileDelete(A_ScriptDir . "\GTAV_Tweaks\soundvolumeview-x64.zip")
     }
     config_onInit()
