@@ -29,7 +29,17 @@ onInit()
     global audioHookFileLocation := A_ScriptDir . "\GTAV_Tweaks\soundvolumeview-x64\SoundVolumeView.exe"
     global depositLessThan100kMacroFileLocation := A_ScriptDir . "\GTAV_Tweaks\macros\depositLessThan100kMacro.ahk"
     global depositMoreThan100kMacroFileLocation := A_ScriptDir . "\GTAV_Tweaks\macros\depositMoreThan100kMacro.ahk"
-
+    ; Prompts the user to confirm the creation of files.
+    If (!DirExist(A_ScriptDir . "\GTAV_Tweaks"))
+    {
+        result := MsgBox("Hello there!`n`nYou are about to create some files in a folder called [GTAV_Tweaks] next to this script.`n`n"
+            "Would you like to proceed?", "GTAV Tweaks - Confirm File Creation", "YN Iconi 262144")
+        If (result != "Yes")
+        {
+            ExitApp()
+        }
+        DirCreate(A_ScriptDir . "\GTAV_Tweaks")
+    }
     If (!DirExist(A_ScriptDir . "\GTAV_Tweaks\macros"))
     {
         DirCreate(A_ScriptDir . "\GTAV_Tweaks\macros")
