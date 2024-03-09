@@ -44,7 +44,7 @@ onInit()
         FileInstall("library\build\AutoHotkey32.zip", A_ScriptDir . "\GTAV_Tweaks\AutoHotkey32.zip", true)
         RunWait('powershell.exe -Command "Expand-Archive -Path "' . A_ScriptDir
             . '\GTAV_Tweaks\AutoHotkey32.zip" -DestinationPath "' . A_ScriptDir . '\GTAV_Tweaks" -Force"', , "Hide")
-        FileDelete(A_ScriptDir . "\GTAV_Tweaks\AutoHotkey32.zip")
+        ; FileDelete(A_ScriptDir . "\GTAV_Tweaks\AutoHotkey32.zip") ; REMOVE
     }
     If (!FileExist(psUpdateScriptLocation) && A_IsCompiled)
     {
