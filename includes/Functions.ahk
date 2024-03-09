@@ -75,13 +75,90 @@ waitForUserInputInGTA()
     }
 }
 
-; Checks if GTA still exists and reloads the script if it doesn't to prepare for the next GTA launch.
+; Checks if GTA still exists and reloads the script if it doesn't, to prepare for the next GTA launch.
 checkForExistingGTA()
 {
     If (!WinExist("ahk_exe GTA5.exe"))
     {
         Reload()
     }
+    ; Enables the hotkeys if GTA is the active window.
+    Else If (WinActive("ahk_exe GTA5.exe"))
+    {
+        Suspend(false)
+    }
+    ; Disables the hotkeys if GTA is not the active window.
+    Else
+    {
+        Suspend(true)
+    }
+}
+
+checkForAvailableUpdates()
+{
+    ; Does not check for updates if there is no Internet connection or the script isn't compiled.
+    If (!checkInternetConnection() || !A_IsCompiled)
+    {
+        Return
+    }
+    SplitPath(psUpdateScriptLocation, , &outDir)
+    parameterString := '-pGitHubRepositoryLink "https://github.com/LeoTN/gtav-tweaks" -pCurrentVersion "' . version
+        . '" -pCurrentExecutableLocation "' . A_ScriptFullPath . '" -pOutputDirectory "' . outDir . '"'
+
+    If (readConfigFile("UPDATE_TO_BETA_VERSIONS"))
+    {
+        parameterString .= " -pBooleanConsiderBetaReleases"
+    }
+    ; Calls the PowerShell script to check for available updates.
+    exitCode := RunWait('powershell.exe -executionPolicy bypass -file "' . psUpdateScriptLocation
+        . '" ' . parameterString . ' -pBooleanDoNotStartUpdate', , "Hide")
+    Switch (exitCode)
+    {
+        ; This exit code states that an update is available.
+        Case 5:
+        {
+            If (!FileExist(outDir . "\GTAV_Tweaks_Available_Update.txt"))
+            {
+                MsgBox("[" . A_ThisFunc . "()] [WARNING] Could not find [GTAV_Tweaks_Available_Update.txt] at [" . outDir . "]`n`n"
+                    . "Update has been canceled.", "GTAV Tweaks - [" . A_ThisFunc . "()]", "Icon! 262144")
+                Return
+            }
+            updateVersion := StrReplace(FileRead(outDir . "\GTAV_Tweaks_Available_Update.txt"), "v", "")
+            result := MsgBox("There is an update available. `n`nUpdate from [" . version . "] to [" . updateVersion . "] now?",
+                "GTAV Tweaks - Update Available", "YN Iconi T30 262144")
+            Switch (result)
+            {
+                Case "Yes":
+                    {
+                        ; Runs the PowerShell update script with the instruction to execute the update.
+                        Run('powershell.exe -executionPolicy bypass -file "' . psUpdateScriptLocation . '" ' . parameterString)
+                        ExitApp()
+                    }
+            }
+        }
+    }
+}
+
+/*
+Tries to ping google.com to determine the computer's Internet connection status.
+@returns [boolean] True, if the computer is connected to the Internet. False otherwise.
+*/
+checkInternetConnection()
+{
+    ; Checks if the user has an established Internet connection.
+    Try
+    {
+        httpRequest := ComObject("WinHttp.WinHttpRequest.5.1")
+        httpRequest.Open("GET", "http://www.google.com", false)
+        httpRequest.Send()
+
+        If (httpRequest.Status = 200)
+        {
+            Return true
+        }
+    }
+
+    Return false
 }
 
 /*

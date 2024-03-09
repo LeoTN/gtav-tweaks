@@ -24,6 +24,7 @@ onInit()
     global version := "0.1.1"
     global booleanFirstTimeLaunch := false
     global ahkBaseFileLocation := A_ScriptDir . "\GTAV_Tweaks\AutoHotkey32.exe"
+    global psUpdateScriptLocation := A_ScriptDir . "\GTAV_Tweaks\update\checkForUpdates.ps1"
     global readmeFileLocation := A_ScriptDir . "\GTAV_Tweaks\README.txt"
     global audioHookFileLocation := A_ScriptDir . "\GTAV_Tweaks\soundvolumeview-x64\SoundVolumeView.exe"
     global depositLessThan100kMacroFileLocation := A_ScriptDir . "\GTAV_Tweaks\macros\depositLessThan100kMacro.ahk"
@@ -33,14 +34,11 @@ onInit()
     {
         DirCreate(A_ScriptDir . "\GTAV_Tweaks\macros")
     }
-    ; Copies a bunch of support files into a folder relative to the script directory.
-    If (!FileExist(audioHookFileLocation) && A_IsCompiled)
+    If (!DirExist(A_ScriptDir . "\GTAV_Tweaks\update"))
     {
-        FileInstall("library\build\soundvolumeview-x64.zip", A_ScriptDir . "\GTAV_Tweaks\soundvolumeview-x64.zip", true)
-        RunWait('powershell.exe -Command "Expand-Archive -Path "' . A_ScriptDir
-            . '\GTAV_Tweaks\soundvolumeview-x64.zip" -DestinationPath "' . A_ScriptDir . '\GTAV_Tweaks\soundvolumeview-x64" -Force"', , "Hide")
-        FileDelete(A_ScriptDir . "\GTAV_Tweaks\soundvolumeview-x64.zip")
+        DirCreate(A_ScriptDir . "\GTAV_Tweaks\update")
     }
+    ; Copies a bunch of support files into a folder relative to the script directory.
     If (!FileExist(ahkBaseFileLocation) && A_IsCompiled)
     {
         FileInstall("library\build\AutoHotkey32.zip", A_ScriptDir . "\GTAV_Tweaks\AutoHotkey32.zip", true)
@@ -48,9 +46,20 @@ onInit()
             . '\GTAV_Tweaks\AutoHotkey32.zip" -DestinationPath "' . A_ScriptDir . '\GTAV_Tweaks" -Force"', , "Hide")
         FileDelete(A_ScriptDir . "\GTAV_Tweaks\AutoHotkey32.zip")
     }
+    If (!FileExist(psUpdateScriptLocation) && A_IsCompiled)
+    {
+        FileInstall("library\build\checkForUpdates.ps1", psUpdateScriptLocation, true)
+    }
     If (!FileExist(readmeFileLocation) && A_IsCompiled)
     {
         FileInstall("library\build\README.txt", readmeFileLocation, true)
+    }
+    If (!FileExist(audioHookFileLocation) && A_IsCompiled)
+    {
+        FileInstall("library\build\soundvolumeview-x64.zip", A_ScriptDir . "\GTAV_Tweaks\soundvolumeview-x64.zip", true)
+        RunWait('powershell.exe -Command "Expand-Archive -Path "' . A_ScriptDir
+            . '\GTAV_Tweaks\soundvolumeview-x64.zip" -DestinationPath "' . A_ScriptDir . '\GTAV_Tweaks\soundvolumeview-x64" -Force"', , "Hide")
+        FileDelete(A_ScriptDir . "\GTAV_Tweaks\soundvolumeview-x64.zip")
     }
     config_onInit()
     functions_onInit()
@@ -61,6 +70,10 @@ onInit()
         TrayTip("GTAV Tweaks launched.", "GTAV Tweaks - Status", "Iconi Mute")
         Sleep(1500)
         TrayTip()
+    }
+    If (readConfigFile("CHECK_FOR_UPDATES_AT_LAUNCH"))
+    {
+        checkForAvailableUpdates()
     }
     waitForGTAToExist()
     If (readConfigFile("MUTE_GAME_WHILE_LAUNCH"))
