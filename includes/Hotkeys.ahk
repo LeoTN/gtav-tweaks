@@ -6,7 +6,8 @@ CoordMode "Mouse", "Client"
 
 hotkeys_onInit()
 {
-
+    ; Deactivates the hotkeys for now. They will be reactivated once the script detects a running GTA V instance.
+    Suspend(true)
 }
 
 hotkey_createSoloLobby()

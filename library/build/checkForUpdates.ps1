@@ -157,7 +157,12 @@ function executeUpdate() {
             If (-not (Test-Path -Path $destinationDirectory)) {
                 New-Item -ItemType Directory -Path $destinationDirectory -Force
             }
-            Copy-Item -Path $_.FullName -Destination $destinationFile -Force
+            If ($_.Extension -eq ".ini" -or $_.Extension -eq ".ini_old") {
+                Copy-Item -Path $_.FullName -Destination $destinationFile -Force
+            }
+            Else {
+                Move-Item -Path $_.FullName -Destination $destinationFile -Force
+            }
         }
         Move-Item -Path $pCurrentExecutableLocation -Destination "$destinationFolder\GTAV_Tweaks.exe" -Force
         # Move the new executable into the directory that contained the old one.

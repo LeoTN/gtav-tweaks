@@ -19,6 +19,14 @@ manipulateApplicationAudio(pApplicationName, pAction)
     Run(audioHookFileLocation . ' ' . pAction . ' ' . pApplicationName . ' /waitForItem 120', , "Hide")
 }
 
+muteGTAWhileInLoadingScreen()
+{
+    manipulateApplicationAudio("GTA5.exe", "/mute")
+    Sleep(10000)
+    waitForUserInputInGTA()
+    manipulateApplicationAudio("GTA5.exe", "/unmute")
+}
+
 waitForGTAToExist()
 {
     WinWait("ahk_exe GTA5.exe")
@@ -30,49 +38,22 @@ waitForGTAToExist()
     }
 }
 
-muteGTAWhileInLoadingScreen()
-{
-    manipulateApplicationAudio("GTA5.exe", "/mute")
-    Sleep(10000)
-    waitForUserInputInGTA()
-    manipulateApplicationAudio("GTA5.exe", "/unmute")
-}
-
-; Waits for the user to press w a & d while the window is active to continue the script execution.
+; Waits for the user to press w while the window is active, to continue the script execution and unmute the game.
 waitForUserInputInGTA()
 {
-    static timeoutCounter := 0
-    ; This prevents the script from loading infinetly.
+    ; This prevents the script from loading infinitely.
     If (WinWaitActive("ahk_exe GTA5.exe", , 600) = 0)
     {
-        If (timeoutCounter >= 5)
-        {
-            result := MsgBox("Are you still waiting for GTA to load?", "GTAV Tweaks - Continue Waiting?", "YN Icon? T30")
-            If (result = "Yes")
-            {
-                timeoutCounter := 0
-                Return waitForUserInputInGTA()
-            }
-            Else
-            {
-                ExitApp()
-            }
-        }
-        timeoutCounter++
-        Return waitForUserInputInGTA()
+        Reload()
     }
-    Else
+    While (WinActive("ahk_exe GTA5.exe"))
     {
-        While (WinActive("ahk_exe GTA5.exe"))
+        If (KeyWait("w", "D T1") = 1)
         {
-            If (KeyWait("w", "D T1") = 1)
-            {
-                Return
-            }
+            Return
         }
-
-        Return waitForUserInputInGTA()
     }
+    Return waitForUserInputInGTA()
 }
 
 ; Checks if GTA still exists and reloads the script if it doesn't, to prepare for the next GTA launch.
@@ -159,6 +140,240 @@ checkInternetConnection()
     }
 
     Return false
+}
+
+; Shows a tutorial to the user.
+scriptTutorial()
+{
+    ; Nothing yet
+    MsgBox("Tutorial GTAV Tweaks (not finished)")
+}
+
+/*
+Opens the config file.
+@returns [boolean] Depeding on the function's success.
+*/
+openConfigFile()
+{
+    global configFileLocation
+
+    Try
+    {
+        If (FileExist(configFileLocation))
+        {
+            Run(configFileLocation)
+            Return true
+        }
+        Else
+        {
+            createDefaultConfigFile()
+            Return true
+        }
+    }
+    Catch As error
+    {
+        displayErrorMessage(error, "This error is rare.", true)
+        ; Technically unreachable :D
+        Return false
+    }
+}
+
+/*
+Opens the README file.
+@returns [boolean] Depeding on the function's success.
+*/
+openReadMeFile()
+{
+    global readmeFileLocation
+
+    Try
+    {
+        If (FileExist(readmeFileLocation))
+        {
+            Run(readmeFileLocation)
+            Return true
+        }
+        Else
+        {
+            MsgBox("No README file found.", "GTAV Tweaks - Missing README File", "Icon! T5")
+            Return false
+        }
+    }
+    Catch As error
+    {
+        displayErrorMessage(error, "This error is rare.")
+        Return false
+    }
+}
+
+/*
+Displays a bunch of information to the user on how to create macros.
+This functions starts recordMacro() if the user confirms it.
+@param pOutputFileLocation [String] Should be a valid path such as "C:\Users\User\macro.ahk".
+*/
+explainMacroRecording(pOutputFileLocation)
+{
+    SplitPath(pOutputFileLocation, &outFileName, &outDir)
+    result := MsgBox("This action requires a macro file.`n`nYou can either put it into [" . outDir . "] or start recording it now."
+        "`nThe file is called [" . outFileName . "].`n`nPress [Yes] to receive more information about recording macro files and start the process.",
+        "GTAV Tweaks - Missing Macro File", "YN Icon! 262144")
+    Switch (result)
+    {
+        Case "Yes":
+            {
+                MsgBox("This feature is still experimental!`n`nAfter closing this info box, press [F5] within 15 seconds, to initiate the recording. "
+                    . "The recording actually starts after pressing any key, once it has been initiated. Pressing the [F5] key again "
+                    . "will end the recording process.`n`nYou just have to do the desired action step by step (but a little bit slower than usual)."
+                    "`n`nFor example open your phone, select the browser, navigate to maze bank...; to record the "
+                    . "macro for depositing cash.`n`nRemember that you can always delete the macro file and record a new one.`n`n"
+                    "More information can be found in the README.txt contained in the installer archive file (downloaded from GitHub) or in the GTAV_Tweaks folder.",
+                    "GTAV Tweaks - How to Record Macros", "262208")
+                If (KeyWait("F5", "D T15"))
+                {
+                    Hotkey("F5", (*) => hotkey_stopMacroRecording(), "On")
+                    recordMacro(pOutputFileLocation)
+                    Hotkey("F5", (*) => hotkey_stopMacroRecording(), "Off")
+                }
+            }
+            Return
+    }
+}
+
+/*
+Function to easily record a simple macro.
+This version does not support multiple keys such as Shift + ß, which would be ? as a result.
+It is only capable of saving one key at a time, but in this case it is enough.
+@param pOutputFileLocation [String] Should be a valid path such as "C:\Users\User\macro.ahk".
+*/
+recordMacro(pOutputFileLocation)
+{
+    global booleanMacroIsRecording := true
+    macroRecordHotkey := "F5"
+    ; This adds a short delay before the recorded macro executes.
+    idleTime := 500
+    macroStorage := "; This macro was created on " . FormatTime(A_Now, "dd.MM.yyyy_HH-mm-ss") . ".`n`n"
+    macroStorage .= '#SingleInstance Force`n#Requires AutoHotkey >=v2.0`nSendMode "Input"`nCoordMode "Mouse", "Screen"`n`n'
+        . '; More information can be found in the README.txt contained in the installer archive file (downloaded from GitHub) '
+        . 'or in the GTAV_Tweaks folder. Make sure to read it before changing this file!`n`n'
+
+    While (booleanMacroIsRecording)
+    {
+        macroStorage .= 'Sleep(' . idleTime . ')`n'
+        macroStorage .= waitForAnyKey("V")
+    }
+    ; As a safety measure to ensure the new file is clean.
+    If (FileExist(pOutputFileLocation))
+    {
+        FileDelete(pOutputFileLocation)
+    }
+    FileAppend(macroStorage, pOutputFileLocation)
+
+    waitForAnyKey(options := "")
+    {
+        idleTime := 0
+        ih := InputHook(options)
+        If (!InStr(options, "V"))
+        {
+            ih.VisibleNonText := false
+        }
+        ; Waits for any key to be pressed (except for mouse keys for what every reason).
+        ih.KeyOpt("{All}", "E")
+        ih.Start()
+        mouseKey := unset
+        While (ih.InProgress)
+        {
+            ; Left click.
+            If (GetKeyState("LButton", "P"))
+            {
+                MouseGetPos(&posX, &posY)
+                ; Creates a click with a 50 millisecond delay between pressing and releasing the button for the game to register the mouse click.
+                mouseKey .= 'MouseMove(' . posX . ',' . posY . ')`nSleep(50) '
+                mouseKey .= '; DO NOT MODIFY`nClick(' . posX . ', ' . posY . ', "L", "D")`nSleep(50) '
+                mouseKey .= '; DO NOT MODIFY`nClick(' . posX . ', ' . posY . ', "L", "U")`n'
+                ih.Stop()
+                ; Waits until the buttons is released to avoid multiple click orders for the same click.
+                KeyWait("LButton", "L")
+            }
+            ; Right click.
+            Else If (GetKeyState("RButton", "P"))
+            {
+                MouseGetPos(&posX, &posY)
+                mouseKey .= 'MouseMove(' . posX . ',' . posY . ')`nSleep(50) '
+                mouseKey .= '; DO NOT MODIFY`nClick(' . posX . ', ' . posY . ', "R", "D")`nSleep(50) '
+                mouseKey .= '; DO NOT MODIFY`nClick(' . posX . ', ' . posY . ', "R", "U")`n'
+                ih.Stop()
+                KeyWait("RButton", "L")
+            }
+            ; Mouse wheel cick.
+            Else If (GetKeyState("MButton", "P"))
+            {
+                MouseGetPos(&posX, &posY)
+                mouseKey .= 'MouseMove(' . posX . ',' . posY . ')`nSleep(50) '
+                mouseKey .= '; DO NOT MODIFY`nClick(' . posX . ', ' . posY . ', "M", "D")`nSleep(50) '
+                mouseKey .= '; DO NOT MODIFY`nClick(' . posX . ', ' . posY . ', "M", "U")`n'
+                ih.Stop()
+                KeyWait("MButton", "L")
+            }
+            idleTime += 10
+            Sleep(10)
+        }
+        If (IsSet(mouseKey))
+        {
+            Return mouseKey
+        }
+        ; We don't want the macro record hotkey to be included into the file.
+        If (ih.EndKey == macroRecordHotkey)
+        {
+            Return waitForAnyKey()
+        }
+        ; This is a safety feature to make sure the game has enough time to process the inputs. Otherwise the macros might be broken.
+        If (idleTime < 800)
+        {
+            idleTime := 800
+        }
+        ; I had to split this string because the DO NOT MODIFY comment made problems in a single string.
+        tmpString := 'Send("{' . ih.EndKey . ' down}")`nSleep(100) '
+        tmpString .= '; DO NOT MODIFY`nSend("{' . ih.EndKey . ' up}")`n'
+        Return tmpString
+    }
+}
+
+/*
+Adds / removes the script from the autostart folder.
+@param pBooleanEnableAutostart [boolean] If set to true, will put a shortcut to this script into the autostart folder.
+*/
+setAutostart(pBooleanEnableAutostart)
+{
+    ; Creating an autostart for the .AHK file doesn't make sense in this case.
+    If (!A_IsCompiled)
+    {
+        Return
+    }
+    SplitPath(A_ScriptName, , , , &outNameNoExt)
+    If (pBooleanEnableAutostart)
+    {
+        If (FileExist(A_Startup . "\" . outNameNoExt . ".lnk"))
+        {
+            FileGetShortcut(A_Startup . "\" . outNameNoExt . ".lnk", &outTarget)
+            If (outTarget != A_ScriptFullPath)
+            {
+                result := MsgBox("There seems to be a shortcut in the autostart folder already.`n`nWould you like to overwrite it?",
+                    "GTAV Tweaks - Found Existing Autostart Shortcut", "YN Icon? 262144")
+                If (result != "Yes")
+                {
+                    Return
+                }
+            }
+        }
+        FileCreateShortcut(A_ScriptFullPath, A_Startup . "\" . outNameNoExt . ".lnk")
+    }
+    Else
+    {
+        If (FileExist(A_Startup . "\" . outNameNoExt . ".lnk"))
+        {
+            FileDelete(A_Startup . "\" . outNameNoExt . ".lnk")
+        }
+    }
 }
 
 /*
@@ -282,234 +497,6 @@ terminateScriptPrompt()
         Sleep(100)
         ExitApp()
         ExitApp()
-    }
-}
-
-; Shows a tutorial to the user.
-scriptTutorial()
-{
-    ; Nothing yet
-    MsgBox("Tutorial GTAV Tweaks (not finished)")
-}
-
-/*
-Opens the config file.
-@returns [boolean] Depeding on the function's success.
-*/
-openConfigFile()
-{
-    global configFileLocation
-
-    Try
-    {
-        If (FileExist(configFileLocation))
-        {
-            Run(configFileLocation)
-            Return true
-        }
-        Else
-        {
-            createDefaultConfigFile()
-            Return true
-        }
-    }
-    Catch As error
-    {
-        displayErrorMessage(error, "This error is rare.", true)
-        ; Technically unreachable :D
-        Return false
-    }
-}
-
-/*
-Opens the README file.
-@returns [boolean] Depeding on the function's success.
-*/
-openReadMeFile()
-{
-    global readmeFileLocation
-
-    Try
-    {
-        If (FileExist(readmeFileLocation))
-        {
-            Run(readmeFileLocation)
-            Return true
-        }
-        Else
-        {
-            MsgBox("No README file found.", "GTAV Tweaks - Missing README File", "Icon! T5")
-            Return false
-        }
-    }
-    Catch As error
-    {
-        displayErrorMessage(error, "This error is rare.")
-        Return false
-    }
-}
-
-/*
-Displays a bunch of information to the user on how to create macros.
-This functions starts recordMacro() if the user confirms it.
-@param pOutputFileLocation [String] Should be a valid path such as "C:\Users\User\macro.ahk".
-*/
-explainMacroRecording(pOutputFileLocation)
-{
-    SplitPath(pOutputFileLocation, &outFileName, &outDir)
-    result := MsgBox("This action requires a macro file.`n`nYou can either put it into [" . outDir . "] or start recording it now."
-        "`nThe file is called [" . outFileName . "].`n`nPress [Yes] to receive more information about recording macro files and start the process.",
-        "GTAV Tweaks - Missing Macro File", "YN Icon! 262144")
-    Switch (result)
-    {
-        Case "Yes":
-            {
-                MsgBox("This feature is still experimental!`n`nAfter closing this info box, press [F5] within 15 seconds, to initiate the recording. "
-                    . "The recording actually starts after pressing any key, once it has been initiated. Pressing the [F5] key again "
-                    . "will end the recording process.`n`nYou just have to do the desired action step by step (but a little bit slower than usual)."
-                    "`n`nFor example open your phone, select the browser, navigate to maze bank...; to record the "
-                    . "macro for depositing cash.`n`nRemember that you can always delete the macro file and record a new one.`n`n"
-                    "More information can be found in the README.txt contained in the installer archive file (downloaded from GitHub) or in the GTAV_Tweaks folder.",
-                    "GTAV Tweaks - How to Record Macros", "262208")
-                If (KeyWait("F5", "D T15"))
-                {
-                    Hotkey("F5", (*) => hotkey_stopMacroRecording(), "On")
-                    recordMacro(pOutputFileLocation)
-                    Hotkey("F5", (*) => hotkey_stopMacroRecording(), "Off")
-                }
-            }
-            Return
-    }
-}
-
-/*
-Function to easily record a simple macro.
-This version does not support multiple keys such as Shift + ß, which would be ? as a result.
-It is only capable of saving one key at a time, but in this case it is enough.
-@param pOutputFileLocation [String] Should be a valid path such as "C:\Users\User\macro.ahk".
-*/
-recordMacro(pOutputFileLocation)
-{
-    global booleanMacroIsRecording := true
-    ; This adds a short delay before the recorded macro executes.
-    idleTime := 500
-    macroStorage := "; This macro was created on " . FormatTime(A_Now, "dd.MM.yyyy_HH-mm-ss") . ".`n`n"
-    macroStorage .= '#SingleInstance Force`n#Requires AutoHotkey >=v2.0`nSendMode "Input"`nCoordMode "Mouse", "Screen"`n`n'
-        . '; More information can be found in the README.txt contained in the installer archive file (downloaded from GitHub) '
-        . 'or in the GTAV_Tweaks folder. Make sure to read it before changing this file!`n`n'
-
-    While (booleanMacroIsRecording)
-    {
-        macroStorage .= 'Sleep(' . idleTime . ')`n'
-        macroStorage .= waitForAnyKey("V")
-    }
-    ; As a safety measure to ensure the new file is clean.
-    If (FileExist(pOutputFileLocation))
-    {
-        FileDelete(pOutputFileLocation)
-    }
-    FileAppend(macroStorage, pOutputFileLocation)
-
-    waitForAnyKey(options := "")
-    {
-        idleTime := 0
-        ih := InputHook(options)
-        If (!InStr(options, "V"))
-        {
-            ih.VisibleNonText := false
-        }
-        ; Waits for any key to be pressed (except for mouse keys for what every reason).
-        ih.KeyOpt("{All}", "E")
-        ih.Start()
-        mouseKey := unset
-        While (ih.InProgress)
-        {
-            ; Left click.
-            If (GetKeyState("LButton", "P"))
-            {
-                MouseGetPos(&posX, &posY)
-                ; Creates a click with a 50 millisecond delay between pressing and releasing the button for the game to register the mouse click.
-                mouseKey .= 'MouseMove(' . posX . ',' . posY . ')`nSleep(50) '
-                mouseKey .= '; DO NOT MODIFY`nClick(' . posX . ', ' . posY . ', "L", "D")`nSleep(50) '
-                mouseKey .= '; DO NOT MODIFY`nClick(' . posX . ', ' . posY . ', "L", "U")`n'
-                ih.Stop()
-                ; Waits until the buttons is released to avoid multiple click orders for the same click.
-                KeyWait("LButton", "L")
-            }
-            ; Right click.
-            Else If (GetKeyState("RButton", "P"))
-            {
-                MouseGetPos(&posX, &posY)
-                mouseKey .= 'MouseMove(' . posX . ',' . posY . ')`nSleep(50) '
-                mouseKey .= '; DO NOT MODIFY`nClick(' . posX . ', ' . posY . ', "R", "D")`nSleep(50) '
-                mouseKey .= '; DO NOT MODIFY`nClick(' . posX . ', ' . posY . ', "R", "U")`n'
-                ih.Stop()
-                KeyWait("RButton", "L")
-            }
-            ; Mouse wheel cick.
-            Else If (GetKeyState("MButton", "P"))
-            {
-                MouseGetPos(&posX, &posY)
-                mouseKey .= 'MouseMove(' . posX . ',' . posY . ')`nSleep(50) '
-                mouseKey .= '; DO NOT MODIFY`nClick(' . posX . ', ' . posY . ', "M", "D")`nSleep(50) '
-                mouseKey .= '; DO NOT MODIFY`nClick(' . posX . ', ' . posY . ', "M", "U")`n'
-                ih.Stop()
-                KeyWait("MButton", "L")
-            }
-            idleTime += 10
-            Sleep(10)
-        }
-        If (IsSet(mouseKey))
-        {
-            Return mouseKey
-        }
-        ; This is a safety feature to make sure the game has enough time to process the inputs. Otherwise the macros might be broken.
-        If (idleTime < 800)
-        {
-            idleTime := 800
-        }
-        ; I had to split this string because the DO NOT MODIFY comment made problems in a single string.
-        tmpString := 'Send("{' . ih.EndKey . ' down}")`nSleep(100) '
-        tmpString .= '; DO NOT MODIFY`nSend("{' . ih.EndKey . ' up}")`n'
-        Return tmpString
-    }
-}
-
-/*
-Adds / removes the script from the autostart folder.
-@param pBooleanEnableAutostart [boolean] If set to true, will put a shortcut to this script into the autostart folder.
-*/
-setAutostart(pBooleanEnableAutostart)
-{
-    ; Creating an autostart for the .AHK file doesn't make sense in this case.
-    If (!A_IsCompiled)
-    {
-        Return
-    }
-    SplitPath(A_ScriptName, , , , &outNameNoExt)
-    If (pBooleanEnableAutostart)
-    {
-        If (FileExist(A_Startup . "\" . outNameNoExt . ".lnk"))
-        {
-            FileGetShortcut(A_Startup . "\" . outNameNoExt . ".lnk", &outTarget)
-            If (outTarget != A_ScriptFullPath)
-            {
-                result := MsgBox("There seems to be a shortcut in the autostart folder already.`n`nWould you like to overwrite it?",
-                    "GTAV Tweaks - Found Existing Autostart Shortcut", "YN Icon? 262144")
-                If (result != "Yes")
-                {
-                    Return
-                }
-            }
-        }
-        FileCreateShortcut(A_ScriptFullPath, A_Startup . "\" . outNameNoExt . ".lnk")
-    }
-    Else
-    {
-        If (FileExist(A_Startup . "\" . outNameNoExt . ".lnk"))
-        {
-            FileDelete(A_Startup . "\" . outNameNoExt . ".lnk")
-        }
     }
 }
 
