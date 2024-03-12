@@ -28,7 +28,6 @@ function onInit() {
     # Adds a subfolder so that we can delete this entire folder instead of deleting every file individually.
     $pOutputDirectory = "$pOutputDirectory\GTAV_Tweaks_temp_update"
     $global:updateVersion = ""
-    $global:updateVersionTag = ""
     # Removes old available update files.
     $availableUpdateFileName = "GTAV_Tweaks_Available_Update.txt"
     $availableUpdateFilePath = Join-Path -Path $scriptParentDirectory -ChildPath $availableUpdateFileName
@@ -38,7 +37,7 @@ function onInit() {
 
     $tmpResult = checkIfUpdateAvailable
     If ($tmpResult -and !$pBooleanDoNotStartUpdate) {
-        If (downloadReleaseAsset -pReleaseName $global:updateVersionTag -pAssetName "GTAV_Tweaks.zip" -pOutputDirectory "$pOutputDirectory") {
+        If (downloadReleaseAsset -pReleaseName $global:updateVersion -pAssetName "GTAV_Tweaks.zip" -pOutputDirectory "$pOutputDirectory") {
             If (executeUpdate) {
                 Write-Host "[onInit()] [INFO] Successfully updated from version [$pCurrentVersion] to ["$global:updateVersion"]."
                 $exitCode = 10
@@ -50,7 +49,7 @@ function onInit() {
         }
     }
     ElseIf ($tmpResult) {
-        New-Item -Path $availableUpdateFilePath -ItemType "file" -Value $global:updateVersionTag -Force | Out-Null
+        New-Item -Path $availableUpdateFilePath -ItemType "file" -Value $global:updateVersion -Force | Out-Null
         $exitCode = 5
     }
     Else {
@@ -68,36 +67,32 @@ function checkIfUpdateAvailable() {
     # This converts the "normal" repository link to use the GitHub API.
     $apiUrl = $pGitHubRepositoryLink -Replace "github\.com", "api.github.com/repos"
     $tagsResponse = Invoke-RestMethod -Uri "$apiUrl/tags" -Method Get
-    
-    [version]$highestVersion = "0.0.0"
-    $highestVersionTag = ""
+
+    $highestVersion = "v0.0.0"
     # Iterating through the tags.
     Foreach ($tag in $tagsResponse) {
         $tmpTag = $tag.name
-        # Removing unwanted characters and beta label
+        # Removing unwanted characters and beta label.
         $tmpTag = $tmpTag.Replace("v", "")
         If ($tmpTag -like "*-beta" -and !$pBooleanConsiderBetaReleases) {
             Write-Host "[checkIfUpdateAvailable()] [INFO] Skipping tag [$tmpTag] which is a beta release."
             Continue
         }
+        # Checking if the version is valid.
         $tmpTag = $tmpTag.Replace("-beta", "")
-
-        # Checking if the version is valid
         If (-not ($tmpTag -match '^\d+\.\d+\.\d+$')) {
             Write-Host "[checkIfUpdateAvailable()] [WARNING] Found tag name which couldn't be converted to version: [$tmpTag]."
             Continue
         }
-        [version]$tagVersion = $tmpTag
-        If ($tagVersion -gt $highestVersion) {
-            $highestVersion = $tagVersion
-            $highestVersionTag = $tag.name
-        }
+        # Finds the highest version.
+        $highestVersion = compareVersions -pVersion1 $highestVersion -pVersion2 $tag.name
     }
-
-    If ($highestVersion -gt $pCurrentVersion) {
+    # Compares the highest released version and the current version.
+    $tmpHighestVersion = compareVersions -pVersion1 $highestVersion -pVersion2 $pCurrentVersion
+    # This means there is an update available.
+    If ($tmpHighestVersion -eq $highestVersion) {
         Write-Host "[checkIfUpdateAvailable()] [INFO] Found a higher version to update: [$highestVersion]."
         $global:updateVersion = $highestVersion
-        $global:updateVersionTag = $highestVersionTag
         Return $true
     }
     Write-Host "[checkIfUpdateAvailable()] [INFO] Could not find any available updates."
@@ -180,6 +175,45 @@ function executeUpdate() {
     Catch {
         Write-Host "[executeUpdate()] [ERROR] Failed to move new executable file to target destination.`nDetailed error description`n`n[$_]"
         Return $false
+    }
+}
+
+# Returns the higher version.
+function compareVersions {
+    [CmdletBinding()]
+    Param (
+        [Parameter(Mandatory = $true)]
+        [String]$pVersion1,
+        [Parameter(Mandatory = $true)]
+        [String]$pVersion2
+    )
+
+    $ver1 = [version]$pVersion1.Replace("v", "").Replace("-beta", "")
+    $ver2 = [version]$pVersion2.Replace("v", "").Replace("-beta", "")
+
+    $isVer1Beta = $pVersion1 -match "-beta$"
+    $isVer2Beta = $pVersion2 -match "-beta$"
+
+    If ($ver1 -gt $ver2) {
+        Write-Host "[compareVersions()] [INFO] [$pVersion1] is higher than [$pVersion2]."
+        Return $pVersion1
+    }
+    ElseIf ($ver1 -lt $ver2) {
+        Write-Host "[compareVersions()] [INFO] [$pVersion2] is higher than [$pVersion1]."
+        Return $pVersion2
+    }
+    Else {
+        # Only one of them is a beta version.
+        If ($isVer1Beta -and !$isVer2Beta) {
+            Write-Host "[compareVersions()] [INFO] [$pVersion2] is higher than [$pVersion1]."
+            Return $pVersion2
+        }
+        ElseIf ($isVer2Beta -and !$isVer1Beta) {
+            Write-Host "[compareVersions()] [INFO] [$pVersion1] is higher than [$pVersion2]."
+            Return $pVersion1
+        }
+        Write-Host "[compareVersions()] [INFO] [$pVersion1] is identical to [$pVersion2]."
+        Return $pVersion1
     }
 }
 

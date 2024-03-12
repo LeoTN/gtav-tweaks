@@ -21,10 +21,10 @@ onInit()
 
 onInit()
 {
-    global version := "0.1.1"
     global booleanFirstTimeLaunch := false
     global ahkBaseFileLocation := A_ScriptDir . "\GTAV_Tweaks\AutoHotkey32.exe"
     global psUpdateScriptLocation := A_ScriptDir . "\GTAV_Tweaks\update\checkForUpdates.ps1"
+    global versionFileLocation := A_ScriptDir . "\GTAV_Tweaks\update\currentVersion.txt"
     global readmeFileLocation := A_ScriptDir . "\GTAV_Tweaks\README.txt"
     global audioHookFileLocation := A_ScriptDir . "\GTAV_Tweaks\soundvolumeview-x64\SoundVolumeView.exe"
     global depositLessThan100kMacroFileLocation := A_ScriptDir . "\GTAV_Tweaks\macros\depositLessThan100kMacro.ahk"
@@ -60,6 +60,10 @@ onInit()
     {
         FileInstall("library\build\checkForUpdates.ps1", psUpdateScriptLocation, true)
     }
+    If (!FileExist(versionFileLocation))
+    {
+        FileInstall("library\build\currentVersion.txt", versionFileLocation, true)
+    }
     If (!FileExist(readmeFileLocation) && A_IsCompiled)
     {
         FileInstall("library\build\README.txt", readmeFileLocation, true)
@@ -71,6 +75,8 @@ onInit()
             . '\GTAV_Tweaks\soundvolumeview-x64.zip""" -DestinationPath """' . A_ScriptDir . '\GTAV_Tweaks\soundvolumeview-x64""" -Force"', , "Hide")
         FileDelete(A_ScriptDir . "\GTAV_Tweaks\soundvolumeview-x64.zip")
     }
+    ; The version can now be specified because the version file should now be available.
+    global versionFullName := FileRead(versionFileLocation)
     config_onInit()
     functions_onInit()
     hotkeys_onInit()

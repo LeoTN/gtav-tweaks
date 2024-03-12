@@ -51,10 +51,10 @@ createMainGUI()
     optionsMenu.SetIcon("Reload Script", "shell32.dll", 207)
 
     helpMenu := Menu()
-    If (version != "")
+    If (versionFullName != "")
     {
-        helpMenu.Add("Version - " . version, (*) => handleMainGUI_helpSectionEasterEgg())
-        helpMenu.SetIcon("Version - " . version, "shell32.dll", 79)
+        helpMenu.Add("Version - " . versionFullName, (*) => handleMainGUI_helpSectionEasterEgg())
+        helpMenu.SetIcon("Version - " . versionFullName, "shell32.dll", 79)
     }
     helpMenu.Add("This repository (gtav-tweaks)",
         (*) => Run("https://github.com/LeoTN/gtav-tweaks#readme"))
