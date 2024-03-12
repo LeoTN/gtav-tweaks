@@ -82,29 +82,36 @@ checkForAvailableUpdates()
     {
         Return
     }
-    SplitPath(psUpdateScriptLocation, , &outDir)
+    SplitPath(psUpdateScriptLocation, &outFileName)
+    psUpdateScriptLocationTemp := A_Temp . "\" . outFileName
+    updateWorkingDir := A_Temp . "\GTAV_Tweaks_AUTO_UPDATE"
+    availableUpdateFileLocation := A_Temp . "\GTAV_Tweaks_Available_Update.txt"
+    ; Copies the script to the temp directory. This ensure that there are no file errors while the script is moving or copying files,
+    ; because it cannot copy itself, while it is running.
+    FileCopy(psUpdateScriptLocation, psUpdateScriptLocationTemp, true)
     parameterString := '-pGitHubRepositoryLink "https://github.com/LeoTN/gtav-tweaks" -pCurrentVersion "' . version
-        . '" -pCurrentExecutableLocation "' . A_ScriptFullPath . '" -pOutputDirectory "' . outDir . '"'
+        . '" -pCurrentExecutableLocation "' . A_ScriptFullPath . '" -pOutputDirectory "' . updateWorkingDir . '"'
 
     If (readConfigFile("UPDATE_TO_BETA_VERSIONS"))
     {
         parameterString .= " -pBooleanConsiderBetaReleases"
     }
     ; Calls the PowerShell script to check for available updates.
-    exitCode := RunWait('powershell.exe -executionPolicy bypass -file "' . psUpdateScriptLocation
+    exitCode := RunWait('powershell.exe -executionPolicy bypass -file "' . psUpdateScriptLocationTemp
         . '" ' . parameterString . ' -pBooleanDoNotStartUpdate', , "Hide")
     Switch (exitCode)
     {
         ; This exit code states that an update is available.
         Case 5:
         {
-            If (!FileExist(outDir . "\GTAV_Tweaks_Available_Update.txt"))
+            If (!FileExist(availableUpdateFileLocation))
             {
-                MsgBox("[" . A_ThisFunc . "()] [WARNING] Could not find [GTAV_Tweaks_Available_Update.txt] at [" . outDir . "]`n`n"
+                SplitPath(availableUpdateFileLocation, &outFileName, &outDir)
+                MsgBox("[" . A_ThisFunc . "()] [WARNING] Could not find [" . outFileName . "] at [" . outDir . "]`n`n"
                     . "Update has been canceled.", "GTAV Tweaks - [" . A_ThisFunc . "()]", "Icon! 262144")
                 Return
             }
-            updateVersion := StrReplace(FileRead(outDir . "\GTAV_Tweaks_Available_Update.txt"), "v", "")
+            updateVersion := StrReplace(FileRead(availableUpdateFileLocation), "v", "")
             result := MsgBox("There is an update available. `n`nUpdate from [" . version . "] to [" . updateVersion . "] now?",
                 "GTAV Tweaks - Update Available", "YN Iconi T30 262144")
             Switch (result)
@@ -112,7 +119,7 @@ checkForAvailableUpdates()
                 Case "Yes":
                     {
                         ; Runs the PowerShell update script with the instruction to execute the update.
-                        Run('powershell.exe -executionPolicy bypass -file "' . psUpdateScriptLocation . '" ' . parameterString)
+                        Run('powershell.exe -executionPolicy bypass -file "' . psUpdateScriptLocationTemp . '" ' . parameterString)
                         ExitApp()
                     }
             }

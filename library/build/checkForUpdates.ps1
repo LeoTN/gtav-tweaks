@@ -17,7 +17,7 @@ Param (
 $Host.UI.RawUI.BackgroundColor = "Black"
 $Host.UI.RawUI.ForegroundColor = "White"
 $scriptParentDirectory = Split-Path -Parent $MyInvocation.MyCommand.Path
-$logFileName = "checkForUpdatesLog.txt"
+$logFileName = "checkForUpdates.log"
 $logFilePath = Join-Path -Path $scriptParentDirectory -ChildPath $logFileName
 Remove-Item -Path $logFilePath -Force -ErrorAction SilentlyContinue
 Start-Transcript -Path $logFilePath -Append
@@ -50,8 +50,7 @@ function onInit() {
         }
     }
     ElseIf ($tmpResult) {
-        $parentDirectory = Split-Path -Path $pCurrentExecutableLocation -Parent
-        New-Item -Path "$parentDirectory\GTAV_Tweaks\update\$availableUpdateFileName" -ItemType "file" -Value $global:updateVersionTag -Force | Out-Null
+        New-Item -Path $availableUpdateFilePath -ItemType "file" -Value $global:updateVersionTag -Force | Out-Null
         $exitCode = 5
     }
     Else {
@@ -154,10 +153,14 @@ function executeUpdate() {
         Get-ChildItem -Path $sourceFolder -Recurse | ForEach-Object {
             $destinationFile = Join-Path -Path $destinationFolder -ChildPath $_.FullName.Substring($sourceFolder.Length + 1)
             $destinationDirectory = Split-Path -Path $destinationFile -Parent
+            # Skips the temporary update files to not include them into the backup.
+            If ($_.Directory.Name -eq "GTAV_Tweaks_temp_update") {
+                Continue
+            }
             If (-not (Test-Path -Path $destinationDirectory)) {
                 New-Item -ItemType Directory -Path $destinationDirectory -Force
             }
-            If ($_.Extension -eq ".ini" -or $_.Extension -eq ".ini_old") {
+            If ($_.Extension -eq ".ini" -or $_.Extension -eq ".ini_old" -or $_.Directory.Name -eq "macros") {
                 Copy-Item -Path $_.FullName -Destination $destinationFile -Force
             }
             Else {
