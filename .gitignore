@@ -1,7 +1,10 @@
 *.lnk
 *.ini
 *.ini_old
+*.log
 GTAV_Tweaks.exe
+library\build\AutoHotkey32.zip
+library\build\currentVersion.txt
 library\build\soundvolumeview-x64.zip
 .vscode/
 compiler/

@@ -6,7 +6,8 @@ CoordMode "Mouse", "Client"
 
 hotkeys_onInit()
 {
-
+    ; Deactivates the hotkeys for now. They will be reactivated once the script detects a running GTA V instance.
+    Suspend(true)
 }
 
 hotkey_createSoloLobby()
@@ -56,71 +57,32 @@ hotkey_afkCayoPericoFlight()
     Send("{Numpad5 Up}")
 }
 
-hotkey_deposit100kPlus()
-{
-    Send("{Up Down}")
-    Sleep (50)
-    Send("{Up Up}")
-    Sleep(500)
-    Loop (2)
-    {
-        Send("{Up Down}")
-        Sleep (50)
-        Send("{Up Up}")
-        Sleep (300)
-    }
-    Send ("{Enter down}")
-    Sleep(2000)
-    MouseMove(1080, 128, 1)
-    Sleep (1000)
-    Send("{Click Down}")
-    Sleep (100)
-    Send("{Click Up}")
-
-    Sleep (1000)
-    Send("www.maze-bank.com")
-    Sleep (500)
-    Send ("{Enter down}")
-    Sleep (50)
-    Send ("{Enter up}")
-    Sleep (1000)
-
-    MouseMove(958, 716, 1)
-    Sleep (1000)
-    Send("{Click Down}")
-    Sleep (50)
-    Send("{Click Up}")
-
-    MouseMove(965, 544, 1)
-    Sleep (1000)
-    Send("{Click Down}")
-    Sleep (50)
-    Send("{Click Up}")
-
-    Sleep (1000)
-
-    MouseMove(1136, 765, 1)
-    Sleep (1000)
-    Send("{Click Down}")
-    Sleep (50)
-    Send("{Click Up}")
-
-    Sleep (1000)
-
-    MouseMove(757, 717, 1)
-    Sleep (1000)
-    Send("{Click Down}")
-    Sleep (50)
-    Send("{Click Up}")
-
-    MouseMove(1562, 130, 1)
-    Sleep (200)
-    Send("{Click Down}")
-    Sleep (50)
-    Send("{Click Up}")
-}
-
 hotkey_deposit100kLess()
 {
-    MsgBox("Less than 100k")
+    If (!FileExist(depositLessThan100kMacroFileLocation))
+    {
+        explainMacroRecording(depositLessThan100kMacroFileLocation)
+    }
+    Else
+    {
+        RunWait(ahkBaseFileLocation . " " . depositLessThan100kMacroFileLocation)
+    }
+}
+
+hotkey_deposit100kPlus()
+{
+    If (!FileExist(depositMoreThan100kMacroFileLocation))
+    {
+        explainMacroRecording(depositMoreThan100kMacroFileLocation)
+    }
+    Else
+    {
+        RunWait(ahkBaseFileLocation . " " . depositMoreThan100kMacroFileLocation)
+    }
+}
+
+; Only enabled temporarily while recording.
+hotkey_stopMacroRecording()
+{
+    global booleanMacroIsRecording := false
 }

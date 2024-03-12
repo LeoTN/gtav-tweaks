@@ -35,6 +35,10 @@ config_onInit()
     global LAUNCH_MINIMIZED := false
     ; Display a notification when launching.
     global DISPLAY_LAUNCH_NOTIFICATION := true
+    ; Checks out the GitHub page for a new release.
+    global CHECK_FOR_UPDATES_AT_LAUNCH := true
+    ; Decide if you would like to receive beta versions as available updates.
+    global UPDATE_TO_BETA_VERSIONS := false
 
     ; Mute GTA during launch.
     global MUTE_GAME_WHILE_LAUNCH := false
@@ -44,12 +48,12 @@ config_onInit()
     global DISPLAY_GTA_LAUNCH_NOTIFICATION := true
 
     ; Stores which hotkeys are enabled / disabled via the GUI.
-    global HOTKEY_STATE_ARRAY := "[1, 1, 0, 1]"
+    global HOTKEY_STATE_ARRAY := "[1, 1, 1, 1]"
     ; Just a list of all standard hotkeys.
-    global AFK_PERCIO_FLIGHT_HK := "+F9"
-    global SOLO_LOBBY_HK := "+F10"
-    global DEPOSIT_MONEY_LESS_100K_HK := "+F11"
-    global DEPOSIT_MONEY_MORE_100K_HK := "+F12"
+    global AFK_PERCIO_FLIGHT_HK := "^F9"
+    global SOLO_LOBBY_HK := "^F10"
+    global DEPOSIT_MONEY_LESS_100K_HK := "^F11"
+    global DEPOSIT_MONEY_MORE_100K_HK := "^F12"
     ;------------------------------------------------
 
     ; Will contain all config values matching with each variable name in the array below.
@@ -69,6 +73,8 @@ config_onInit()
             "LAUNCH_WITH_WINDOWS",
             "LAUNCH_MINIMIZED",
             "DISPLAY_LAUNCH_NOTIFICATION",
+            "CHECK_FOR_UPDATES_AT_LAUNCH",
+            "UPDATE_TO_BETA_VERSIONS",
             "MUTE_GAME_WHILE_LAUNCH",
             "INCREASE_GAME_PRIORITY",
             "DISPLAY_GTA_LAUNCH_NOTIFICATION",
@@ -84,6 +90,8 @@ config_onInit()
     global configSectionNameArray :=
         [
             "DebugSettings",
+            "GeneralSettings",
+            "GeneralSettings",
             "GeneralSettings",
             "GeneralSettings",
             "GeneralSettings",
@@ -120,7 +128,7 @@ createDefaultConfigFile(pBooleanCreateBackup := true, pBooleanShowPrompt := fals
 {
     If (pBooleanShowPrompt)
     {
-        result := MsgBox("Do you really want to replace the current config file with a new one ?", "Tweaks - Replace Config File?", "YN Icon! 262144")
+        result := MsgBox("Do you really want to replace the current config file with a new one ?", "GTAV Tweaks - Replace Config File?", "YN Icon! 262144")
         If (result = "No" || result = "Timeout")
         {
             Return
@@ -143,8 +151,8 @@ createDefaultConfigFile(pBooleanCreateBackup := true, pBooleanShowPrompt := fals
     If (configVariableNameArray.Length != configSectionNameArray.Length)
     {
         MsgBox("Not every config file entry has been asigned to a section!`n`nPlease fix this by checking both arrays.",
-            "Tweaks - Config File Status - Error!", "O IconX 262144")
-        MsgBox("Script terminated.", "Tweaks - Script Status", "O IconX T1.5")
+            "GTAV Tweaks - Config File Status - Error!", "O IconX 262144")
+        MsgBox("Script terminated.", "GTAV Tweaks - Script Status", "O IconX T1.5")
         ExitApp()
     }
     Else
@@ -160,7 +168,7 @@ createDefaultConfigFile(pBooleanCreateBackup := true, pBooleanShowPrompt := fals
         }
         If (pBooleanShowPrompt)
         {
-            MsgBox("A default config file has been generated.", "Tweaks - Config File Status", "O Iconi T3")
+            MsgBox("A default config file has been generated.", "GTAV Tweaks - Config File Status", "O Iconi T3")
         }
     }
 }
@@ -202,8 +210,8 @@ readConfigFile(pOptionName, pBooleanAskForPathCreation := true, pBooleanCheckCon
                 If (!validatePath(configFileContentArray.Get(A_Index), pBooleanAskForPathCreation, booleanCreatePathSilent))
                 {
                     MsgBox("Check the config file for a valid path at`n["
-                        . configVariableNameArray.Get(A_Index) . "]", "Tweaks - Config File Status - Error!", "O Icon! 262144")
-                    MsgBox("Script terminated.", "Tweaks - Script Status", "O IconX T1.5")
+                        . configVariableNameArray.Get(A_Index) . "]", "GTAV Tweaks - Config File Status - Error!", "O Icon! 262144")
+                    MsgBox("Script terminated.", "GTAV Tweaks - Script Status", "O IconX T1.5")
                     ExitApp()
                 }
                 Else
@@ -218,7 +226,7 @@ readConfigFile(pOptionName, pBooleanAskForPathCreation := true, pBooleanCheckCon
             }
         }
     }
-    MsgBox("Could not find " . pOptionName . " in the config file.`nScript terminated.", "Tweaks - Config File Status - Error!", "O IconX 262144")
+    MsgBox("Could not find " . pOptionName . " in the config file.`nScript terminated.", "GTAV Tweaks - Config File Status - Error!", "O IconX 262144")
     ExitApp()
 }
 
@@ -293,7 +301,7 @@ checkConfigFileIntegrity()
             }
             result := MsgBox("The script config file seems to be corrupted or unavailable!"
                 "`n`nDo you want to create a new one using the template?"
-                , "Tweaks - Config File Status - Warning!", "YN Icon! 262144")
+                , "GTAV Tweaks - Config File Status - Warning!", "YN Icon! 262144")
             Switch (result)
             {
                 Case "Yes":
@@ -303,7 +311,7 @@ checkConfigFileIntegrity()
                     }
                 Default:
                     {
-                        MsgBox("Script terminated.", "Tweaks - Script Status", "O IconX T1.5")
+                        MsgBox("Script terminated.", "GTAV Tweaks - Script Status", "O IconX T1.5")
                         ExitApp()
                     }
             }
@@ -324,7 +332,7 @@ validatePath(pPath, pBooleanAskForPathCreation := true, pBooleanCreatePathSilent
     If (pBooleanAskForPathCreation && pBooleanCreatePathSilent)
     {
         MsgBox("[" . A_ThisFunc . "()] [ERROR] pBooleanAskForPathCreation and pBooleanCreatePathSilent cannot be true at the "
-            . "same time.`nTerminating script.", "Tweaks - [" . A_ThisFunc . "()]", "IconX 262144")
+            . "same time.`nTerminating script.", "GTAV Tweaks - [" . A_ThisFunc . "()]", "IconX 262144")
         ExitApp()
     }
 
@@ -357,7 +365,7 @@ validatePath(pPath, pBooleanAskForPathCreation := true, pBooleanCreatePathSilent
             If (pBooleanAskForPathCreation)
             {
                 result := MsgBox("The directory`n[" . pPath . "] does not exist."
-                    "`nWould you like to create it ?", "Tweaks - Config File Status - Warning!", "YN Icon! 262144")
+                    "`nWould you like to create it ?", "GTAV Tweaks - Config File Status - Warning!", "YN Icon! 262144")
                 Switch (result)
                 {
                     Case "Yes":
@@ -366,7 +374,7 @@ validatePath(pPath, pBooleanAskForPathCreation := true, pBooleanCreatePathSilent
                         }
                     Default:
                         {
-                            MsgBox("Script terminated.", "Tweaks - Script Status", "O IconX T1.5")
+                            MsgBox("Script terminated.", "GTAV Tweaks - Script Status", "O IconX T1.5")
                             ExitApp()
                         }
                 }
@@ -385,7 +393,7 @@ validatePath(pPath, pBooleanAskForPathCreation := true, pBooleanCreatePathSilent
             If (pBooleanAskForPathCreation)
             {
                 result := MsgBox("The directory`n[" . outDir . "] does not exist."
-                    "`nWould you like to create it ?", "Tweaks - Config File Status - Warning!", "YN Icon! 262144")
+                    "`nWould you like to create it ?", "GTAV Tweaks - Config File Status - Warning!", "YN Icon! 262144")
                 Switch (result)
                 {
                     Case "Yes":
@@ -394,7 +402,7 @@ validatePath(pPath, pBooleanAskForPathCreation := true, pBooleanCreatePathSilent
                         }
                     Default:
                         {
-                            MsgBox("Script terminated.", "Tweaks - Script Status", "O IconX T1.5")
+                            MsgBox("Script terminated.", "GTAV Tweaks - Script Status", "O IconX T1.5")
                             ExitApp()
                         }
                 }

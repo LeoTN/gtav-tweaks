@@ -17,10 +17,10 @@ This program adds hotkeys for GTA V Online actions such as creating a solo lobby
 
 | Hotkey      | Description                                                               |
 |-------------|---------------------------------------------------------------------------|
-| Shift + F9*  | Keeps the Cayo Perico Heist preparation plane in the air automatically.         |
-| Shift + F10 | Creates a GTA V Online solo lobby (as if you would do it with Task Manager).|
-| Shift + F11* | Deposit less than 100k cash into your bank account.                       |
-| Shift + F12* | Deposit more than 100k cash into your bank account.                       |
+| CTRL + F9*  | Keeps the Cayo Perico Heist preparation plane in the air automatically.         |
+| CTRL + F10 | Creates a GTA V Online solo lobby (as if you would do it with Task Manager).|
+| CTRL + F11* | Deposit less than 100k cash into your bank account.                       |
+| CTRL + F12* | Deposit more than 100k cash into your bank account.                       |
 
 ***This hotkey is still under development and might not work as expected.**
 
