@@ -47,14 +47,13 @@ jobs:
 
     - name: Create Version File
       run: |
-        Remove-Item -Path "${{ github.worksace }}\library\build\currentVersion.txt" -Force -ErrorAction SilentlyContinue
         if ($env:IS_PRE_RELEASE -eq "true") {
         $releaseName = "v${env:RELEASE_VERSION}-beta"
         }
         else {
         $releaseName = "v${env:RELEASE_VERSION}"
         }
-        New-Item -Path "${{ github.worksace }}\library\build\currentVersion.txt" -ItemType "file" -Value $releaseName -Force | Out-Null
+        New-Item -Path "${{ github.workspace }}\library\build\currentVersion.txt" -ItemType "file" -Value $releaseName -Force | Out-Null
 
     - name: Extract Autohotkey Compiler
       run: |
