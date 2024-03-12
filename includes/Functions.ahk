@@ -89,16 +89,16 @@ checkForAvailableUpdates()
     ; Copies the script to the temp directory. This ensure that there are no file errors while the script is moving or copying files,
     ; because it cannot copy itself, while it is running.
     FileCopy(psUpdateScriptLocation, psUpdateScriptLocationTemp, true)
-    parameterString := '-pGitHubRepositoryLink ""https://github.com/LeoTN/gtav-tweaks"" -pCurrentVersion ""' . versionFullName
-        . '"" -pCurrentExecutableLocation ""' . A_ScriptFullPath . '"" -pOutputDirectory ""' . updateWorkingDir . '""'
+    parameterString := '-pGitHubRepositoryLink "https://github.com/LeoTN/gtav-tweaks" -pCurrentVersion "' . versionFullName
+        . '" -pCurrentExecutableLocation "' . A_ScriptFullPath . '" -pOutputDirectory "' . updateWorkingDir . '"'
 
     If (readConfigFile("UPDATE_TO_BETA_VERSIONS"))
     {
         parameterString .= " -pBooleanConsiderBetaReleases"
     }
     ; Calls the PowerShell script to check for available updates.
-    exitCode := RunWait('powershell.exe -executionPolicy bypass -file ""' . psUpdateScriptLocationTemp
-        . '"" ' . parameterString . ' -pBooleanDoNotStartUpdate', , "Hide")
+    exitCode := RunWait('powershell.exe -executionPolicy bypass -file "' . psUpdateScriptLocationTemp
+        . '" ' . parameterString . ' -pBooleanDoNotStartUpdate', , "Hide")
     Switch (exitCode)
     {
         ; This exit code states that an update is available.
@@ -119,7 +119,7 @@ checkForAvailableUpdates()
                 Case "Yes":
                     {
                         ; Runs the PowerShell update script with the instruction to execute the update.
-                        Run('powershell.exe -executionPolicy bypass -file ""' . psUpdateScriptLocationTemp . '"" ' . parameterString)
+                        Run('powershell.exe -executionPolicy bypass -file "' . psUpdateScriptLocationTemp . '" ' . parameterString)
                         ExitApp()
                     }
             }
