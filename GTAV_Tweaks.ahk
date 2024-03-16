@@ -6,7 +6,7 @@
 #SingleInstance Force
 #MaxThreadsPerHotkey 2
 SendMode "Input"
-CoordMode "Mouse", "Screen"
+CoordMode "Mouse", "Window"
 
 ; Imports important functions and variables.
 ; Sets the directory for all following files.
