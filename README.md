@@ -4,7 +4,6 @@
 
 This program adds hotkeys for GTA V Online actions such as **creating a solo lobby**, **depositing cash** or flying the Cayo Perico plane (to start the heist) automatically.
 
-
 ## Installation
 
 >  1. Download the installer archive from [here](https://github.com/LeoTN/gtav-tweaks/releases/latest/download/GTAV_Tweaks.zip).
@@ -26,7 +25,6 @@ This program adds hotkeys for GTA V Online actions such as **creating a solo lob
 
 ***This hotkey is still under development and might not work as expected.**
 
-
 ## Macros
 
 I also created a simple *macro recorder* in AutoHotkey. It is used to create macros for some of the script's hotkeys.
@@ -39,7 +37,6 @@ Don't worry!
 
 More information about this topic, including a FAQ section, can be found in the README file located in the [latest installer archive](https://github.com/LeoTN/gtav-tweaks/releases/latest/download/GTAV_Tweaks.zip).
 
-
 ## Features
 
 * Very simple and intuitive main window.
@@ -47,7 +44,6 @@ More information about this topic, including a FAQ section, can be found in the 
 * Ability to mute GTA V during launch and unmute it, once you start playing.
 
 * Many customizable script startup options, for example an autostart feature or a silent launch.
-
 
 ## Credits & License
 
