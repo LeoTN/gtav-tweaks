@@ -65,7 +65,7 @@ hotkey_deposit100kLess()
     }
     Else
     {
-        RunWait(ahkBaseFileLocation . " " . depositLessThan100kMacroFileLocation)
+        RunWait(ahkBaseFileLocation . ' "' . depositLessThan100kMacroFileLocation . '"')
     }
 }
 
@@ -77,7 +77,7 @@ hotkey_deposit100kPlus()
     }
     Else
     {
-        RunWait(ahkBaseFileLocation . " " . depositMoreThan100kMacroFileLocation)
+        RunWait(ahkBaseFileLocation . ' "' . depositMoreThan100kMacroFileLocation . '"')
     }
 }
 

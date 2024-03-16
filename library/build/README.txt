@@ -2,6 +2,9 @@
 
 Thank you for downloading GTAV Tweaks!
 
+You can either execute the setup excutable or run the application directly.
+I recommend choosing the first option, in case you have just downloaded the installer archive.
+
 You might encounter a Windows Defender message. This is because I did not buy a digital certificate. Feel free to continue at your own risk...
 
 Just kidding, there's nothing wrong with this software. Or is it?
@@ -10,7 +13,7 @@ Just kidding, there's nothing wrong with this software. Or is it?
 **********GOOD TO KNOW**********
 
 You can customize the hotkeys in the config file along with many other things. It is always located in a folder called "GTAV_Tweaks" in the
-same directory as the main script.
+same directory as the main script. To uninstall this script, just delete all files.
 
 
 **********Recording Macros FAQ**********

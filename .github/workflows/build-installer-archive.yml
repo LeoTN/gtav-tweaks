@@ -139,6 +139,8 @@ jobs:
         rm "${{ github.workspace }}/library/build/checkForUpdates.ps1"
         rm "${{ github.workspace }}/library/build/currentVersion.txt"
 
+        cp "${{ github.workspace }}/library/setup/GTAV_Tweaks_Setup.exe" "${{ github.workspace }}/library/build/"
+
     - name: Compress Installer Archive
       run: |
         cd "${{ github.workspace }}/library/build"
@@ -173,7 +175,7 @@ jobs:
         artifactContentType: "application/executable"
         removeArtifacts: true
         replacesArtifacts: true
-        body: "Download the ${{ env.FINAL_INSTALLER_ARCHIVE_NAME }} file, extract it and execute ${{ env.FINAL_EXECUTABLE_NAME }}. Have fun :)"
+        body: "Download the ${{ env.FINAL_INSTALLER_ARCHIVE_NAME }} file, extract it and run the setup executable. Have fun :)"
         generateReleaseNotes: true
         makeLatest: true
         prerelease: ${{ env.IS_PRE_RELEASE == 'true' }}

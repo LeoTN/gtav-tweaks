@@ -230,11 +230,14 @@ explainMacroRecording(pOutputFileLocation)
             {
                 MsgBox("This feature is still experimental!`n`nAfter closing this info box, press [F5] within 15 seconds, to initiate the recording. "
                     . "The recording actually starts after pressing any key, once it has been initiated. Pressing the [F5] key again "
-                    . "will end the recording process.`n`nYou just have to do the desired action step by step (but a little bit slower than usual)."
+                    . "will end the recording process.`n`nYou just have to do the desired action step by step"
+                    . " (but a little slower than usual to ensure everything works fine)."
                     "`n`nFor example open your phone, select the browser, navigate to maze bank...; to record the "
-                    . "macro for depositing cash.`n`nRemember that you can always delete the macro file and record a new one.`n`n"
-                    "More information can be found in the README.txt contained in the installer archive file (downloaded from GitHub) or in the GTAV_Tweaks folder.",
-                    "GTAV Tweaks - How to Record Macros", "262208")
+                    . "macro for depositing cash.`n`nIMPORTANT! Scrolling with the mouse wheel DOES NOT WORK!"
+                    . " Please use the PAGE UP and PAGE DOWN keys instead. This can be useful for example inside the GTA V browser.`n`n"
+                    "Remember that you can always delete the macro file and record a new one.`n`n"
+                    "More information can be found in the README.txt contained in the installer archive file"
+                    . " (downloaded from GitHub) or in the GTAV_Tweaks folder.", "GTAV Tweaks - How to Record Macros", "262208")
                 If (KeyWait("F5", "D T15"))
                 {
                     Hotkey("F5", (*) => hotkey_stopMacroRecording(), "On")
@@ -259,7 +262,7 @@ recordMacro(pOutputFileLocation)
     ; This adds a short delay before the recorded macro executes.
     idleTime := 500
     macroStorage := "; This macro was created on " . FormatTime(A_Now, "dd.MM.yyyy_HH-mm-ss") . ".`n`n"
-    macroStorage .= '#SingleInstance Force`n#Requires AutoHotkey >=v2.0`nSendMode "Input"`nCoordMode "Mouse", "Screen"`n`n'
+    macroStorage .= '#SingleInstance Force`n#Requires AutoHotkey >=v2.0`nSendMode "Input"`nCoordMode "Mouse", "Window"`n`n'
         . '; More information can be found in the README.txt contained in the installer archive file (downloaded from GitHub) '
         . 'or in the GTAV_Tweaks folder. Make sure to read it before changing this file!`n`n'
 
@@ -331,7 +334,7 @@ recordMacro(pOutputFileLocation)
         ; We don't want the macro record hotkey to be included into the file.
         If (ih.EndKey == macroRecordHotkey)
         {
-            Return waitForAnyKey()
+            Return
         }
         ; This is a safety feature to make sure the game has enough time to process the inputs. Otherwise the macros might be broken.
         If (idleTime < 800)
