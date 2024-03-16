@@ -102,6 +102,8 @@ GUI SUPPORT FUNCTIONS
 ; Runs a few commands when the script is executed.
 mainGUI_onInit()
 {
+    ; Changes the tray icon and freezes it.
+    TraySetIcon(iconFileLocation, , true)
     createMainGUI()
     If (!readConfigFile("LAUNCH_MINIMIZED"))
     {

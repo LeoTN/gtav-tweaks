@@ -30,7 +30,7 @@ config_onInit()
     ; Defines if the script should ask the user for a brief explaination of it's core functions.
     global ASK_FOR_TUTORIAL := true
     ; Launch script with windows.
-    global LAUNCH_WITH_WINDOWS := true
+    global LAUNCH_WITH_WINDOWS := false
     ; Launch minimized.
     global LAUNCH_MINIMIZED := false
     ; Display a notification when launching.

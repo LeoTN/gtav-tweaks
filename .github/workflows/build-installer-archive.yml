@@ -139,6 +139,8 @@ jobs:
         rm "${{ github.workspace }}/library/build/checkForUpdates.ps1"
         rm "${{ github.workspace }}/library/build/currentVersion.txt"
 
+        cp "${{ github.workspace }}/library/setup/GTAV_Tweaks_Setup.exe" "${{ github.workspace }}/library/build/"
+
     - name: Compress Installer Archive
       run: |
         cd "${{ github.workspace }}/library/build"

@@ -19,8 +19,7 @@ $Host.UI.RawUI.ForegroundColor = "White"
 $scriptParentDirectory = Split-Path -Parent $MyInvocation.MyCommand.Path
 $logFileName = "checkForUpdates.log"
 $logFilePath = Join-Path -Path $scriptParentDirectory -ChildPath $logFileName
-Remove-Item -Path $logFilePath -Force -ErrorAction SilentlyContinue
-Start-Transcript -Path $logFilePath -Append
+Start-Transcript -Path $logFilePath -Force
 Clear-Host
 Write-Host "Terminal ready..."
 
