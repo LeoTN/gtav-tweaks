@@ -169,6 +169,8 @@ function executeUpdate() {
         If (Test-Path -Path $pOutputDirectory) {
             Remove-Item -Path $pOutputDirectory -Recurse -Force
         }
+        # Launch the new and updated script.
+        Start-Process -FilePath $pCurrentExecutableLocation
         Return $true
     }
     Catch {
@@ -177,7 +179,7 @@ function executeUpdate() {
     }
 }
 
-# Returns the higher version.
+# Returns the higher version. If the versions are identical, it will return the string "identical_versions".
 function compareVersions {
     [CmdletBinding()]
     Param (
@@ -212,7 +214,7 @@ function compareVersions {
             Return $pVersion1
         }
         Write-Host "[compareVersions()] [INFO] [$pVersion1] is identical to [$pVersion2]."
-        Return $pVersion1
+        Return "identical_versions"
     }
 }
 
