@@ -2,15 +2,14 @@ $Host.UI.RawUI.BackgroundColor = "Black"
 $Host.UI.RawUI.ForegroundColor = "White"
 # This makes sure to retrieve the script path.
 If ($MyInvocation.MyCommand.CommandType -eq "ExternalScript") { 
-    $scriptPath = Split-Path -Parent -Path $MyInvocation.MyCommand.Definition 
+    $scriptParentDirectory = Split-Path -Parent -Path $MyInvocation.MyCommand.Definition 
 }
 Else {
-    $scriptPath = Split-Path -Parent -Path ([Environment]::GetCommandLineArgs()[0]) 
-    If (!$scriptPath) { 
-        $scriptPath = "." 
+    $scriptParentDirectory = Split-Path -Parent -Path ([Environment]::GetCommandLineArgs()[0]) 
+    If (!$scriptParentDirectory) { 
+        $scriptParentDirectory = "." 
     } 
 }
-$scriptParentDirectory = Split-Path -Parent $scriptPath
 Clear-Host
 
 function onInit() {
