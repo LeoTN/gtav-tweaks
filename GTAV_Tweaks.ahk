@@ -40,10 +40,15 @@ onInit()
     onInit_unpackSupportFiles()
     ; The version can now be specified because the version file should now be available.
     global versionFullName := FileRead(versionFileLocation)
+    ; Run all onInit() functions from included files.
     configFile_onInit()
     functions_onInit()
     hotkeys_onInit()
+    objects_onInit()
     mainGUI_onInit()
+    customHotkeyOverviewGUI_onInit()
+    newCustomHotkeyGUI_onInit()
+
     If (readConfigFile("DISPLAY_LAUNCH_NOTIFICATION"))
     {
         TrayTip("GTAV Tweaks launched.", "GTAV Tweaks - Status", "Iconi Mute")

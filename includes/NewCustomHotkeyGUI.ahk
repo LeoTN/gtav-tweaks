@@ -35,5 +35,5 @@ GUI SUPPORT FUNCTIONS
 
 newCustomHotkeyGUI_onInit()
 {
-
+    createNewCustomHotkeyGUI()
 }

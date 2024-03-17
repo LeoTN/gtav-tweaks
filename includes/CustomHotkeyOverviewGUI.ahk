@@ -35,5 +35,5 @@ GUI SUPPORT FUNCTIONS
 
 customHotkeyOverviewGUI_onInit()
 {
-
+    createCustomHotkeyOverviewGUI()
 }
