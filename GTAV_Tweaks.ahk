@@ -12,9 +12,11 @@ CoordMode "Mouse", "Window"
 ; Sets the directory for all following files.
 #Include "includes\"
 #Include "ConfigFile.ahk"
+#Include "CustomHotkeyOverviewGUI.ahk"
 #Include "Functions.ahk"
-#Include "GUI.ahk"
 #Include "Hotkeys.ahk"
+#Include "MainGUI.ahk"
+#Include "NewCustomHotkeyGUI.ahk"
 
 onInit()
 

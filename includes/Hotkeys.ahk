@@ -2,7 +2,7 @@
 #MaxThreadsPerHotkey 2
 #Warn Unreachable, Off
 SendMode "Input"
-CoordMode "Mouse", "Client"
+CoordMode "Mouse", "Window"
 
 hotkeys_onInit()
 {
