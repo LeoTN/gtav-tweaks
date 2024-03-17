@@ -22,7 +22,7 @@ These default variables are used to generate the config file template.
 Otherwise this can lead to fatal errors and failures!
 */
 
-config_onInit()
+configFile_onInit()
 {
     ; Determines the location of the script's configuration file.
     global configFileLocation := A_ScriptDir . "\GTAV_Tweaks\GTAV_Tweaks.ini"

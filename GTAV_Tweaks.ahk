@@ -17,6 +17,7 @@ CoordMode "Mouse", "Window"
 #Include "Hotkeys.ahk"
 #Include "MainGUI.ahk"
 #Include "NewCustomHotkeyGUI.ahk"
+#Include "Objects.ahk"
 
 onInit()
 
@@ -39,7 +40,7 @@ onInit()
     onInit_unpackSupportFiles()
     ; The version can now be specified because the version file should now be available.
     global versionFullName := FileRead(versionFileLocation)
-    config_onInit()
+    configFile_onInit()
     functions_onInit()
     hotkeys_onInit()
     mainGUI_onInit()
