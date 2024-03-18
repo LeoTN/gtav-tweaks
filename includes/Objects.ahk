@@ -68,6 +68,18 @@ class CustomMacro
         }
         Return true
     }
+    deleteHotkey()
+    {
+        ; Checks if the config file exists.
+        If (!this.isMacroConfigFileExisting())
+        {
+            SplitPath(this.macroConfigFileLocation, &outFileName, &outDir)
+            MsgBox("[" . A_ThisFunc . "() from {" . this.name . "}]`n`n[WARNING] Macro config file [" . outFileName . "] not found "
+                . "at [" . outDir . "]!`n`n", "GTAV Tweaks - [" . A_ThisFunc . "()]", "Icon! 262144")
+            Return false
+        }
+        IniDelete(this.macroConfigFileLocation, this.name)
+    }
     enableHotkey()
     {
         this.isEnabled := true
