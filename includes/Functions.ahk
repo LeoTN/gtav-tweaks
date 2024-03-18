@@ -186,6 +186,34 @@ openConfigFile()
 }
 
 /*
+Opens the macro config file.
+@returns [boolean] Depeding on the function's success.
+*/
+openMacroConfigFile()
+{
+    global macroConfigFileLocation
+
+    Try
+    {
+        If (FileExist(macroConfigFileLocation))
+        {
+            Run(macroConfigFileLocation)
+            Return true
+        }
+        Else
+        {
+            IniWrite("Always back up your files!", macroConfigFileLocation, "CustomHotkeysBelow", "Advice")
+            Return openMacroConfigFile()
+        }
+    }
+    Catch As error
+    {
+        displayErrorMessage(error)
+        Return false
+    }
+}
+
+/*
 Opens the README file.
 @returns [boolean] Depeding on the function's success.
 */

@@ -34,6 +34,8 @@ onInit()
 
     global audioHookFileLocation := A_ScriptDir . "\GTAV_Tweaks\soundvolumeview-x64\SoundVolumeView.exe"
 
+    global macroConfigFileLocation := A_ScriptDir . "\GTAV_Tweaks\macros\GTAV_Tweaks_MACROS.ini"
+
     global depositLessThan100kMacroFileLocation := A_ScriptDir . "\GTAV_Tweaks\macros\depositLessThan100kMacro.ahk"
     global depositMoreThan100kMacroFileLocation := A_ScriptDir . "\GTAV_Tweaks\macros\depositMoreThan100kMacro.ahk"
 
@@ -136,5 +138,10 @@ onInit_unpackSupportFiles()
         RunWait('powershell.exe -Command "Expand-Archive -Path """' . A_ScriptDir
             . '\GTAV_Tweaks\soundvolumeview-x64.zip""" -DestinationPath """' . A_ScriptDir . '\GTAV_Tweaks\soundvolumeview-x64""" -Force"', , "Hide")
         FileDelete(A_ScriptDir . "\GTAV_Tweaks\soundvolumeview-x64.zip")
+    }
+
+    If (!FileExist(macroConfigFileLocation))
+    {
+        IniWrite("Always back up your files!", macroConfigFileLocation, "CustomHotkeysBelow", "Advice")
     }
 }

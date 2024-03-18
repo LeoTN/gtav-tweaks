@@ -43,6 +43,9 @@ class CustomMacro
                 . "at [" . outDir . "]!`n`n", "GTAV Tweaks - [" . A_ThisFunc . "()]", "Icon! 262144")
             Return false
         }
+        ; If a hotkey was marked as active in the config file, it would become deactivated while loading. This variable
+        ; remebers the original state and reactivates the hotkey after it has been loaded.
+        hotkeyWasEnabled := IniRead(this.macroConfigFileLocation, this.name, "Enabled", "empty_enabled")
         ; Disables the hotkey because in case the key changes while loading the file, the old hotkey would become
         ; a "ghost" hotkey, which is replaced by the new one from the file. By disabeling the hotkey temporarily, we avoid
         ; duplicate hotkeys calling the same macro file.
@@ -59,7 +62,7 @@ class CustomMacro
             Return false
         }
         ; Calling this function here updates the hotkey if necessary. See comment above for more information.
-        If (this.isEnabled)
+        If (this.isEnabled || hotkeyWasEnabled)
         {
             this.enableHotkey()
         }
@@ -67,10 +70,6 @@ class CustomMacro
     }
     enableHotkey()
     {
-        If (!this.integrityCheck())
-        {
-            Return false
-        }
         this.isEnabled := true
         Hotkey(this.hotkey, (*) => RunWait(this.ahkBaseFileLocation . ' "' . this.macroFileLocation . '"'), "On")
         ; Changes the enabled value in the config file.
@@ -79,10 +78,6 @@ class CustomMacro
     }
     disableHotkey()
     {
-        If (!this.integrityCheck())
-        {
-            Return false
-        }
         this.isEnabled := false
         Hotkey(this.hotkey, (*) => RunWait(this.ahkBaseFileLocation . ' "' . this.macroFileLocation . '"'), "Off")
         ; Changes the enabled value in the config file.
@@ -156,7 +151,61 @@ class CustomMacro
     }
 }
 
+/*
+Scanns a given hotkey config file for it's hotkey names.
+The names will be later used by the CustomMacro objects to load the corresponding hotkeys from the config file.
+@returns [Array] An array which contains all hotkey's names.
+*/
+scanFileForHotkeyNames()
+{
+    global macroConfigFileLocation
+    hotkeyNameArray := []
+
+    Loop Read (macroConfigFileLocation)
+    {
+        ; Finds every string at the start of a new line which equals to this pattern: [any letters or numbers].
+        If (RegExMatch(A_LoopReadLine, "A)\[.+?\]", &match))
+        {
+            matchString := match[]
+            ; Ignores the standard text.
+            If (!InStr(matchString, "[CustomHotkeysBelow]"))
+            {
+                ; Removes the brackets at the start and end.
+                matchString := StrReplace(matchString, "[",)
+                matchString := StrReplace(matchString, "]")
+                hotkeyNameArray.Push(matchString)
+            }
+        }
+    }
+    Return hotkeyNameArray
+}
+
+; Creates the custom macro object array. It also loads already existing hotkeys.
+createCustomMacroObjectArray()
+{
+    global ahkBaseFileLocation
+    global macroConfigFileLocation
+    global customMacroObjectArray := []
+    hotkeyNameArray := scanFileForHotkeyNames()
+    ; If the hotkey config file does not contain any hotkeys.
+    If (!hotkeyNameArray.Has(1))
+    {
+        Return
+    }
+    ; Prepares all existing hotkeys to be loaded.
+    For (name in hotkeyNameArray)
+    {
+        tmpObject := CustomMacro()
+        tmpObject.ahkBaseFileLocation := ahkBaseFileLocation
+        tmpObject.macroConfigFileLocation := macroConfigFileLocation
+        ; This allows the custom macro object to load the rest of it's configuration from the macro config file all by itself.
+        tmpObject.name := name
+        tmpObject.loadMacroFromFile()
+        customMacroObjectArray.Push(tmpObject)
+    }
+}
+
 objects_onInit()
 {
-
+    createCustomMacroObjectArray()
 }

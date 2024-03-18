@@ -8,12 +8,20 @@ createMainGUI()
 {
     Global
     fileSelectionMenuOpen := Menu()
-    fileSelectionMenuOpen.Add("Config-File`t1", (*) => openConfigFile())
-    fileSelectionMenuOpen.SetIcon("Config-File`t1", "shell32.dll", 70)
+    fileSelectionMenuOpen.Add("Config File`t1", (*) => openConfigFile())
+    fileSelectionMenuOpen.SetIcon("Config File`t1", "shell32.dll", 70)
+    fileSelectionMenuOpen.Add("Macro Config File`t2", (*) => openMacroConfigFile())
+    fileSelectionMenuOpen.SetIcon("Macro Config File`t2", "shell32.dll", 174)
+    ; The reason why the path is opened explicitly with explorer.exe is, that sometimes it will attempt to sort of guess the file
+    ; extension and open other files. For example GTAV_Tweaks.exe instead of the folder GTAV_Tweaks. 
+    fileSelectionMenuOpen.Add("Script Directory`t3", (*) => Run('explorer.exe "' . A_ScriptDir . '"'))
+    fileSelectionMenuOpen.SetIcon("Script Directory`t3", "shell32.dll", 276)
+    fileSelectionMenuOpen.Add("Script Support File Directory`t4", (*) => Run('explorer.exe "' . A_ScriptDir . '\GTAV_Tweaks"'))
+    fileSelectionMenuOpen.SetIcon("Script Support File Directory`t4", "shell32.dll", 279)
 
     fileSelectionMenuReset := Menu()
-    fileSelectionMenuReset.Add("Config-File`tShift+1", (*) => createDefaultConfigFile(, true))
-    fileSelectionMenuReset.SetIcon("Config-File`tShift+1", "shell32.dll", 70)
+    fileSelectionMenuReset.Add("Config File`tShift+1", (*) => createDefaultConfigFile(, true))
+    fileSelectionMenuReset.SetIcon("Config File`tShift+1", "shell32.dll", 70)
 
     fileMenu := Menu()
     fileMenu.Add("&Open...", fileSelectionMenuOpen)
