@@ -24,6 +24,8 @@ onInit()
 onInit()
 {
     global booleanFirstTimeLaunch := false
+    global macroRecordHotkey := "F5"
+
     global ahkBaseFileLocation := A_ScriptDir . "\GTAV_Tweaks\AutoHotkey32.exe"
     global readmeFileLocation := A_ScriptDir . "\GTAV_Tweaks\README.txt"
 
@@ -34,6 +36,8 @@ onInit()
 
     global audioHookFileLocation := A_ScriptDir . "\GTAV_Tweaks\soundvolumeview-x64\SoundVolumeView.exe"
 
+    global macroFilesStorageDirectory := A_ScriptDir . "\GTAV_Tweaks\macros"
+    global recordedMacroFilesStorageDirectory := A_ScriptDir . "\GTAV_Tweaks\recorded_macros"
     global macroConfigFileLocation := A_ScriptDir . "\GTAV_Tweaks\macros\GTAV_Tweaks_MACROS.ini"
 
     global depositLessThan100kMacroFileLocation := A_ScriptDir . "\GTAV_Tweaks\macros\depositLessThan100kMacro.ahk"
@@ -96,9 +100,13 @@ onInit_unpackSupportFiles()
     {
         DirCreate(A_ScriptDir . "\GTAV_Tweaks\assets")
     }
-    If (!DirExist(A_ScriptDir . "\GTAV_Tweaks\macros"))
+    If (!DirExist(macroFilesStorageDirectory))
     {
-        DirCreate(A_ScriptDir . "\GTAV_Tweaks\macros")
+        DirCreate(macroFilesStorageDirectory)
+    }
+    If (!DirExist(recordedMacroFilesStorageDirectory))
+    {
+        DirCreate(recordedMacroFilesStorageDirectory)
     }
     If (!DirExist(A_ScriptDir . "\GTAV_Tweaks\update"))
     {

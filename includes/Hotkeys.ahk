@@ -61,7 +61,7 @@ hotkey_deposit100kLess()
 {
     If (!FileExist(depositLessThan100kMacroFileLocation))
     {
-        explainMacroRecording(depositLessThan100kMacroFileLocation)
+        ; explainMacroRecording(depositLessThan100kMacroFileLocation)
     }
     Else
     {
@@ -73,16 +73,10 @@ hotkey_deposit100kPlus()
 {
     If (!FileExist(depositMoreThan100kMacroFileLocation))
     {
-        explainMacroRecording(depositMoreThan100kMacroFileLocation)
+        ; explainMacroRecording(depositMoreThan100kMacroFileLocation)
     }
     Else
     {
         RunWait(ahkBaseFileLocation . ' "' . depositMoreThan100kMacroFileLocation . '"')
     }
-}
-
-; Only enabled temporarily while recording.
-hotkey_stopMacroRecording()
-{
-    global booleanMacroIsRecording := false
 }

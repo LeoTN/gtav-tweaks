@@ -242,42 +242,6 @@ openReadMeFile()
 }
 
 /*
-Displays a bunch of information to the user on how to create macros.
-This functions starts recordMacro() if the user confirms it.
-@param pOutputFileLocation [String] Should be a valid path such as "C:\Users\User\macro.ahk".
-*/
-explainMacroRecording(pOutputFileLocation)
-{
-    SplitPath(pOutputFileLocation, &outFileName, &outDir)
-    result := MsgBox("This action requires a macro file.`n`nYou can either put it into [" . outDir . "] or start recording it now."
-        "`nThe file is called [" . outFileName . "].`n`nPress [Yes] to receive more information about recording macro files and start the process.",
-        "GTAV Tweaks - Missing Macro File", "YN Icon! 262144")
-    Switch (result)
-    {
-        Case "Yes":
-            {
-                MsgBox("This feature is still experimental!`n`nAfter closing this info box, press [F5] within 15 seconds, to initiate the recording. "
-                    . "The recording actually starts after pressing any key, once it has been initiated. Pressing the [F5] key again "
-                    . "will end the recording process.`n`nYou just have to do the desired action step by step"
-                    . " (but a little slower than usual to ensure everything works fine)."
-                    "`n`nFor example open your phone, select the browser, navigate to maze bank...; to record the "
-                    . "macro for depositing cash.`n`nIMPORTANT! Scrolling with the mouse wheel DOES NOT WORK!"
-                    . " Please use the PAGE UP and PAGE DOWN keys instead. This can be useful for example inside the GTA V browser.`n`n"
-                    "Remember that you can always delete the macro file and record a new one.`n`n"
-                    "More information can be found in the README.txt contained in the installer archive file"
-                    . " (downloaded from GitHub) or in the GTAV_Tweaks folder.", "GTAV Tweaks - How to Record Macros", "262208")
-                If (KeyWait("F5", "D T15"))
-                {
-                    Hotkey("F5", (*) => hotkey_stopMacroRecording(), "On")
-                    recordMacro(pOutputFileLocation)
-                    Hotkey("F5", (*) => hotkey_stopMacroRecording(), "Off")
-                }
-            }
-            Return
-    }
-}
-
-/*
 Function to easily record a simple macro.
 This version does not support multiple keys such as Shift + ß, which would be ? as a result.
 It is only capable of saving one key at a time, but in this case it is enough.
@@ -286,7 +250,8 @@ It is only capable of saving one key at a time, but in this case it is enough.
 recordMacro(pOutputFileLocation)
 {
     global booleanMacroIsRecording := true
-    macroRecordHotkey := "F5"
+    global macroRecordHotkey
+
     ; This adds a short delay before the recorded macro executes.
     idleTime := 500
     macroStorage := "; This macro was created on " . FormatTime(A_Now, "dd.MM.yyyy_HH-mm-ss") . ".`n`n"

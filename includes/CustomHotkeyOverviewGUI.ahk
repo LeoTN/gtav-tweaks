@@ -37,6 +37,10 @@ createCustomHotkeyOverviewGUI()
     customHotkeyOverviewGUIActivateAllHotkeysButton.OnEvent("Click", (*) => handleCustomHotkeyOverviewGUI_toggleStatusAllHotkeys(true))
     ; Disables all hotkeys.
     customHotkeyOverviewGUIDeactivateAllHotkeysButton.OnEvent("Click", (*) => handleCustomHotkeyOverviewGUI_toggleStatusAllHotkeys(false))
+    ; Opens the new custom hotkey GUI to create a new hotkey.
+    customHotkeyOverviewGUICreateHotkeyButton.OnEvent("Click", (*) => handleNewCustomHotkeyGUI_openGUI())
+    ; Opens the new custom hotkey GUI, but it loads all the values from the currently selected hotkey.
+    customHotkeyOverviewGUIEditHotkeyButton.OnEvent("Click", (*) => handleCustomHotkeyOverviewGUI_editHotkey())
     ; Deletes a hotkey.
     customHotkeyOverviewGUIDeleteHotkeyButton.OnEvent("Click", (*) => handleCustomHotkeyOverviewGUI_deleteHotkey())
 }
@@ -129,6 +133,13 @@ Mostly used by the handleCustomHotkeyOverviewGUI_toggleStatusAllHotkeys() functi
 */
 handleCustomHotkeyOverviewGUI_toggleStatusButton(pBooleanStatus := unset)
 {
+    global customMacroObjectArray
+
+    ; This happens, when there is no entry selected.
+    If (customHotkeyOverviewGUIHotkeyDropDownList.Value == 0)
+    {
+        Return
+    }
     ; If there is a status given, it will be applied to the currently selected hotkey.
     If (IsSet(pBooleanStatus))
     {
@@ -158,6 +169,8 @@ Selects every hotkey from the drop down list and sets it's status value to the p
 */
 handleCustomHotkeyOverviewGUI_toggleStatusAllHotkeys(pBooleanStatus)
 {
+    global customMacroObjectArray
+
     Loop (customMacroObjectArray.Length)
     {
         customHotkeyOverviewGUIHotkeyDropDownList.Value := A_Index
@@ -165,8 +178,29 @@ handleCustomHotkeyOverviewGUI_toggleStatusAllHotkeys(pBooleanStatus)
     }
 }
 
+handleCustomHotkeyOverviewGUI_editHotkey()
+{
+    global customMacroObjectArray
+
+    ; This happens, when there is no entry selected.
+    If (customHotkeyOverviewGUIHotkeyDropDownList.Value == 0)
+    {
+        Return
+    }
+    currentHotkeyName := customMacroObjectArray.Get(customHotkeyOverviewGUIHotkeyDropDownList.Value).name
+    currentHotkeyHotkey := customMacroObjectArray.Get(customHotkeyOverviewGUIHotkeyDropDownList.Value).hotkey
+    handleNewCustomHotkeyGUI_openGUI(true, currentHotkeyName, currentHotkeyHotkey)
+}
+
 handleCustomHotkeyOverviewGUI_deleteHotkey()
 {
+    global customMacroObjectArray
+
+    ; This happens, when there is no entry selected.
+    If (customHotkeyOverviewGUIHotkeyDropDownList.Value == 0)
+    {
+        Return
+    }
     result := MsgBox("Are you sure, that you want to delete this hotkey?", "GTAV Tweaks - Delete Hotkey", "YN Icon! 262144")
     If (result != "Yes")
     {
