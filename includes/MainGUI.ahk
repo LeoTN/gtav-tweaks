@@ -13,7 +13,7 @@ createMainGUI()
     fileSelectionMenuOpen.Add("Macro Config File`t2", (*) => openMacroConfigFile())
     fileSelectionMenuOpen.SetIcon("Macro Config File`t2", "shell32.dll", 174)
     ; The reason why the path is opened explicitly with explorer.exe is, that sometimes it will attempt to sort of guess the file
-    ; extension and open other files. For example GTAV_Tweaks.exe instead of the folder GTAV_Tweaks. 
+    ; extension and open other files. For example GTAV_Tweaks.exe instead of the folder GTAV_Tweaks.
     fileSelectionMenuOpen.Add("Script Directory`t3", (*) => Run('explorer.exe "' . A_ScriptDir . '"'))
     fileSelectionMenuOpen.SetIcon("Script Directory`t3", "shell32.dll", 276)
     fileSelectionMenuOpen.Add("Script Support File Directory`t4", (*) => Run('explorer.exe "' . A_ScriptDir . '\GTAV_Tweaks"'))
@@ -44,10 +44,13 @@ createMainGUI()
     helpMenu.Add("This repository (gtav-tweaks)",
         (*) => Run("https://github.com/LeoTN/gtav-tweaks#readme"))
     helpMenu.SetIcon("This repository (gtav-tweaks)", "shell32.dll", 26)
+    helpMenu.Add("Open an issue or feature request",
+        (*) => Run("https://github.com/LeoTN/gtav-tweaks/issues/new/choose"))
+    helpMenu.SetIcon("Open an issue or feature request", "shell32.dll", 81)
     helpMenu.Add("README File", (*) => openReadMeFile())
     helpMenu.SetIcon("README File", "shell32.dll", 2)
-    helpMenu.Add("Built in Tutorial", (*) => scriptTutorial())
-    helpMenu.SetIcon("Built in Tutorial", "shell32.dll", 24)
+    helpMenu.Add("Built-in Tutorial", (*) => scriptTutorial())
+    helpMenu.SetIcon("Built-in Tutorial", "shell32.dll", 24)
 
     allMenus := MenuBar()
     allMenus.Add("&File", fileMenu)

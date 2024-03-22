@@ -42,32 +42,24 @@ GUI SUPPORT FUNCTIONS
 
 newCustomHotkeyGUI_onInit()
 {
-    ; Look at handleNewCustomHotkeyGUI_openGUI() for more context.
-    global allowedToOverwriteName := ""
-    global allowedToOverwriteHotkey := ""
     ; Imagine the following situation: The user wants to edit a hotkey and he has selected the very first one. This means
     ; the DDL in the overview GUI will have an index value of 1. Now he clicks on the edit button and starts changing values.
     ; He selects another hotkey (for example the second one). If he applies the changes and we apply them to the custom macro object
     ; in the custom object array using the currently selected DDL entry index value (2 because the user changed to another hotkey
     ; in the mean time), we would edit the object at index 2, but we want to edit the object at index 1.
     ; This variable saves this information, to avoid this issue.
-    global allowedToOverwriteCurrentlySelectedHotkeyDDLIndex := customHotkeyOverviewGUIHotkeyDropDownList.Value
+    global currentlySelectedHotkeyDDLIndex := customHotkeyOverviewGUIHotkeyDropDownList.Value
     createNewCustomHotkeyGUI()
 }
 
 /*
 Opens the new hotkey GUI. This usually is used to edit hotkeys.
 @param pBooleanLoadCurrentlySelectedHotkey [boolean] If set to true, the GUI will load all values from the currently selected hotkey.
-@param pAllowedToOverwriteName [String] Only required when pBooleanLoadCurrentlySelectedHotkey is set to true. This parameter is required
-to avoid showing an alert prompt when the hotkey name already exists. (Obviously, because you are editing the hotkey)
-@param pAllowedToOverwriteHotkey [String] Same reasoning as pAllowedToOverwriteHotkey, but for the keyboard shortcut.
 */
-handleNewCustomHotkeyGUI_openGUI(pBooleanLoadCurrentlySelectedHotkey := false, pAllowedToOverwriteName := "", pAllowedToOverwriteHotkey := "")
+handleNewCustomHotkeyGUI_openGUI(pBooleanLoadCurrentlySelectedHotkey := false)
 {
     global customMacroObjectArray
-    global allowedToOverwriteName := pAllowedToOverwriteName
-    global allowedToOverwriteHotkey := pAllowedToOverwriteHotkey
-    global allowedToOverwriteCurrentlySelectedHotkeyDDLIndex := customHotkeyOverviewGUIHotkeyDropDownList.Value
+    global currentlySelectedHotkeyDDLIndex := customHotkeyOverviewGUIHotkeyDropDownList.Value
 
     If (pBooleanLoadCurrentlySelectedHotkey && customHotkeyOverviewGUIHotkeyDropDownList.Value != 0)
     {
@@ -83,9 +75,7 @@ handleNewCustomHotkeyGUI_openGUI(pBooleanLoadCurrentlySelectedHotkey := false, p
 handleNewCustomHotkeyGUI_saveHotkeyButton()
 {
     global ahkBaseFileLocation
-    global allowedToOverwriteName
-    global allowedToOverwriteHotkey
-    global allowedToOverwriteCurrentlySelectedHotkeyDDLIndex
+    global currentlySelectedHotkeyDDLIndex
     global customMacroObjectArray
     global macroConfigFileLocation
     newHotkeyName := newCustomHotkeyGUIHotkeyNameEdit.Value
@@ -111,28 +101,32 @@ handleNewCustomHotkeyGUI_saveHotkeyButton()
         MsgBox("You macro file does not exist.", "GTAV Tweaks - Missing Hotkey Macro File", "O Icon! 262144 T1.5")
         Return
     }
-    ; Checks for already exsiting properties in the existing hotkeys with the only exception being the currently edited hotkey.
     ; Look at handleNewCustomHotkeyGUI_openGUI() for more context.
+    tmpCurrentlyEditedMacroObject := customMacroObjectArray.Get(currentlySelectedHotkeyDDLIndex)
+    ; Temporarily deletes the hotkey to avoid the duplicate property MsgBox.
+    tmpCurrentlyEditedMacroObject.deleteHotkey()
+    customMacroObjectArray.RemoveAt(currentlySelectedHotkeyDDLIndex)
+    ; Checks for already exsiting properties in the existing hotkeys with the only exception being the currently edited hotkey.
     For (object in customMacroObjectArray)
     {
-        If (object.name == newHotkeyName && object.name != allowedToOverwriteName)
+        If (object.name == newHotkeyName)
         {
+            ; Puts the old hotkey back into the array.
+            customMacroObjectArray.Push(tmpCurrentlyEditedMacroObject)
+            ; Refreshes the overview GUI.
+            handleCustomHotkeyOverviewGUI_fillInValuesFromCustomMacroObject()
             MsgBox("This name is already used by another hotkey.", "GTAV Tweaks - Duplicate Hotkey Name", "O Icon! 262144 T1.5")
             Return
         }
-        Else If (object.hotkey == newHotkeyHotkey && object.hotkey != allowedToOverwriteHotkey)
+        Else If (object.hotkey == newHotkeyHotkey)
         {
+            ; Puts the old hotkey back into the array.
+            customMacroObjectArray.Push(tmpCurrentlyEditedMacroObject)
+            ; Refreshes the overview GUI.
+            handleCustomHotkeyOverviewGUI_fillInValuesFromCustomMacroObject()
             MsgBox("This keyboard shortcut is already used by another hotkey: [" . object.name . "].",
                 "GTAV Tweaks - Duplicate Hotkey Keyboard Shortcut", "O Icon! 262144 T2")
             Return
-        }
-        ; This usually happens when editing already existing hotkeys.
-        If (object.name == allowedToOverwriteName || object.hotkey == allowedToOverwriteHotkey)
-        {
-            ; Deletes the old instance of this hotkey, which will be replaced or rather freshly created a few lines of code below.
-            customMacroObjectArray.Get(allowedToOverwriteCurrentlySelectedHotkeyDDLIndex).deleteHotkey()
-            customMacroObjectArray.RemoveAt(allowedToOverwriteCurrentlySelectedHotkeyDDLIndex)
-            Break
         }
     }
     ; This usually happens when creating a new hotkey.
@@ -230,7 +224,6 @@ handleNewCustomHotkeyGUI_recordMacro()
         ; Records the macro file with the current time stamp as it's file name.
         recordMacro(recordedMacroFilesStorageDirectory . "\" . FormatTime(A_Now, "dd.MM.yyyy_HH-mm-ss") . ".ahk")
         Hotkey(macroRecordHotkey, (*) => hotkey_stopMacroRecording(), "On S")
-        MsgBox "ende" ; REMOVE
     }
     ; Only enabled temporarily while recording.
     hotkey_stopMacroRecording()

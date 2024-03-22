@@ -163,6 +163,110 @@ class CustomMacro
     }
 }
 
+objects_onInit()
+{
+    global customMacroObjectArray := []
+    global macroConfigFileLocation
+    global builtInHK_NameArray :=
+        [
+            "AFK Cayo Perico Plane Flight",
+            "Create Solo Lobby"
+        ]
+
+    loadHotkeys()
+    ; Disables the hotkeys until GTA V is launched.
+    Suspend(true)
+}
+
+loadHotkeys()
+{
+    global ahkBaseFileLocation
+    global macroConfigFileLocation
+    global customMacroObjectArray
+    global builtInHK_NameArray
+
+    hotkeyNameArray := scanFileForHotkeyNames()
+    ; At the beginning, all built-in hotkeys will be marked to be loaded. The code below sorts out already existing
+    ; hotkeys to avoid overwriting their values.
+    builtInHotkeysNeededToBeLoadedArray := builtInHK_NameArray
+    ; Prepares all existing hotkeys to be loaded.
+    For (name in hotkeyNameArray)
+    {
+        tmpObject := CustomMacro()
+        tmpObject.ahkBaseFileLocation := ahkBaseFileLocation
+        tmpObject.macroConfigFileLocation := macroConfigFileLocation
+        ; Checks if the hotkey from the macro config file is a built-in hotkey.
+        ; If that's the case, it won't be loaded afterwards.
+        Loop (builtInHotkeysNeededToBeLoadedArray.Length)
+        {
+            If (name == builtInHotkeysNeededToBeLoadedArray.Get(A_Index))
+            {
+                tmpObject.name := builtInHotkeysNeededToBeLoadedArray.Get(A_Index)
+                tmpObject.loadMacroFromFile()
+                customMacroObjectArray.Push(tmpObject)
+                builtInHotkeysNeededToBeLoadedArray.RemoveAt(A_Index)
+                Continue 2
+            }
+        }
+        ; This allows the custom macro object to load the rest of it's configuration from the macro config file all by itself.
+        tmpObject.name := name
+        tmpObject.loadMacroFromFile()
+        customMacroObjectArray.Push(tmpObject)
+    }
+    For (name in builtInHotkeysNeededToBeLoadedArray)
+    {
+        loadBuiltInHotkey(name)
+    }
+}
+
+/*
+Loads one or all built-in hotkeys.
+@param pHotkeyname [String] Should be the name of a built-in hotkey to load.
+*/
+loadBuiltInHotkey(pHotkeyName)
+{
+    global ahkBaseFileLocation
+    global macroConfigFileLocation
+    global customMacroObjectArray
+    global builtInHK_NameArray
+    global builtInHKLocation_cayoPrepPlaneAfkFlight
+    global builtInHKLocation_createSololobby
+
+    hotkeyNameArray := builtInHK_NameArray
+    hotkeyDescriptionArray :=
+        [
+            "Allows you to automatically keep the Cayo Perico Heist preperation plane in the air.`n`n[This is a built-in hotkey]",
+            "Suspends the GTA V process and therefore creates a solo lobby.`n`n[This is a built-in hotkey]"
+        ]
+    hotkeyHotkeyArray :=
+        [
+            "^F9",
+            "^F10"
+        ]
+    hotkeyMacroFileLocationArray :=
+        [
+            builtInHKLocation_cayoPrepPlaneAfkFlight,
+            builtInHKLocation_createSololobby
+        ]
+
+    For (name in hotkeyNameArray)
+    {
+        tmpObject := CustomMacro()
+        tmpObject.name := hotkeyNameArray.Get(A_Index)
+        tmpObject.description := hotkeyDescriptionArray.Get(A_Index)
+        tmpObject.hotkey := hotkeyHotkeyArray.Get(A_Index)
+        tmpObject.macroFileLocation := hotkeyMacroFileLocationArray.Get(A_Index)
+        tmpObject.ahkBaseFileLocation := ahkBaseFileLocation
+        tmpObject.macroConfigFileLocation := macroConfigFileLocation
+        ; This will only load one hotkey.
+        If (name == pHotkeyName)
+        {
+            tmpObject.saveMacroToFile()
+            customMacroObjectArray.Push(tmpObject)
+        }
+    }
+}
+
 /*
 Scanns a given hotkey config file for it's hotkey names.
 The names will be later used by the CustomMacro objects to load the corresponding hotkeys from the config file.
@@ -176,48 +280,20 @@ scanFileForHotkeyNames()
     Loop Read (macroConfigFileLocation)
     {
         ; Finds every string at the start of a new line which equals to this pattern: [any letters or numbers].
-        If (RegExMatch(A_LoopReadLine, "A)\[.+?\]", &match))
+        If (!RegExMatch(A_LoopReadLine, "A)\[.+?\]", &match))
         {
-            matchString := match[]
-            ; Ignores the standard text.
-            If (!InStr(matchString, "[CustomHotkeysBelow]"))
-            {
-                ; Removes the brackets at the start and end.
-                matchString := StrReplace(matchString, "[",)
-                matchString := StrReplace(matchString, "]")
-                hotkeyNameArray.Push(matchString)
-            }
+            Continue
         }
+        matchString := match[]
+        ; Ignores the standard text.
+        If (InStr(matchString, "[CustomHotkeysBelow]"))
+        {
+            Continue
+        }
+        ; Removes the brackets at the start and end.
+        matchString := StrReplace(matchString, "[",)
+        matchString := StrReplace(matchString, "]")
+        hotkeyNameArray.Push(matchString)
     }
     Return hotkeyNameArray
-}
-
-; Creates the custom macro object array. It also loads already existing hotkeys.
-createCustomMacroObjectArray()
-{
-    global ahkBaseFileLocation
-    global macroConfigFileLocation
-    global customMacroObjectArray := []
-    hotkeyNameArray := scanFileForHotkeyNames()
-    ; If the hotkey config file does not contain any hotkeys.
-    If (!hotkeyNameArray.Has(1))
-    {
-        Return
-    }
-    ; Prepares all existing hotkeys to be loaded.
-    For (name in hotkeyNameArray)
-    {
-        tmpObject := CustomMacro()
-        tmpObject.ahkBaseFileLocation := ahkBaseFileLocation
-        tmpObject.macroConfigFileLocation := macroConfigFileLocation
-        ; This allows the custom macro object to load the rest of it's configuration from the macro config file all by itself.
-        tmpObject.name := name
-        tmpObject.loadMacroFromFile()
-        customMacroObjectArray.Push(tmpObject)
-    }
-}
-
-objects_onInit()
-{
-    createCustomMacroObjectArray()
 }

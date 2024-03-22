@@ -14,7 +14,6 @@ CoordMode "Mouse", "Window"
 #Include "ConfigFile.ahk"
 #Include "CustomHotkeyOverviewGUI.ahk"
 #Include "Functions.ahk"
-#Include "Hotkeys.ahk"
 #Include "MainGUI.ahk"
 #Include "NewCustomHotkeyGUI.ahk"
 #Include "Objects.ahk"
@@ -37,11 +36,11 @@ onInit()
     global audioHookFileLocation := A_ScriptDir . "\GTAV_Tweaks\soundvolumeview-x64\SoundVolumeView.exe"
 
     global macroFilesStorageDirectory := A_ScriptDir . "\GTAV_Tweaks\macros"
-    global recordedMacroFilesStorageDirectory := A_ScriptDir . "\GTAV_Tweaks\recorded_macros"
-    global macroConfigFileLocation := A_ScriptDir . "\GTAV_Tweaks\macros\GTAV_Tweaks_MACROS.ini"
+    global macroConfigFileLocation := macroFilesStorageDirectory . "\GTAV_Tweaks_MACROS.ini"
+    global builtInHKLocation_createSololobby := macroFilesStorageDirectory . "\builtInHK_createSololobby.ahk"
+    global builtInHKLocation_cayoPrepPlaneAfkFlight := macroFilesStorageDirectory . "\builtInHK_cayoPrepPlaneAfkFlight.ahk"
 
-    global depositLessThan100kMacroFileLocation := A_ScriptDir . "\GTAV_Tweaks\macros\depositLessThan100kMacro.ahk"
-    global depositMoreThan100kMacroFileLocation := A_ScriptDir . "\GTAV_Tweaks\macros\depositMoreThan100kMacro.ahk"
+    global recordedMacroFilesStorageDirectory := A_ScriptDir . "\GTAV_Tweaks\recorded_macros"
 
     onInit_unpackSupportFiles()
     ; The version can now be specified because the version file should now be available.
@@ -49,7 +48,6 @@ onInit()
     ; Run all onInit() functions from included files.
     configFile_onInit()
     functions_onInit()
-    hotkeys_onInit()
     objects_onInit()
     mainGUI_onInit()
     customHotkeyOverviewGUI_onInit()
@@ -151,5 +149,14 @@ onInit_unpackSupportFiles()
     If (!FileExist(macroConfigFileLocation))
     {
         IniWrite("Always back up your files!", macroConfigFileLocation, "CustomHotkeysBelow", "Advice")
+    }
+
+    If (!FileExist(builtInHKLocation_cayoPrepPlaneAfkFlight))
+    {
+        FileInstall("library\built_in_hotkeys\builtInHK_cayoPrepPlaneAfkFlight.ahk", builtInHKLocation_cayoPrepPlaneAfkFlight, true)
+    }
+    If (!FileExist(builtInHKLocation_createSololobby))
+    {
+        FileInstall("library\built_in_hotkeys\builtInHK_createSololobby.ahk", builtInHKLocation_createSololobby, true)
     }
 }

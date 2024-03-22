@@ -14,7 +14,7 @@ createCustomHotkeyOverviewGUI()
     customHotkeyOverviewGUIHotkeyFieldText := customHotkeyOverviewGUI.Add("Text", "yp+30", "Keyboard Shortcut")
     customHotkeyOverviewGUIHotkeyField := customHotkeyOverviewGUI.Add("Hotkey", "yp+20 w200 Disabled")
     customHotkeyOverviewGUIHotkeyDescriptionEditText := customHotkeyOverviewGUI.Add("Text", "xp+210 yp-30", "Description")
-    customHotkeyOverviewGUIHotkeyDescriptionEdit := customHotkeyOverviewGUI.Add("Edit", "yp+30 w109 R5.2 ReadOnly Disabled")
+    customHotkeyOverviewGUIHotkeyDescriptionEdit := customHotkeyOverviewGUI.Add("Edit", "yp+30 w109 R5.2 ReadOnly")
 
     customHotkeyNameArray := []
     customHotkeyOverviewGUIHotkeyDropDownListText := customHotkeyOverviewGUI.Add("Text", "xp-210 yp+35", "Select a hotkey below.")
@@ -187,9 +187,7 @@ handleCustomHotkeyOverviewGUI_editHotkey()
     {
         Return
     }
-    currentHotkeyName := customMacroObjectArray.Get(customHotkeyOverviewGUIHotkeyDropDownList.Value).name
-    currentHotkeyHotkey := customMacroObjectArray.Get(customHotkeyOverviewGUIHotkeyDropDownList.Value).hotkey
-    handleNewCustomHotkeyGUI_openGUI(true, currentHotkeyName, currentHotkeyHotkey)
+    handleNewCustomHotkeyGUI_openGUI(true)
 }
 
 handleCustomHotkeyOverviewGUI_deleteHotkey()
@@ -209,7 +207,7 @@ handleCustomHotkeyOverviewGUI_deleteHotkey()
     ; Tells the macro object to delete it's entry in the macro config file.
     customMacroObjectArray.Get(customHotkeyOverviewGUIHotkeyDropDownList.Value).deleteHotkey()
     ; Refreshes the complete customMacroObjectArray, because the file has changed.
-    createCustomMacroObjectArray()
+    objects_onInit()
     ; Refreshes the GUI.
     handleCustomHotkeyOverviewGUI_fillInValuesFromCustomMacroObject()
 }
