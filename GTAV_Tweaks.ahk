@@ -85,13 +85,14 @@ onInit_unpackSupportFiles()
     ; Prompts the user to confirm the creation of files.
     If (!DirExist(A_ScriptDir . "\GTAV_Tweaks"))
     {
-        result := MsgBox("Hello there!`n`nYou are about to create some files in a folder called [GTAV_Tweaks] next to this script.`n`n"
+        result := MsgBox("Hello there!`n`nYou are about to create additional files in a folder called [GTAV_Tweaks]"
+            . " in the same directory as this script.`n`n"
             "Would you like to proceed?", "GTAV Tweaks - Confirm File Creation", "YN Iconi 262144")
         If (result != "Yes")
         {
             ExitApp()
         }
-        MsgBox("You can easily delete all files to uninstall this script.", "GTAV Tweaks - How To Uninstall?", "Iconi 262144")
+        MsgBox("To uninstall this software you just need to delete the files.", "GTAV Tweaks - How To Uninstall?", "Iconi 262144")
         DirCreate(A_ScriptDir . "\GTAV_Tweaks")
     }
     If (!DirExist(A_ScriptDir . "\GTAV_Tweaks\assets"))
