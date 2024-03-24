@@ -213,6 +213,11 @@ loadHotkeys()
         tmpObject.loadMacroFromFile()
         customMacroObjectArray.Push(tmpObject)
     }
+    ; This option determines if built-in hotkeys will be loaded or not.
+    If (!readConfigFile("loadBuiltInHotkeys"))
+    {
+        Return
+    }
     For (name in builtInHotkeysNeededToBeLoadedArray)
     {
         loadBuiltInHotkey(name)
@@ -296,4 +301,147 @@ scanFileForHotkeyNames()
         hotkeyNameArray.Push(matchString)
     }
     Return hotkeyNameArray
+}
+
+/*
+Edits an already existing hotkey in the macro config file.
+@param pHotkeyArrayIndex [int] Should be a valid index in the customMacroObjectArray. This marks the hotkey that is currently being edited.
+@param pHotkeyName [String] Should be a valid hotkey name.
+@param pHotkeyDescription [String] Should be a valid hotkey description with no line breakers (`n).
+@param pHotkeyHotkey [String] Should be a valid hotkey in the AutoHotkey format. For example (^!A).
+@param pHotkeyMacroFileLocation [String] Should be a valid path to a macro file.
+@returns [boolean] True if the hotkey was edited successfully. False otherwise
+*/
+editHotkey(pHotkeyArrayIndex, pHotkeyName, pHotkeyDescription, pHotkeyHotkey, pHotkeyMacroFileLocation)
+{
+    global customMacroObjectArray
+    global customHotkeyNameArray
+    global ahkBaseFileLocation
+    global macroConfigFileLocation
+
+    If (!customHotkeyNameArray.Has(pHotkeyArrayIndex))
+    {
+        MsgBox("[" . A_ThisFunc . "()] [ERROR] Invalid customHotkeyNameArray index received: [" . pHotkeyArrayIndex . "]."
+            , "GTAV Tweaks - [" . A_ThisFunc . "()]", "Icon! 262144")
+        Return false
+    }
+    ; Checks for already exsiting properties in the existing hotkeys with the only exception being the currently edited hotkey.
+    For (object in customMacroObjectArray)
+    {
+        ; This skips the hotkey that is currently being edited.
+        If (A_Index == pHotkeyArrayIndex)
+        {
+            Continue
+        }
+        Else If (object.name == pHotkeyName)
+        {
+            MsgBox("This name is already used by another hotkey: [" . object.name . "].", "GTAV Tweaks - Duplicate Hotkey Name", "O Icon! 262144 T2")
+            Return false
+        }
+        Else If (object.hotkey == pHotkeyHotkey)
+        {
+            MsgBox("This keyboard shortcut is already used by another hotkey: [" . object.name . "].",
+                "GTAV Tweaks - Duplicate Hotkey Keyboard Shortcut", "O Icon! 262144 T2")
+            Return false
+        }
+    }
+    Try
+    {
+        currentlyEditedHotkeyObject := customMacroObjectArray.Get(pHotkeyArrayIndex)
+        tmpFileCache := ""
+        Loop Read (currentlyEditedHotkeyObject.macroConfigFileLocation)
+        {
+            ; Searches the section from the old hotkey and renames it.
+            If (A_LoopReadLine == "[" . currentlyEditedHotkeyObject.name . "]")
+            {
+                tmpFileCache .= "[" . pHotkeyName . "]`n"
+            }
+            Else
+            {
+                tmpFileCache .= A_LoopReadLine . "`n"
+            }
+        }
+        ; Writes the content in the tmpFileCache variable to the file.
+        FileDelete(currentlyEditedHotkeyObject.macroConfigFileLocation)
+        FileAppend(tmpFileCache, currentlyEditedHotkeyObject.macroConfigFileLocation)
+        ; Writes the new values to the edited hotkey.
+        currentlyEditedHotkeyObject.name := pHotkeyName
+        currentlyEditedHotkeyObject.description := pHotkeyDescription
+        currentlyEditedHotkeyObject.hotkey := pHotkeyHotkey
+        currentlyEditedHotkeyObject.macroFileLocation := pHotkeyMacroFileLocation
+        ; This is just a safety measure.
+        currentlyEditedHotkeyObject.ahkBaseFileLocation := ahkBaseFileLocation
+        currentlyEditedHotkeyObject.macroConfigFileLocation := macroConfigFileLocation
+        currentlyEditedHotkeyObject.saveMacroToFile()
+        ; Deletes the old macro object.
+        customMacroObjectArray.RemoveAt(pHotkeyArrayIndex)
+        ; Applies the changes by pushing the edited object back into the array.
+        customMacroObjectArray.InsertAt(pHotkeyArrayIndex, currentlyEditedHotkeyObject)
+        ; Refreshes the overview GUI.
+        handleCustomHotkeyOverviewGUI_fillInValuesFromCustomMacroObject()
+        MsgBox("Hotkey saved successfully!", "GTAV Tweaks - Hotkey Operation Status", "O Iconi 262144 T0.75")
+        Return true
+    }
+    Catch As error
+    {
+        displayErrorMessage(error)
+        Return false
+    }
+}
+
+/*
+Creates a new custom hotkey.
+@param pHotkeyName [String] Should be a valid hotkey name.
+@param pHotkeyDescription [String] Should be a valid hotkey description with no line breakers (`n).
+@param pHotkeyHotkey [String] Should be a valid hotkey in the AutoHotkey format. For example (^!A).
+@param pHotkeyMacroFileLocation [String] Should be a valid path to a macro file.
+@returns [boolean] True if the hotkey was edited successfully. False otherwise
+*/
+createHotkey(pHotkeyName, pHotkeyDescription, pHotkeyHotkey, pHotkeyMacroFileLocation)
+{
+    global customMacroObjectArray
+    global customHotkeyNameArray
+    global ahkBaseFileLocation
+    global macroConfigFileLocation
+
+    ; Checks for already exsiting properties in the existing hotkeys.
+    For (object in customMacroObjectArray)
+    {
+        If (object.name == pHotkeyName)
+        {
+            MsgBox("This name is already used by another hotkey: [" . object.name . "].", "GTAV Tweaks - Duplicate Hotkey Name", "O Icon! 262144 T2")
+            Return false
+        }
+        Else If (object.hotkey == pHotkeyHotkey)
+        {
+            MsgBox("This keyboard shortcut is already used by another hotkey: [" . object.name . "].",
+                "GTAV Tweaks - Duplicate Hotkey Keyboard Shortcut", "O Icon! 262144 T2")
+            Return false
+        }
+    }
+    Try
+    {
+        newMacroObject := CustomMacro()
+        ; Adds the values from the GUI.
+        newMacroObject.name := pHotkeyName
+        newMacroObject.description := pHotkeyDescription
+        newMacroObject.hotkey := pHotkeyHotkey
+        newMacroObject.macroFileLocation := pHotkeyMacroFileLocation
+        ; Adds other required values.
+        newMacroObject.ahkBaseFileLocation := ahkBaseFileLocation
+        newMacroObject.macroConfigFileLocation := macroConfigFileLocation
+        ; Tells the object to save into the macro config file.
+        newMacroObject.saveMacroToFile()
+        ; Adds the new hotkey to the array.
+        customMacroObjectArray.Push(newMacroObject)
+        ; Refreshes the overview GUI.
+        handleCustomHotkeyOverviewGUI_fillInValuesFromCustomMacroObject()
+        MsgBox("Hotkey saved successfully!", "GTAV Tweaks - Hotkey Operation Status", "O Iconi 262144 T0.75")
+        Return true
+    }
+    Catch As error
+    {
+        displayErrorMessage(error)
+        Return false
+    }
 }

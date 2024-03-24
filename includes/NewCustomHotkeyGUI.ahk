@@ -16,7 +16,7 @@ createNewCustomHotkeyGUI()
     newCustomHotkeyGUIHotkeyField := newCustomHotkeyGUI.Add("Hotkey", "yp+20 w200")
 
     newCustomHotkeyGUIHotkeyDescriptionText := newCustomHotkeyGUI.Add("Text", "xp+210 yp-70", "Hotkey Description")
-    newCustomHotkeyGUIHotkeyDescriptionEdit := newCustomHotkeyGUI.Add("Edit", "yp+20 R4.85 w108")
+    newCustomHotkeyGUIHotkeyDescriptionEdit := newCustomHotkeyGUI.Add("Edit", "yp+20 R4.85 w108 -WantReturn")
 
     newCustomHotkeyGUIMacroFileLocationText := newCustomHotkeyGUI.Add("Text", "xp-210 yp+82", "Macro File Location")
     newCustomHotkeyGUIMacroFileLocationEdit := newCustomHotkeyGUI.Add("Edit", "yp+20 w285")
@@ -48,7 +48,7 @@ newCustomHotkeyGUI_onInit()
     ; in the custom object array using the currently selected DDL entry index value (2 because the user changed to another hotkey
     ; in the mean time), we would edit the object at index 2, but we want to edit the object at index 1.
     ; This variable saves this information, to avoid this issue.
-    global currentlySelectedHotkeyDDLIndex := customHotkeyOverviewGUIHotkeyDropDownList.Value
+    global currentlySelectedHotkeyDDLIndex := 0
     createNewCustomHotkeyGUI()
 }
 
@@ -61,12 +61,17 @@ handleNewCustomHotkeyGUI_openGUI(pBooleanLoadCurrentlySelectedHotkey := false)
     global customMacroObjectArray
     global currentlySelectedHotkeyDDLIndex := customHotkeyOverviewGUIHotkeyDropDownList.Value
 
-    If (pBooleanLoadCurrentlySelectedHotkey && customHotkeyOverviewGUIHotkeyDropDownList.Value != 0)
+    If (!pBooleanLoadCurrentlySelectedHotkey)
     {
-        newCustomHotkeyGUIHotkeyNameEdit.Value := customMacroObjectArray.Get(customHotkeyOverviewGUIHotkeyDropDownList.Value).name
-        newCustomHotkeyGUIHotkeyDescriptionEdit.Value := customMacroObjectArray.Get(customHotkeyOverviewGUIHotkeyDropDownList.Value).description
-        newCustomHotkeyGUIHotkeyField.Value := customMacroObjectArray.Get(customHotkeyOverviewGUIHotkeyDropDownList.Value).hotkey
-        newCustomHotkeyGUIMacroFileLocationEdit.Value := customMacroObjectArray.Get(customHotkeyOverviewGUIHotkeyDropDownList.Value).macroFileLocation
+        ; Changing this value to 0 tells all following functions, that we are not editing an existing hotkey.
+        currentlySelectedHotkeyDDLIndex := 0
+    }
+    If (currentlySelectedHotkeyDDLIndex != 0)
+    {
+        newCustomHotkeyGUIHotkeyNameEdit.Value := customMacroObjectArray.Get(currentlySelectedHotkeyDDLIndex).name
+        newCustomHotkeyGUIHotkeyDescriptionEdit.Value := customMacroObjectArray.Get(currentlySelectedHotkeyDDLIndex).description
+        newCustomHotkeyGUIHotkeyField.Value := customMacroObjectArray.Get(currentlySelectedHotkeyDDLIndex).hotkey
+        newCustomHotkeyGUIMacroFileLocationEdit.Value := customMacroObjectArray.Get(currentlySelectedHotkeyDDLIndex).macroFileLocation
     }
     newCustomHotkeyGUI.Show()
 }
@@ -75,84 +80,41 @@ handleNewCustomHotkeyGUI_openGUI(pBooleanLoadCurrentlySelectedHotkey := false)
 handleNewCustomHotkeyGUI_saveHotkeyButton()
 {
     global ahkBaseFileLocation
-    global currentlySelectedHotkeyDDLIndex
-    global customMacroObjectArray
     global macroConfigFileLocation
-    newHotkeyName := newCustomHotkeyGUIHotkeyNameEdit.Value
-    newHotkeyDescription := newCustomHotkeyGUIHotkeyDescriptionEdit.Value
-    newHotkeyHotkey := newCustomHotkeyGUIHotkeyField.Value
-    newHotkeyMacroFileLocation := newCustomHotkeyGUIMacroFileLocationEdit.Value
-
+    global customMacroObjectArray
+    global currentlySelectedHotkeyDDLIndex
+    saveHotkeyName := newCustomHotkeyGUIHotkeyNameEdit.Value
+    saveHotkeyDescription := newCustomHotkeyGUIHotkeyDescriptionEdit.Value
+    saveHotkeyHotkey := newCustomHotkeyGUIHotkeyField.Value
+    saveHotkeyMacroFileLocation := newCustomHotkeyGUIMacroFileLocationEdit.Value
     ; Checks if all important fields have a valid value.
-    If (!newHotkeyName)
+    If (!saveHotkeyName)
     {
         MsgBox("Please enter a name for your hotkey.", "GTAV Tweaks - Missing Hotkey Name", "O Icon! 262144 T1.5")
         Return
     }
-    Else If (!newHotkeyHotkey)
+    Else If (!saveHotkeyHotkey)
     {
         MsgBox("Please provide a keyboard shortcut for your hotkey.", "GTAV Tweaks - Missing Hotkey Keyboard Shortcut", "O Icon! 262144 T1.5")
         Return
     }
     ; Makes sure that the path is an actual file and not a directory or more specifically a folder.
-    SplitPath(newHotkeyMacroFileLocation, , , &outExtension)
-    If (!FileExist(newHotkeyMacroFileLocation) || outExtension != "ahk")
+    SplitPath(saveHotkeyMacroFileLocation, , , &outExtension)
+    If (!FileExist(saveHotkeyMacroFileLocation) || outExtension != "ahk")
     {
         MsgBox("You macro file does not exist.", "GTAV Tweaks - Missing Hotkey Macro File", "O Icon! 262144 T1.5")
         Return
     }
-    ; Look at handleNewCustomHotkeyGUI_openGUI() for more context.
-    tmpCurrentlyEditedMacroObject := customMacroObjectArray.Get(currentlySelectedHotkeyDDLIndex)
-    ; Temporarily deletes the hotkey to avoid the duplicate property MsgBox.
-    tmpCurrentlyEditedMacroObject.deleteHotkey()
-    customMacroObjectArray.RemoveAt(currentlySelectedHotkeyDDLIndex)
-    ; Checks for already exsiting properties in the existing hotkeys with the only exception being the currently edited hotkey.
-    For (object in customMacroObjectArray)
+    ; This means that the user wants to edit an existing hotkey.
+    If (currentlySelectedHotkeyDDLIndex != 0)
     {
-        If (object.name == newHotkeyName)
-        {
-            ; Puts the old hotkey back into the array.
-            customMacroObjectArray.Push(tmpCurrentlyEditedMacroObject)
-            ; Refreshes the overview GUI.
-            handleCustomHotkeyOverviewGUI_fillInValuesFromCustomMacroObject()
-            MsgBox("This name is already used by another hotkey.", "GTAV Tweaks - Duplicate Hotkey Name", "O Icon! 262144 T1.5")
-            Return
-        }
-        Else If (object.hotkey == newHotkeyHotkey)
-        {
-            ; Puts the old hotkey back into the array.
-            customMacroObjectArray.Push(tmpCurrentlyEditedMacroObject)
-            ; Refreshes the overview GUI.
-            handleCustomHotkeyOverviewGUI_fillInValuesFromCustomMacroObject()
-            MsgBox("This keyboard shortcut is already used by another hotkey: [" . object.name . "].",
-                "GTAV Tweaks - Duplicate Hotkey Keyboard Shortcut", "O Icon! 262144 T2")
-            Return
-        }
+        editHotkey(currentlySelectedHotkeyDDLIndex, saveHotkeyName, saveHotkeyDescription, saveHotkeyHotkey, saveHotkeyMacroFileLocation)
     }
-    ; This usually happens when creating a new hotkey.
-    Try
+    Else
     {
-        newMacroObject := CustomMacro()
-        ; Adds the values from the GUI.
-        newMacroObject.name := newHotkeyName
-        newMacroObject.description := newHotkeyDescription
-        newMacroObject.hotkey := newHotkeyHotkey
-        newMacroObject.macroFileLocation := newHotkeyMacroFileLocation
-        ; Adds other required values.
-        newMacroObject.ahkBaseFileLocation := ahkBaseFileLocation
-        newMacroObject.macroConfigFileLocation := macroConfigFileLocation
-        ; Tells the object to save into the macro config file.
-        newMacroObject.saveMacroToFile()
-        ; Adds the new hotkey to the array.
-        customMacroObjectArray.Push(newMacroObject)
-        ; Refreshes the overview GUI.
-        handleCustomHotkeyOverviewGUI_fillInValuesFromCustomMacroObject()
-        MsgBox("Hotkey saved successfully!", "GTAV Tweaks - Hotkey Operation Status", "O Iconi 262144 T0.75")
+        createHotkey(saveHotkeyName, saveHotkeyDescription, saveHotkeyHotkey, saveHotkeyMacroFileLocation)
     }
-    Catch As error
-    {
-        displayErrorMessage(error)
-    }
+    handleNewCustomHotkeyGUI_closeButton()
 }
 
 handleNewCustomHotkeyGUI_closeButton()

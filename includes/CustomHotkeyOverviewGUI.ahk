@@ -60,16 +60,17 @@ handleCustomHotkeyOverviewGUI_fillInValuesFromCustomMacroObject()
 {
     global customMacroObjectArray
     global customHotkeyNameArray := []
-
+    global currentlySelectedHotkeyDDLIndex
+    ; This is the default setting when nothing is selected.
+    customHotkeyOverviewGUIHotkeyField.Value := ""
+    customHotkeyOverviewGUIHotkeyDescriptionEdit.Value := ""
+    customHotkeyOverviewGUIHotkeyStatusIsDisabledRadio := false
+    customHotkeyOverviewGUIHotkeyStatusIsEnabledRadio := false
     ; This happens when the macro config file does not contain any hotkeys.
     If (!customMacroObjectArray.Has(1))
     {
         ; Adjusts the GUI element values to match with the fact, that there are no hotkeys.
         customHotkeyOverviewGUITotalHotkeyAmountText.Text := "Total Hotkeys: 0"
-        customHotkeyOverviewGUIHotkeyField.Value := ""
-        customHotkeyOverviewGUIHotkeyDescriptionEdit.Value := ""
-        customHotkeyOverviewGUIHotkeyStatusIsDisabledRadio := false
-        customHotkeyOverviewGUIHotkeyStatusIsEnabledRadio := false
         customHotkeyNameArray.InsertAt(1, "No hotkeys in config file found.")
         ; Disables all buttons that are only usefull with at least one hotkey.
         customHotkeyOverviewGUIToggleHotkeyButton.Opt("+Disabled")
@@ -99,6 +100,7 @@ handleCustomHotkeyOverviewGUI_fillInValuesFromCustomMacroObject()
     ; Refreshes the drop down list.
     customHotkeyOverviewGUIHotkeyDropDownList.Delete()
     customHotkeyOverviewGUIHotkeyDropDownList.Add(customHotkeyNameArray)
+    currentlySelectedHotkeyDDLIndex := 0
 }
 
 handleCustomHotkeyOverviewGUI_changeValuesDependingOnWhichHotkeyIsSelected()

@@ -61,10 +61,10 @@ the script checks the macro config file at every launch if all built-in hotkeys 
 
 3. Where are my hotkeys saved?
 -> The macro configuration file is saved in the "GTAV_Tweaks" folder in a subfolder called "macros". The "GTAV_Tweaks" folder is always in the same directory as the GTAV_Tweaks executable.
-You can also open the file under the [Open] menu in the main window.
+You can also open the file under the [File] menu in the main window.
 
 4. How do I create custom hotkeys?
--> When you launch the script, the first thing you should see is the main window. There will be a menu called [Hotkeys]
+-> When you launch the script, the first thing you should see is the main window. There will be a menu called [Hotkeys].
 Clicking on it will open another window. On the bottom left you can find the button to create your own hotkeys.
 From there on you will just have to fill in the values and confirm the creation. If the name and keyboard shortcut
 aren't used by any other hotkey yet, you are ready.
