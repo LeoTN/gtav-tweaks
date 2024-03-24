@@ -184,11 +184,12 @@ loadHotkeys()
     global macroConfigFileLocation
     global customMacroObjectArray
     global builtInHK_NameArray
+    global macroFilesStorageDirectory
 
     hotkeyNameArray := scanFileForHotkeyNames()
     ; At the beginning, all built-in hotkeys will be marked to be loaded. The code below sorts out already existing
     ; hotkeys to avoid overwriting their values.
-    builtInHotkeysNeededToBeLoadedArray := builtInHK_NameArray
+    builtInHotkeysNeedToBeLoadedArray := builtInHK_NameArray
     ; Prepares all existing hotkeys to be loaded.
     For (name in hotkeyNameArray)
     {
@@ -197,20 +198,41 @@ loadHotkeys()
         tmpObject.macroConfigFileLocation := macroConfigFileLocation
         ; Checks if the hotkey from the macro config file is a built-in hotkey.
         ; If that's the case, it won't be loaded afterwards.
-        Loop (builtInHotkeysNeededToBeLoadedArray.Length)
+        Loop (builtInHotkeysNeedToBeLoadedArray.Length)
         {
-            If (name == builtInHotkeysNeededToBeLoadedArray.Get(A_Index))
+            If (name == builtInHotkeysNeedToBeLoadedArray.Get(A_Index))
             {
-                tmpObject.name := builtInHotkeysNeededToBeLoadedArray.Get(A_Index)
-                tmpObject.loadMacroFromFile()
-                customMacroObjectArray.Push(tmpObject)
-                builtInHotkeysNeededToBeLoadedArray.RemoveAt(A_Index)
-                Continue 2
+                builtInHotkeysNeedToBeLoadedArray.RemoveAt(A_Index)
+                Break
             }
         }
         ; This allows the custom macro object to load the rest of it's configuration from the macro config file all by itself.
         tmpObject.name := name
         tmpObject.loadMacroFromFile()
+
+        ; Checks if a macro file path correction is required.
+        SplitPath(tmpObject.macroFileLocation, &outFileName, &outDir)
+        If (!FileExist(tmpObject.macroFileLocation))
+        {
+            tmpNewMacroFileLocation := macroFilesStorageDirectory . "\" . outFileName
+            ; This will allow users to copy & paste their macros from other locations because
+            ; the macro file path will be updated (if possible) in the macro config file.
+            ; Searches the macro file in the macro folder.
+            If (FileExist(tmpNewMacroFileLocation))
+            {
+                ; Updates the path.
+                tmpObject.macroFileLocation := tmpNewMacroFileLocation
+                tmpObject.saveMacroToFile()
+            }
+            Else
+            {
+                MsgBox("Error while importing custom hotkey [" . tmpObject.name . "]!`n`nCould not update macro file path`n["
+                    . tmpObject.macroFileLocation . "]`nto the assumed new macro file location`n[" . tmpNewMacroFileLocation . "]`n`n"
+                    "You will have to select the macro file for this hotkey manually by editing it via the custom hotkey overview window."
+                    , "GTAV Tweaks - Hotkey Auto Import Error", "O Icon! 262144")
+            }
+        }
+        ; Applies the changes.
         customMacroObjectArray.Push(tmpObject)
     }
     ; This option determines if built-in hotkeys will be loaded or not.
@@ -218,7 +240,7 @@ loadHotkeys()
     {
         Return
     }
-    For (name in builtInHotkeysNeededToBeLoadedArray)
+    For (name in builtInHotkeysNeedToBeLoadedArray)
     {
         loadBuiltInHotkey(name)
     }
