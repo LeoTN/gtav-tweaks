@@ -108,13 +108,20 @@ handleNewCustomHotkeyGUI_saveHotkeyButton()
     ; This means that the user wants to edit an existing hotkey.
     If (currentlySelectedHotkeyDDLIndex != 0)
     {
-        editHotkey(currentlySelectedHotkeyDDLIndex, saveHotkeyName, saveHotkeyDescription, saveHotkeyHotkey, saveHotkeyMacroFileLocation)
+        ; This happens when editing was successful.
+        If (editHotkey(currentlySelectedHotkeyDDLIndex, saveHotkeyName, saveHotkeyDescription, saveHotkeyHotkey, saveHotkeyMacroFileLocation))
+        {
+            handleNewCustomHotkeyGUI_closeButton()
+        }
     }
     Else
     {
-        createHotkey(saveHotkeyName, saveHotkeyDescription, saveHotkeyHotkey, saveHotkeyMacroFileLocation)
+        ; This happens when creating the hotkey was successful.
+        If (createHotkey(saveHotkeyName, saveHotkeyDescription, saveHotkeyHotkey, saveHotkeyMacroFileLocation))
+        {
+            handleNewCustomHotkeyGUI_closeButton()
+        }
     }
-    handleNewCustomHotkeyGUI_closeButton()
 }
 
 handleNewCustomHotkeyGUI_closeButton()

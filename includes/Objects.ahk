@@ -399,6 +399,15 @@ editHotkey(pHotkeyArrayIndex, pHotkeyName, pHotkeyDescription, pHotkeyHotkey, pH
         customMacroObjectArray.RemoveAt(pHotkeyArrayIndex)
         ; Applies the changes by pushing the edited object back into the array.
         customMacroObjectArray.InsertAt(pHotkeyArrayIndex, currentlyEditedHotkeyObject)
+        ; Updates the hotkey activation status.
+        If (customMacroObjectArray.Get(pHotkeyArrayIndex).isEnabled)
+        {
+            customMacroObjectArray.Get(pHotkeyArrayIndex).enableHotkey()
+        }
+        Else
+        {
+            customMacroObjectArray.Get(pHotkeyArrayIndex).disableHotkey()
+        }
         ; Refreshes the overview GUI.
         handleCustomHotkeyOverviewGUI_fillInValuesFromCustomMacroObject()
         MsgBox("Hotkey saved successfully!", "GTAV Tweaks - Hotkey Operation Status", "O Iconi 262144 T0.75")
@@ -456,6 +465,15 @@ createHotkey(pHotkeyName, pHotkeyDescription, pHotkeyHotkey, pHotkeyMacroFileLoc
         newMacroObject.saveMacroToFile()
         ; Adds the new hotkey to the array.
         customMacroObjectArray.Push(newMacroObject)
+        ; Updates the hotkey activation status.
+        If (customMacroObjectArray.Get(customMacroObjectArray.Length).isEnabled)
+        {
+            customMacroObjectArray.Get(customMacroObjectArray.Length).enableHotkey()
+        }
+        Else
+        {
+            customMacroObjectArray.Get(customMacroObjectArray.Length).disableHotkey()
+        }
         ; Refreshes the overview GUI.
         handleCustomHotkeyOverviewGUI_fillInValuesFromCustomMacroObject()
         MsgBox("Hotkey saved successfully!", "GTAV Tweaks - Hotkey Operation Status", "O Iconi 262144 T0.75")
