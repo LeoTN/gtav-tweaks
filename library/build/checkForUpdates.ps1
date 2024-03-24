@@ -24,8 +24,11 @@ Clear-Host
 Write-Host "Terminal ready..."
 
 function onInit() {
+    # Makes sure, that we do not have a shortened path.
+    $pCurrentExecutableLocation = [System.IO.Path]::GetFullPath($pCurrentExecutableLocation)
+    $pOutputDirectory = [System.IO.Path]::GetFullPath($pOutputDirectory)
     # Adds a subfolder so that we can delete this entire folder instead of deleting every file individually.
-    $pOutputDirectory = "$pOutputDirectory\GTAV_Tweaks_temp_update"
+    $pOutputDirectory = Join-Path -Path $pOutputDirectory -ChildPath "GTAV_Tweaks_temp_update"
     $global:updateVersion = ""
     # Removes old available update files.
     $availableUpdateFileName = "GTAV_Tweaks_Available_Update.txt"
@@ -39,12 +42,18 @@ function onInit() {
         If (downloadReleaseAsset -pReleaseName $global:updateVersion -pAssetName "GTAV_Tweaks.zip" -pOutputDirectory "$pOutputDirectory") {
             If (executeUpdate) {
                 Write-Host "[onInit()] [INFO] Successfully updated from version [$pCurrentVersion] to ["$global:updateVersion"]."
+                # Launch the new and updated script.
+                Start-Process -FilePath $pCurrentExecutableLocation
                 $exitCode = 10
             }
             Else {
                 Write-Host "[onInit()] [INFO] Failed to update from version [$pCurrentVersion] to ["$global:updateVersion"]."
                 $exitCode = 20
             }
+            # Copies the log file into the back up folder.
+            $currentExecutableParentDirectory = Split-Path -Path $pCurrentExecutableLocation -Parent
+            $oldFilesBackupFolder = Join-Path -Path $currentExecutableParentDirectory -ChildPath ("GTAV_Tweaks_backup_from_version_$pCurrentVersion")
+            Copy-Item -Path $logFilePath -Destination (Join-Path -Path $oldFilesBackupFolder -ChildPath "executedUpdate.log") -Force
         }
     }
     ElseIf ($tmpResult) {
@@ -65,7 +74,8 @@ function checkIfUpdateAvailable() {
     }
     # This converts the "normal" repository link to use the GitHub API.
     $apiUrl = $pGitHubRepositoryLink -Replace "github\.com", "api.github.com/repos"
-    $tagsResponse = Invoke-RestMethod -Uri "$apiUrl/tags" -Method Get
+    $fullApiUrl = "$apiUrl/tags"
+    $tagsResponse = Invoke-RestMethod -Uri $fullApiUrl -Method Get
 
     $highestVersion = "v0.0.0"
     # Iterating through the tags.
@@ -116,37 +126,47 @@ function downloadReleaseAsset() {
         New-Item -ItemType Directory -Path $pOutputDirectory -Force | Out-Null
     }
     Try {
-        Invoke-WebRequest -Uri "$pGitHubRepositoryLink/releases/download/$pReleaseName/$pAssetName" -OutFile "$pOutputDirectory\$pAssetName"
+        $gitHubUrl = "$pGitHubRepositoryLink/releases/download/$pReleaseName/$pAssetName"
+        $outputFile = Join-Path -Path $pOutputDirectory -ChildPath $pAssetName
+        Invoke-WebRequest -Uri $gitHubUrl -OutFile $outputFile
         Write-Host "[downloadReleaseAsset()] [INFO] Successfully downloaded [$pAssetName] into [$pOutputDirectory]."
         Return $true
     }
     Catch {
-        Write-Host "[downloadReleaseAsset()] [ERROR] Could not download assets from [$pGitHubRepositoryLink/releases/download/$pReleaseName/$pAssetName]!"
+        Write-Host "[downloadReleaseAsset()] [ERROR] Could not download assets from [$gitHubUrl]!"
         Return $false
     }
 }
 
 function executeUpdate() {
+    $updateZipArchiveLocation = Join-Path -Path $pOutputDirectory -ChildPath "GTAV_Tweaks.zip"
+    $updateArchiveLocation = Join-Path -Path $pOutputDirectory -ChildPath "GTAV_Tweaks"
+    $oldExecutableLocation = $pCurrentExecutableLocation
+    $newExecutableLocation = Join-Path -Path $updateArchiveLocation -ChildPath "GTAV_Tweaks.exe"
+
     Write-Host "[executeUpdate()] [INFO] Starting update process..."
-    If (-not (Test-Path -Path "$pOutputDirectory\GTAV_Tweaks.zip")) {
+    If (-not (Test-Path -Path $updateZipArchiveLocation)) {
         Write-Host "[executeUpdate()] [ERROR] Could not find installer archive at [$pOutputDirectory\GTAV_Tweaks.zip]."
         Return $false
     }
-    Expand-Archive -Path "$pOutputDirectory\GTAV_Tweaks.zip" -DestinationPath "$pOutputDirectory\GTAV_Tweaks" -Force
+    Expand-Archive -Path $updateZipArchiveLocation -DestinationPath $updateArchiveLocation -Force
     # Unblock every file.
-    Get-ChildItem -Path "$pOutputDirectory\GTAV_Tweaks" -Recurse | ForEach-Object {
+    Get-ChildItem -Path $updateArchiveLocation -Recurse | ForEach-Object {
         If (-not $_.PSIsContainer) {
             Unblock-File -Path $_.FullName -ErrorAction Continue
         }
     }
     Try {
-        $parentDirectory = Split-Path -Path $pCurrentExecutableLocation -Parent
-        $sourceFolder = "$parentDirectory\GTAV_Tweaks"
-        $destinationFolder = "$parentDirectory\GTAV_Tweaks_backup_from_version_$pCurrentVersion"
+        Write-Host "[executeUpdate()] [INFO] Backing up files from old version..."
+        $currentExecutableParentDirectory = Split-Path -Path $pCurrentExecutableLocation -Parent
+        $oldSupportFilesFolder = Join-Path -Path $currentExecutableParentDirectory -ChildPath "GTAV_Tweaks"
+        $oldFilesBackupFolder = Join-Path -Path $currentExecutableParentDirectory -ChildPath ("GTAV_Tweaks_backup_from_version_$pCurrentVersion")
+
         # Moves the old files into a backup folder.
-        Get-ChildItem -Path $sourceFolder -Recurse | ForEach-Object {
-            $destinationFile = Join-Path -Path $destinationFolder -ChildPath $_.FullName.Substring($sourceFolder.Length + 1)
+        Get-ChildItem -Path $oldSupportFilesFolder -Recurse | ForEach-Object {
+            $destinationFile = Join-Path -Path $oldFilesBackupFolder -ChildPath $_.FullName.Substring($oldSupportFilesFolder.Length + 1)
             $destinationDirectory = Split-Path -Path $destinationFile -Parent
+        
             # Skips the temporary update files to not include them into the backup.
             If ($_.Directory.Name -eq "GTAV_Tweaks_temp_update") {
                 Continue
@@ -161,20 +181,23 @@ function executeUpdate() {
                 Move-Item -Path $_.FullName -Destination $destinationFile -Force
             }
         }
-        Move-Item -Path $pCurrentExecutableLocation -Destination "$destinationFolder\GTAV_Tweaks.exe" -Force
+        # Moves the old executable into the back up directory.
+        Move-Item -LiteralPath $oldExecutableLocation -Destination $oldFilesBackupFolder -Force
+
         # Move the new executable into the directory that contained the old one.
-        Move-Item -Path "$pOutputDirectory\GTAV_Tweaks\GTAV_Tweaks.exe" -Destination $pCurrentExecutableLocation -Force
+        Move-Item -Path $newExecutableLocation -Destination $currentExecutableParentDirectory -Force
         Write-Host "[executeUpdate()] [INFO] Successfully moved new executable file to target destination."
         # Clean up the folder.
         If (Test-Path -Path $pOutputDirectory) {
             Remove-Item -Path $pOutputDirectory -Recurse -Force
         }
-        # Launch the new and updated script.
-        Start-Process -FilePath $pCurrentExecutableLocation
         Return $true
     }
     Catch {
-        Write-Host "[executeUpdate()] [ERROR] Failed to move new executable file to target destination.`nDetailed error description`n`n[$_]"
+        Write-Host "[executeUpdate()] [ERROR] Failed update execution. Detailed error description below.`n"
+        Write-Host $Error[0]
+        # DO NOT REMOVE THIS COMMENT! Removing this space cause the function to return parts of the error object, 
+        # which are interpreted as true.
         Return $false
     }
 }

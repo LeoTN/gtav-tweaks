@@ -2,7 +2,7 @@
 #MaxThreadsPerHotkey 2
 #Warn Unreachable, Off
 SendMode "Input"
-CoordMode "Mouse", "Client"
+CoordMode "Mouse", "Window"
 
 /*
 DEBUG SECTION
@@ -11,6 +11,7 @@ Add debug variables here.
 */
 ; This variable is also written into the config file.
 global booleanDebugMode := false
+global loadBuiltInHotkeys := true
 
 ;------------------------------------------------
 
@@ -22,7 +23,7 @@ These default variables are used to generate the config file template.
 Otherwise this can lead to fatal errors and failures!
 */
 
-config_onInit()
+configFile_onInit()
 {
     ; Determines the location of the script's configuration file.
     global configFileLocation := A_ScriptDir . "\GTAV_Tweaks\GTAV_Tweaks.ini"
@@ -47,13 +48,6 @@ config_onInit()
     ; Show a notification when GTA has been detected.
     global DISPLAY_GTA_LAUNCH_NOTIFICATION := true
 
-    ; Stores which hotkeys are enabled / disabled via the GUI.
-    global HOTKEY_STATE_ARRAY := "[1, 1, 1, 1]"
-    ; Just a list of all standard hotkeys.
-    global AFK_PERCIO_FLIGHT_HK := "^F9"
-    global SOLO_LOBBY_HK := "^F10"
-    global DEPOSIT_MONEY_LESS_100K_HK := "^F11"
-    global DEPOSIT_MONEY_MORE_100K_HK := "^F12"
     ;------------------------------------------------
 
     ; Will contain all config values matching with each variable name in the array below.
@@ -69,6 +63,7 @@ config_onInit()
     global configVariableNameArray :=
         [
             "booleanDebugMode",
+            "loadBuiltInHotkeys",
             "ASK_FOR_TUTORIAL",
             "LAUNCH_WITH_WINDOWS",
             "LAUNCH_MINIMIZED",
@@ -77,18 +72,14 @@ config_onInit()
             "UPDATE_TO_BETA_VERSIONS",
             "MUTE_GAME_WHILE_LAUNCH",
             "INCREASE_GAME_PRIORITY",
-            "DISPLAY_GTA_LAUNCH_NOTIFICATION",
-            "HOTKEY_STATE_ARRAY",
-            "AFK_PERCIO_FLIGHT_HK",
-            "SOLO_LOBBY_HK",
-            "DEPOSIT_MONEY_LESS_100K_HK",
-            "DEPOSIT_MONEY_MORE_100K_HK"
+            "DISPLAY_GTA_LAUNCH_NOTIFICATION"
         ]
     ; Create an array including the matching section name for EACH item in the configVariableNameArray.
     ; This makes it easier to read and write the config file.
     ; IMPORTANT NOTE: Do NOT forget to add the SECTION NAME for EACH new item added in the configVariableNameArray!!!
     global configSectionNameArray :=
         [
+            "DebugSettings",
             "DebugSettings",
             "GeneralSettings",
             "GeneralSettings",
@@ -98,12 +89,7 @@ config_onInit()
             "GeneralSettings",
             "GameSettings",
             "GameSettings",
-            "GameSettings",
-            "Hotkeys",
-            "Hotkeys",
-            "Hotkeys",
-            "Hotkeys",
-            "Hotkeys"
+            "GameSettings"
         ]
 
     If (!FileExist(configFileLocation))

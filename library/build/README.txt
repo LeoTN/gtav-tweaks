@@ -20,8 +20,7 @@ same directory as the main script. To uninstall this script, just delete all fil
 
 1. Why is this script even using "complicated" macros?
 -> Originally the actions, such as depositing cash, were going to be hardcoded. This worked well on some systems but failed miserably on others. This was likely due to different resolutions,
-other settings and / or different environments. By letting the user create their own macro, we eliminate these issues for the most part. I also plan to extend the macro function in the future
-to allow custom hotkeys with custom macros.
+other settings and / or different environments. By letting the user create their own macro, we eliminate these issues for the most part.
 
 2. Where are my macro files saved?
 -> The macro files are saved in the "GTAV_Tweaks" folder in a subfolder called "macros". The "GTAV_Tweaks" folder is always in the same directory as the GTAV_Tweaks executable.
@@ -48,6 +47,27 @@ MAKE SURE TO BACK UP YOUR FILE(S)! This CAN break your macro(s).
 7. My macro worked but now it isn't anymore!
 -> The macros use the screen coordinates to move the mouse. If you change the resolution, the monitor or a setting which amplifies the screen coordinates,
 you might have to record your macro again.
+
+
+**********Creating Hotkeys FAQ**********
+
+1. Why are there hotkeys already?
+-> I thought this would be a good idea to include ready to use hotkeys for very useful actions such as creating a solo lobby for example.
+
+2. Can I customize the built-in hotkeys?
+-> Yes of course! I recommend keeping the name, because changing it would cause the script to load in a new instance. This happens because
+the script checks the macro config file at every launch if all built-in hotkeys are present. For example: The built-in hotkeys are called
+"1" and "2". If you rename "1" to let's say "one", you would end up with "one", "2" and "1" as your hotkeys.
+
+3. Where are my hotkeys saved?
+-> The macro configuration file is saved in the "GTAV_Tweaks" folder in a subfolder called "macros". The "GTAV_Tweaks" folder is always in the same directory as the GTAV_Tweaks executable.
+You can also open the file under the [File] menu in the main window.
+
+4. How do I create custom hotkeys?
+-> When you launch the script, the first thing you should see is the main window. There will be a menu called [Hotkeys].
+Clicking on it will open another window. On the bottom left you can find the button to create your own hotkeys.
+From there on you will just have to fill in the values and confirm the creation. If the name and keyboard shortcut
+aren't used by any other hotkey yet, you are ready.
 
 
 **********END**********

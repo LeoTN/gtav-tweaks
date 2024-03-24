@@ -2,44 +2,39 @@
 
 **Hotkeys for GTA V Online**
 
-This program adds hotkeys for GTA V Online actions such as **creating a solo lobby**, **depositing cash** or flying the Cayo Perico plane (to start the heist) automatically.
+This program adds **hotkeys** in combination with **macros** for GTA V Online. You can even create your **very own hotkeys**.
 
 ## Installation
 
 >  1. Download the installer archive from [here](https://github.com/LeoTN/gtav-tweaks/releases/latest/download/GTAV_Tweaks.zip).
->  2. Extract the folder, move the file **GTAV_Tweaks.exe** to a desired location (or leave it there for now) and run it.
->  3. Due to a missing digital certificate, you will be shown a Windows Defender message.
->  4. If you "acknowledge" this message, you are set.
->  5. You can choose to perform future updates automatically.
+>  2. Extract the archive, move both the **GTAV_Tweaks_Setup.exe** and **GTAV_Tweaks.exe** to a desired location (or leave them there for now). Just make sure they are in the **same folder**.
+>  3. Execute the **GTAV_Tweaks_Setup.exe** and you are done.
 
-## Currently available hotkeys
+You can find all releases (including beta versions) [here](https://github.com/LeoTN/gtav-tweaks/releases).
 
->  **You can change every hotkey in the config file.**
+## Currently available built-in hotkeys
+
+>  **You can change every hotkey in the config file or use the hotkey overview window.**
 
 | Hotkey     | Description                                                                                     |
 |------------|-------------------------------------------------------------------------------------------------|
 | CTRL + F9* | Keeps the Cayo Perico Heist preparation plane in the air automatically.                         |
 | CTRL + F10 | Creates a GTA V Online solo lobby (as if you would do it with Task Manager).                    |
-| CTRL + F11*| Deposit less than 100k cash into your bank account.                                             |
-| CTRL + F12*| Deposit more than 100k cash into your bank account.                                             |
 
 ***This hotkey is still under development and might not work as expected.**
 
-## Macros
+## Create your own macros & hotkeys
 
-I also created a simple *macro recorder* in AutoHotkey. It is used to create macros for some of the script's hotkeys.
+To make this possible, I also created a simple *macro recorder* in AutoHotkey.
 
-For example, you **need to record a macro** in order **to use the cash depositing hotkeys**.
-
-Don't worry!
-
-**Once** you have **recorded** a macro, you can **use it from now on**. There *might* be a feature in future updates to **create** your **own hotkeys** with a matching macro, who knows.
+You can **record** your **own macros** and execute them with a **keyboard shortcut of your choice**.
 
 More information about this topic, including a FAQ section, can be found in the README file located in the [latest installer archive](https://github.com/LeoTN/gtav-tweaks/releases/latest/download/GTAV_Tweaks.zip).
 
 ## Features
 
-* Very simple and intuitive main window.
+* It is possible to create **custom GTA V actions**, for instance calling NPCs on the phone, depositing cash into your bank account and so on. You can achieve this by creating **macros** and binding them to **hotkeys**.
+
 
 * Ability to mute GTA V during launch and unmute it, once you start playing.
 

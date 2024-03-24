@@ -12,15 +12,19 @@ CoordMode "Mouse", "Window"
 ; Sets the directory for all following files.
 #Include "includes\"
 #Include "ConfigFile.ahk"
+#Include "CustomHotkeyOverviewGUI.ahk"
 #Include "Functions.ahk"
-#Include "GUI.ahk"
-#Include "Hotkeys.ahk"
+#Include "MainGUI.ahk"
+#Include "NewCustomHotkeyGUI.ahk"
+#Include "Objects.ahk"
 
 onInit()
 
 onInit()
 {
     global booleanFirstTimeLaunch := false
+    global macroRecordHotkey := "F5"
+
     global ahkBaseFileLocation := A_ScriptDir . "\GTAV_Tweaks\AutoHotkey32.exe"
     global readmeFileLocation := A_ScriptDir . "\GTAV_Tweaks\README.txt"
 
@@ -31,16 +35,24 @@ onInit()
 
     global audioHookFileLocation := A_ScriptDir . "\GTAV_Tweaks\soundvolumeview-x64\SoundVolumeView.exe"
 
-    global depositLessThan100kMacroFileLocation := A_ScriptDir . "\GTAV_Tweaks\macros\depositLessThan100kMacro.ahk"
-    global depositMoreThan100kMacroFileLocation := A_ScriptDir . "\GTAV_Tweaks\macros\depositMoreThan100kMacro.ahk"
+    global macroFilesStorageDirectory := A_ScriptDir . "\GTAV_Tweaks\macros"
+    global macroConfigFileLocation := macroFilesStorageDirectory . "\GTAV_Tweaks_MACROS.ini"
+    global builtInHKLocation_createSololobby := macroFilesStorageDirectory . "\builtInHK_createSololobby.ahk"
+    global builtInHKLocation_cayoPrepPlaneAfkFlight := macroFilesStorageDirectory . "\builtInHK_cayoPrepPlaneAfkFlight.ahk"
+
+    global recordedMacroFilesStorageDirectory := A_ScriptDir . "\GTAV_Tweaks\recorded_macros"
 
     onInit_unpackSupportFiles()
     ; The version can now be specified because the version file should now be available.
     global versionFullName := FileRead(versionFileLocation)
-    config_onInit()
+    ; Run all onInit() functions from included files.
+    configFile_onInit()
     functions_onInit()
-    hotkeys_onInit()
+    objects_onInit()
     mainGUI_onInit()
+    customHotkeyOverviewGUI_onInit()
+    newCustomHotkeyGUI_onInit()
+
     If (readConfigFile("DISPLAY_LAUNCH_NOTIFICATION"))
     {
         TrayTip("GTAV Tweaks launched.", "GTAV Tweaks - Status", "Iconi Mute")
@@ -73,22 +85,27 @@ onInit_unpackSupportFiles()
     ; Prompts the user to confirm the creation of files.
     If (!DirExist(A_ScriptDir . "\GTAV_Tweaks"))
     {
-        result := MsgBox("Hello there!`n`nYou are about to create some files in a folder called [GTAV_Tweaks] next to this script.`n`n"
+        result := MsgBox("Hello there!`n`nYou are about to create additional files in a folder called [GTAV_Tweaks]"
+            . " in the same directory as this script.`n`n"
             "Would you like to proceed?", "GTAV Tweaks - Confirm File Creation", "YN Iconi 262144")
         If (result != "Yes")
         {
             ExitApp()
         }
-        MsgBox("You can easily delete all files to uninstall this script.", "GTAV Tweaks - How To Uninstall?", "Iconi 262144")
+        MsgBox("To uninstall this software you just need to delete the files.", "GTAV Tweaks - How To Uninstall?", "Iconi 262144")
         DirCreate(A_ScriptDir . "\GTAV_Tweaks")
     }
     If (!DirExist(A_ScriptDir . "\GTAV_Tweaks\assets"))
     {
         DirCreate(A_ScriptDir . "\GTAV_Tweaks\assets")
     }
-    If (!DirExist(A_ScriptDir . "\GTAV_Tweaks\macros"))
+    If (!DirExist(macroFilesStorageDirectory))
     {
-        DirCreate(A_ScriptDir . "\GTAV_Tweaks\macros")
+        DirCreate(macroFilesStorageDirectory)
+    }
+    If (!DirExist(recordedMacroFilesStorageDirectory))
+    {
+        DirCreate(recordedMacroFilesStorageDirectory)
     }
     If (!DirExist(A_ScriptDir . "\GTAV_Tweaks\update"))
     {
@@ -128,5 +145,19 @@ onInit_unpackSupportFiles()
         RunWait('powershell.exe -Command "Expand-Archive -Path """' . A_ScriptDir
             . '\GTAV_Tweaks\soundvolumeview-x64.zip""" -DestinationPath """' . A_ScriptDir . '\GTAV_Tweaks\soundvolumeview-x64""" -Force"', , "Hide")
         FileDelete(A_ScriptDir . "\GTAV_Tweaks\soundvolumeview-x64.zip")
+    }
+
+    If (!FileExist(macroConfigFileLocation))
+    {
+        IniWrite("Always back up your files!", macroConfigFileLocation, "CustomHotkeysBelow", "Advice")
+    }
+
+    If (!FileExist(builtInHKLocation_cayoPrepPlaneAfkFlight))
+    {
+        FileInstall("library\built_in_hotkeys\builtInHK_cayoPrepPlaneAfkFlight.ahk", builtInHKLocation_cayoPrepPlaneAfkFlight, true)
+    }
+    If (!FileExist(builtInHKLocation_createSololobby))
+    {
+        FileInstall("library\built_in_hotkeys\builtInHK_createSololobby.ahk", builtInHKLocation_createSololobby, true)
     }
 }
