@@ -14,6 +14,7 @@ CoordMode "Mouse", "Window"
 #Include "ConfigFile.ahk"
 #Include "CustomHotkeyOverviewGUI.ahk"
 #Include "Functions.ahk"
+#Include "Languages.ahk"
 #Include "MainGUI.ahk"
 #Include "NewCustomHotkeyGUI.ahk"
 #Include "Objects.ahk"
@@ -46,6 +47,7 @@ onInit()
     ; The version can now be specified because the version file should now be available.
     global versionFullName := FileRead(versionFileLocation)
     ; Run all onInit() functions from included files.
+    ; languages_onInit() is included in configFile_onInit().
     configFile_onInit()
     functions_onInit()
     objects_onInit()

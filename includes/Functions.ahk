@@ -112,8 +112,8 @@ checkForAvailableUpdates()
                 Return
             }
             updateVersion := FileRead(availableUpdateFileLocation)
-            result := MsgBox("There is an update available. `n`nUpdate from [" . versionFullName . "] to [" . updateVersion . "] now?",
-                "GTAV Tweaks - Update Available", "YN Iconi T30 262144")
+            result := MsgBox(getLanguageArrayString("functionsMsgBox1_1", versionFullName, updateVersion),
+                getLanguageArrayString("functionsMsgBox1_2"), "YN Iconi T30 262144")
             Switch (result)
             {
                 Case "Yes":
@@ -230,7 +230,7 @@ openReadMeFile()
         }
         Else
         {
-            MsgBox("No README file found.", "GTAV Tweaks - Missing README File", "Icon! T5")
+            MsgBox(getLanguageArrayString("functionsMsgBox2_1"), getLanguageArrayString("functionsMsgBox2_2"), "Icon! T5")
             Return false
         }
     }
@@ -360,8 +360,8 @@ setAutostart(pBooleanEnableAutostart)
             FileGetShortcut(A_Startup . "\" . outNameNoExt . ".lnk", &outTarget)
             If (outTarget != A_ScriptFullPath)
             {
-                result := MsgBox("There seems to be a shortcut in the autostart folder already.`n`nWould you like to overwrite it?",
-                    "GTAV Tweaks - Found Existing Autostart Shortcut", "YN Icon? 262144")
+                result := MsgBox(getLanguageArrayString("functionsMsgBox3_1"),
+                    getLanguageArrayString("functionsMsgBox3_2"), "YN Icon? 262144")
                 If (result != "Yes")
                 {
                     Return
@@ -384,14 +384,14 @@ reloadScriptPrompt()
     ; Number in seconds.
     i := 4
 
-    reloadScriptGUI := Gui(, "GTAV Tweaks - Reloading Script")
-    textField := reloadScriptGUI.Add("Text", "r3 w260 x20 y40", "The script will be`n reloaded in " . i . " seconds.")
+    reloadScriptGUI := Gui(, getLanguageArrayString("reloadAndTerminateGUI_1"))
+    textField := reloadScriptGUI.Add("Text", "r3 w260 x20 y40", getLanguageArrayString("reloadAndTerminateGUI_2", i))
     textField.SetFont("s12")
     textField.SetFont("bold")
-    progressBar := reloadScriptGUI.Add("Progress", "w280 h20 x10 y100", 0)
-    buttonOkay := reloadScriptGUI.Add("Button", "Default w80 x60 y170", "Okay")
-    buttonCancel := reloadScriptGUI.Add("Button", "w80 x160 y170", "Cancel")
-    reloadScriptGUI.Show("w300 h200")
+    progressBar := reloadScriptGUI.Add("Progress", "w280 h20 x10 y120", 0)
+    buttonOkay := reloadScriptGUI.Add("Button", "Default w80 x60 y190", getLanguageArrayString("reloadAndTerminateGUI_7"))
+    buttonCancel := reloadScriptGUI.Add("Button", "w80 x160 y190", getLanguageArrayString("reloadAndTerminateGUI_8"))
+    reloadScriptGUI.Show("AutoSize")
 
     buttonOkay.OnEvent("Click", (*) => Reload())
     buttonCancel.OnEvent("Click", (*) => reloadScriptGUI.Destroy())
@@ -408,15 +408,7 @@ reloadScriptPrompt()
                 progressBar.Value += 1.25
                 Sleep(50)
             }
-
-            If (i = 1)
-            {
-                textField.Text := "The script will be`n reloaded in " . i . " second."
-            }
-            Else
-            {
-                textField.Text := "The script will be`n reloaded in " . i . " seconds."
-            }
+            textField.Text := getLanguageArrayString("reloadAndTerminateGUI_2", i)
             i--
         }
         textField.Text := "The script has been reloaded."
@@ -432,14 +424,14 @@ terminateScriptPrompt()
     ; Number in seconds.
     i := 4
 
-    terminateScriptGUI := Gui(, "GTAV Tweaks - Terminating Script")
-    textField := terminateScriptGUI.Add("Text", "r3 w260 x20 y40", "The script will be`n terminated in " . i . " seconds.")
+    terminateScriptGUI := Gui(, getLanguageArrayString("reloadAndTerminateGUI_4"))
+    textField := terminateScriptGUI.Add("Text", "r3 w260 x20 y40", getLanguageArrayString("reloadAndTerminateGUI_5", i))
     textField.SetFont("s12")
     textField.SetFont("bold")
-    progressBar := terminateScriptGUI.Add("Progress", "w280 h20 x10 y100 cRed backgroundBlack", 0)
-    buttonOkay := terminateScriptGUI.Add("Button", "Default w80 x60 y170", "Okay")
-    buttonCancel := terminateScriptGUI.Add("Button", "w80 x160 y170", "Cancel")
-    terminateScriptGUI.Show("w300 h200")
+    progressBar := terminateScriptGUI.Add("Progress", "w280 h20 x10 y120 cRed backgroundBlack", 0)
+    buttonOkay := terminateScriptGUI.Add("Button", "Default w80 x60 y190", getLanguageArrayString("reloadAndTerminateGUI_7"))
+    buttonCancel := terminateScriptGUI.Add("Button", "w80 x160 y190", getLanguageArrayString("reloadAndTerminateGUI_8"))
+    terminateScriptGUI.Show("AutoSize")
 
     buttonOkay.OnEvent("Click", (*) => ExitApp())
     buttonCancel.OnEvent("Click", (*) => terminateScriptGUI.Destroy())
@@ -456,15 +448,7 @@ terminateScriptPrompt()
                 progressBar.Value += 1.25
                 Sleep(50)
             }
-
-            If (i = 1)
-            {
-                textField.Text := "The script will be`n terminated in " . i . " second."
-            }
-            Else
-            {
-                textField.Text := "The script will be`n terminated in " . i . " seconds."
-            }
+            textField.Text := getLanguageArrayString("reloadAndTerminateGUI_5", i)
             i--
         }
         textField.Text := "The script has been terminated."
