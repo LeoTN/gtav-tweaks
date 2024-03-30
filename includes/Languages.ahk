@@ -9,6 +9,7 @@ languages_onInit()
     global configFileLocation
     ; Check for sufficient tmpKeys in the main GUI script at the language menu, when adding more langues!
     global languageCodeMap := Map(
+        "SYSTEM", A_Language,
         ; The english code isn't real, but setting it to "0000" will trigger the default language, which is English.
         "English", "0000",
         "Deutsch", "0407"
@@ -17,7 +18,7 @@ languages_onInit()
     If (!FileExist(configFileLocation) || !checkConfigFileIntegrity(true))
     {
         createDefaultConfigFile()
-        ; When there is no config file, the script will try to use the system language. Basically the same as "AUTO".
+        ; When there is no config file, the script will try to use the system language. Basically the same as "SYSTEM".
         global completeLanguageArrayMap := createLanguageArrayMap(A_Language)
         Return
     }
@@ -30,6 +31,9 @@ languages_onInit()
             Return
         }
     }
+    ; This is a fail safe.
+    global completeLanguageArrayMap := createLanguageArrayMap(A_Language)
+    editConfigFile("PREFERRED_LANGUAGE", "SYSTEM")
 }
 
 /*
@@ -211,7 +215,7 @@ createLanguageArrayMap(pLanguageCode)
             "Skript neu laden"
         ]
         mainGUIOptionsMenu_3 := [
-            "Sprachen"
+            "Sprache"
         ]
         ; Main GUI info menu
         ; ******************
@@ -532,6 +536,19 @@ createLanguageArrayMap(pLanguageCode)
         objectsMsgBox4_2 := [
             "GTAV Tweaks - Status der Hotkey Datenbank"
         ]
+        ; Built-in Hotkey Description
+        ; #########################
+        builtInHotkeyDescription_1 := [
+            "Hält die W Taste gedrückt und sendet hin und wieder Numpad Up.",
+            "Dieser Hotkey eignet sich zum Beispiel gut zum AFK Laufen, Fahren oder Fliegen von Flugzeugen.",
+            "Wenn der Hotkey erneut gedrückt wird, werden die Tasten losgelassen.",
+            "[Das hier ist ein eingebauter Hotkey]"
+        ]
+        builtInHotkeyDescription_2 := [
+            "Pausiert den GTAV Prozess und erstellt somit eine Sololobby.",
+            ; The empty space is intended.
+            " [Das hier ist ein eingebauter Hotkey]"
+        ]
     }
     ; The fallback language is english.
     Else
@@ -619,7 +636,7 @@ createLanguageArrayMap(pLanguageCode)
             "Reload Script"
         ]
         mainGUIOptionsMenu_3 := [
-            "Languages"
+            "Language"
         ]
         ; Main GUI info menu
         ; ******************
@@ -939,6 +956,19 @@ createLanguageArrayMap(pLanguageCode)
         objectsMsgBox4_2 := [
             "GTAV Tweaks - Hotkey Operation Status"
         ]
+        ; Built-in Hotkey Description
+        ; #########################
+        builtInHotkeyDescription_1 := [
+            "Holds the W key and sends the Numpad Up key periodically.",
+            "You could use this hotkey to walk, drive or fly AFK."
+            "If you press the hotkey again, it will stop holding down keys.",
+            "[This is a built-in hotkey]"
+        ]
+        builtInHotkeyDescription_2 := [
+            "Pausiert den GTAV Prozess und erstellt somit eine Sololobby.",
+            ; The empty space is intended.
+            " [Das hier ist ein eingebauter Hotkey]"
+        ]
     }
     ; Saves every array object with it's real name to find them more easily.
     ; BE CAREFUL WHEN CHANGING THESE NAMES!
@@ -1052,7 +1082,9 @@ createLanguageArrayMap(pLanguageCode)
         "objectsMsgBox3_1", objectsMsgBox3_1,
         "objectsMsgBox3_2", objectsMsgBox3_2,
         "objectsMsgBox4_1", objectsMsgBox4_1,
-        "objectsMsgBox4_2", objectsMsgBox4_2
+        "objectsMsgBox4_2", objectsMsgBox4_2,
+        "builtInHotkeyDescription_1", builtInHotkeyDescription_1,
+        "builtInHotkeyDescription_2", builtInHotkeyDescription_2
     )
     Return completeLanguageArrayMap
 }

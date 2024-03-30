@@ -28,8 +28,8 @@ configFile_onInit()
     ; Determines the location of the script's configuration file.
     global configFileLocation := A_ScriptDir . "\GTAV_Tweaks\GTAV_Tweaks.ini"
 
-    ; Specifies the preferred language for text boxes. Leave it to "AUTO", to use the system language, if available.
-    global PREFERRED_LANGUAGE := "AUTO"
+    ; Specifies the preferred language for text boxes. Leave it to "SYSTEM", to use the system language, if available.
+    global PREFERRED_LANGUAGE := "SYSTEM"
 
     ; Defines if the script should ask the user for a brief explaination of it's core functions.
     global ASK_FOR_TUTORIAL := true

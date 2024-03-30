@@ -260,8 +260,8 @@ loadBuiltInHotkey(pHotkeyName)
     hotkeyNameArray := builtInHK_NameArray
     hotkeyDescriptionArray :=
         [
-            "Allows you to automatically keep the Cayo Perico Heist preperation plane in the air. [This is a built-in hotkey]",
-            "Suspends the GTA V process and therefore creates a solo lobby. [This is a built-in hotkey]"
+            getLanguageArrayString("builtInHotkeyDescription_1"),
+            getLanguageArrayString("builtInHotkeyDescription_2")
         ]
     hotkeyHotkeyArray :=
         [

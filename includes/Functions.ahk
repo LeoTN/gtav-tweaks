@@ -385,7 +385,7 @@ reloadScriptPrompt()
     i := 4
 
     reloadScriptGUI := Gui(, getLanguageArrayString("reloadAndTerminateGUI_1"))
-    textField := reloadScriptGUI.Add("Text", "r3 w260 x20 y40", getLanguageArrayString("reloadAndTerminateGUI_2", i))
+    textField := reloadScriptGUI.Add("Text", "r6 w260 x20 y40", getLanguageArrayString("reloadAndTerminateGUI_2", i))
     textField.SetFont("s12")
     textField.SetFont("bold")
     progressBar := reloadScriptGUI.Add("Progress", "w280 h20 x10 y120", 0)
@@ -425,7 +425,7 @@ terminateScriptPrompt()
     i := 4
 
     terminateScriptGUI := Gui(, getLanguageArrayString("reloadAndTerminateGUI_4"))
-    textField := terminateScriptGUI.Add("Text", "r3 w260 x20 y40", getLanguageArrayString("reloadAndTerminateGUI_5", i))
+    textField := terminateScriptGUI.Add("Text", "r6 w260 x20 y40", getLanguageArrayString("reloadAndTerminateGUI_5", i))
     textField.SetFont("s12")
     textField.SetFont("bold")
     progressBar := terminateScriptGUI.Add("Progress", "w280 h20 x10 y120 cRed backgroundBlack", 0)
