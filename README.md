@@ -1,6 +1,6 @@
 # **GTAV Tweaks**
 
-<div style="display: flex; justify-content: space-between; gap: 10px;">
+<div style="display: flex; justify-content: space-between; gap: 10px;" align="center">
 
 [![GitHub License](https://img.shields.io/github/license/LeoTN/gtav-tweaks?style=for-the-badge&logo=Google%20Docs&logoColor=orange&label=License&color=orange)](https://github.com/LeoTN/gtav-tweaks/blob/main/LICENSE)
 
