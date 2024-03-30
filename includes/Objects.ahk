@@ -137,7 +137,7 @@ class CustomMacro
         Try
         {
             ; Combines the given hotkey with another key, to avoid overwriting existing hotkeys.
-            Hotkey(this.hotkey . " & NumLock", (*) =>, "Off")
+            Hotkey(this.hotkey . " & NumLock", (*) => "Off")
             Return true
         }
         Catch
@@ -226,10 +226,8 @@ loadHotkeys()
             }
             Else
             {
-                MsgBox("Error while importing custom hotkey [" . tmpObject.name . "]!`n`nCould not update macro file path`n["
-                    . tmpObject.macroFileLocation . "]`nto the assumed new macro file location`n[" . tmpNewMacroFileLocation . "]`n`n"
-                    "You will have to select the macro file for this hotkey manually by editing it via the custom hotkey overview window."
-                    , "GTAV Tweaks - Hotkey Auto Import Error", "O Icon! 262144")
+                MsgBox(getLanguageArrayString("objectsMsgBox1_1", tmpObject.name, tmpObject.macroFileLocation, tmpNewMacroFileLocation),
+                    getLanguageArrayString("objectsMsgBox1_2"), "O Icon! 262144")
             }
         }
         ; Applies the changes.
@@ -357,13 +355,14 @@ editHotkey(pHotkeyArrayIndex, pHotkeyName, pHotkeyDescription, pHotkeyHotkey, pH
         }
         Else If (object.name == pHotkeyName)
         {
-            MsgBox("This name is already used by another hotkey: [" . object.name . "].", "GTAV Tweaks - Duplicate Hotkey Name", "O Icon! 262144 T2")
+            MsgBox(getLanguageArrayString("objectsMsgBox2_1", object.name),
+                getLanguageArrayString("objectsMsgBox2_2"), "O Icon! 262144 T2")
             Return false
         }
         Else If (object.hotkey == pHotkeyHotkey)
         {
-            MsgBox("This keyboard shortcut is already used by another hotkey: [" . object.name . "].",
-                "GTAV Tweaks - Duplicate Hotkey Keyboard Shortcut", "O Icon! 262144 T2")
+            MsgBox(getLanguageArrayString("objectsMsgBox3_1", object.name),
+                getLanguageArrayString("objectsMsgBox3_2"), "O Icon! 262144 T2")
             Return false
         }
     }
@@ -410,7 +409,7 @@ editHotkey(pHotkeyArrayIndex, pHotkeyName, pHotkeyDescription, pHotkeyHotkey, pH
         }
         ; Refreshes the overview GUI.
         handleCustomHotkeyOverviewGUI_fillInValuesFromCustomMacroObject()
-        MsgBox("Hotkey saved successfully!", "GTAV Tweaks - Hotkey Operation Status", "O Iconi 262144 T0.75")
+        MsgBox(getLanguageArrayString("objectsMsgBox4_1"), getLanguageArrayString("objectsMsgBox4_2"), "O Iconi 262144 T0.75")
         Return true
     }
     Catch As error
@@ -440,13 +439,14 @@ createHotkey(pHotkeyName, pHotkeyDescription, pHotkeyHotkey, pHotkeyMacroFileLoc
     {
         If (object.name == pHotkeyName)
         {
-            MsgBox("This name is already used by another hotkey: [" . object.name . "].", "GTAV Tweaks - Duplicate Hotkey Name", "O Icon! 262144 T2")
+            MsgBox(getLanguageArrayString("objectsMsgBox2_1", object.name),
+                getLanguageArrayString("objectsMsgBox2_2"), "O Icon! 262144 T2")
             Return false
         }
         Else If (object.hotkey == pHotkeyHotkey)
         {
-            MsgBox("This keyboard shortcut is already used by another hotkey: [" . object.name . "].",
-                "GTAV Tweaks - Duplicate Hotkey Keyboard Shortcut", "O Icon! 262144 T2")
+            MsgBox(getLanguageArrayString("objectsMsgBox3_1", object.name),
+                getLanguageArrayString("objectsMsgBox3_2"), "O Icon! 262144 T2")
             Return false
         }
     }
@@ -476,7 +476,7 @@ createHotkey(pHotkeyName, pHotkeyDescription, pHotkeyHotkey, pHotkeyMacroFileLoc
         }
         ; Refreshes the overview GUI.
         handleCustomHotkeyOverviewGUI_fillInValuesFromCustomMacroObject()
-        MsgBox("Hotkey saved successfully!", "GTAV Tweaks - Hotkey Operation Status", "O Iconi 262144 T0.75")
+        MsgBox(getLanguageArrayString("objectsMsgBox4_1"), getLanguageArrayString("objectsMsgBox4_2"), "O Iconi 262144 T0.75")
         Return true
     }
     Catch As error
