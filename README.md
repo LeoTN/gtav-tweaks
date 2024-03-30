@@ -1,14 +1,24 @@
 # **GTAV Tweaks**
 
-<img alt="GitHub License" src="https://img.shields.io/github/license/LeoTN/gtav-tweaks?style=for-the-badge&label=LICENSE&link=https%3A%2F%2Fgithub.com%2FLeoTN%2Fgtav-tweaks%2Fblob%2Fmain%2FLICENSE"> 
+<div style="display: flex; justify-content: space-between; gap: 3px;">
 
-<img alt="GitHub Release" src="https://img.shields.io/github/v/release/LeoTN/gtav-tweaks?sort=semver&display_name=release&style=for-the-badge&logo=autohotkey&logoColor=green&label=Download&color=green&link=https%3A%2F%2Fgithub.com%2FLeoTN%2Fgtav-tweaks%2Freleases%2Flatest%2Fdownload%2FGTAV_Tweaks.zip">
+<a href="https://github.com/LeoTN/gtav-tweaks/blob/main/LICENSE" target="_blank">
+  <img src="https://img.shields.io/github/license/LeoTN/gtav-tweaks?style=for-the-badge&logo=Google%20Docs&logoColor=orange&label=License&color=orange" alt="GitHub License">
+</a>
 
-<img alt="GitHub Release" src="https://img.shields.io/github/v/release/LeoTN/gtav-tweaks?include_prereleases&sort=semver&filter=*-beta&display_name=release&style=for-the-badge&logo=Google%20Search%20Console&logoColor=orange&label=Beta%20Download&color=orange&link=https%3A%2F%2Fgithub.com%2FLeoTN%2Fgtav-tweaks%2Freleases">
+<a href="https://github.com/LeoTN/gtav-tweaks/tree/main?tab=readme-ov-file#installation">
+  <img src="https://img.shields.io/github/v/release/LeoTN/gtav-tweaks?sort=semver&display_name=release&style=for-the-badge&logo=Autohotkey&logoColor=green&label=Download&color=green" alt="Latest Download">
+</a>
 
-<img alt="GitHub Downloads (specific asset, all releases)" src="https://img.shields.io/github/downloads/LeoTN/gtav-tweaks/GTAV_Tweaks.zip?style=for-the-badge&logo=DocuSign&logoColor=green&label=Total%20Downloads&color=green"> 
+<a href="https://github.com/LeoTN/gtav-tweaks/releases" target="_blank">
+  <img src="https://img.shields.io/github/v/release/LeoTN/gtav-tweaks?include_prereleases&sort=semver&filter=*-beta&display_name=release&style=for-the-badge&logo=Google%20Search%20Console&logoColor=orange&label=Beta%20Download&color=orange" alt="Latest Beta Release">
+</a>
 
-##
+<a href="https://github.com/LeoTN/gtav-tweaks/GTAV_Tweaks.zip" target="_blank">
+  <img src="https://img.shields.io/github/downloads/LeoTN/gtav-tweaks/GTAV_Tweaks.zip?style=for-the-badge&logo=DocuSign&logoColor=green&label=Total%20Downloads&color=green" alt="Total Downloads">
+</a>
+
+</div>
 
 **Hotkeys for GTA V Online**
 
