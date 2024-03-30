@@ -1,5 +1,15 @@
 # **GTAV Tweaks**
 
+<img alt="GitHub License" src="https://img.shields.io/github/license/LeoTN/gtav-tweaks?style=for-the-badge&label=LICENSE&link=https%3A%2F%2Fgithub.com%2FLeoTN%2Fgtav-tweaks%2Fblob%2Fmain%2FLICENSE"> 
+
+<img alt="GitHub Release" src="https://img.shields.io/github/v/release/LeoTN/gtav-tweaks?sort=semver&display_name=release&style=for-the-badge&logo=autohotkey&logoColor=green&label=Download&color=green&link=https%3A%2F%2Fgithub.com%2FLeoTN%2Fgtav-tweaks%2Freleases%2Flatest%2Fdownload%2FGTAV_Tweaks.zip">
+
+<img alt="GitHub Release" src="https://img.shields.io/github/v/release/LeoTN/gtav-tweaks?include_prereleases&sort=semver&filter=*-beta&display_name=release&style=for-the-badge&logo=Google%20Search%20Console&logoColor=orange&label=Beta%20Download&color=orange&link=https%3A%2F%2Fgithub.com%2FLeoTN%2Fgtav-tweaks%2Freleases">
+
+<img alt="GitHub Downloads (specific asset, all releases)" src="https://img.shields.io/github/downloads/LeoTN/gtav-tweaks/GTAV_Tweaks.zip?style=for-the-badge&logo=DocuSign&logoColor=green&label=Total%20Downloads&color=green"> 
+
+##
+
 **Hotkeys for GTA V Online**
 
 This program adds **hotkeys** in combination with **macros** for GTA V Online. You can even create your **very own hotkeys**.
