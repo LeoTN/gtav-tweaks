@@ -14,21 +14,22 @@ languages_onInit()
         "Deutsch", "0407"
     )
 
-    If (FileExist(configFileLocation))
+    If (!FileExist(configFileLocation) || !checkConfigFileIntegrity(true))
     {
-        For key, value in languageCodeMap
+        createDefaultConfigFile()
+        ; When there is no config file, the script will try to use the system language. Basically the same as "AUTO".
+        global completeLanguageArrayMap := createLanguageArrayMap(A_Language)
+        Return
+    }
+    For key, value in languageCodeMap
+    {
+        ; Tries to identify the language in the config file.
+        If (InStr(readConfigFile("PREFERRED_LANGUAGE"), key))
         {
-            ; Tries to identify the language in the config file.
-            If (InStr(readConfigFile("PREFERRED_LANGUAGE"), key))
-            {
-                global completeLanguageArrayMap := createLanguageArrayMap(value)
-                Return
-            }
+            global completeLanguageArrayMap := createLanguageArrayMap(value)
+            Return
         }
     }
-    ; When there is no config file, the script will try to use the system language. Basically the same as "AUTO".
-    global completeLanguageArrayMap := createLanguageArrayMap(A_Language)
-    editConfigFile("PREFERRED_LANGUAGE", "AUTO")
 }
 
 /*

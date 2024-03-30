@@ -271,8 +271,13 @@ editConfigFile(pOptionName, pData)
     }
 }
 
-; Reads the whole config file and throws an error when something is not right.
-checkConfigFileIntegrity()
+/*
+Reads the whole config file and throws an error when something is not right.
+@param pBooleanResultOnly [boolean] If set to true, the function will not take any actions and just return
+the state of of the config file.
+@returns [boolean] True, if the config file is not corrupted. False otherwise.
+*/
+checkConfigFileIntegrity(pBooleanResultOnly := false)
 {
     global booleanFirstTimeLaunch
 
@@ -286,6 +291,10 @@ checkConfigFileIntegrity()
         }
         Catch
         {
+            If (pBooleanResultOnly)
+            {
+                Return false
+            }
             ; Does not show a prompt when the script is launched for the very first time.
             If (booleanFirstTimeLaunch)
             {
@@ -309,6 +318,7 @@ checkConfigFileIntegrity()
             }
         }
     }
+    Return true
 }
 
 /*
