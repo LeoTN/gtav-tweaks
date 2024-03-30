@@ -1,14 +1,22 @@
 # **GTAV Tweaks**
 
-<div style="display: flex; justify-content: space-between; gap: 10px;">
+<div style="display: flex; justify-content: space-between; gap: 5px;">
 
-[![GitHub License](https://img.shields.io/github/license/LeoTN/gtav-tweaks?style=for-the-badge&logo=Google%20Docs&logoColor=orange&label=License&color=orange)](https://github.com/LeoTN/gtav-tweaks/blob/main/LICENSE){:target="_blank"}
+<a href="https://github.com/LeoTN/gtav-tweaks/blob/main/LICENSE" style="text-decoration: none;">
+  <img src="https://img.shields.io/github/license/LeoTN/gtav-tweaks?style=for-the-badge&logo=Google%20Docs&logoColor=orange&label=License&color=orange" alt="GitHub License">
+</a>
 
-[![Latest Download](https://img.shields.io/github/v/release/LeoTN/gtav-tweaks?sort=semver&display_name=release&style=for-the-badge&logo=Autohotkey&logoColor=green&label=Download&color=green)](https://github.com/LeoTN/gtav-tweaks/tree/main?tab=readme-ov-file#installation){:target="_blank"}
+<a href="https://github.com/LeoTN/gtav-tweaks/tree/main?tab=readme-ov-file#installation" style="text-decoration: none;">
+  <img src="https://img.shields.io/github/v/release/LeoTN/gtav-tweaks?sort=semver&display_name=release&style=for-the-badge&logo=Autohotkey&logoColor=green&label=Download&color=green" alt="Latest Download">
+</a>
 
-[![Latest Beta Release](https://img.shields.io/github/v/release/LeoTN/gtav-tweaks?include_prereleases&sort=semver&filter=*-beta&display_name=release&style=for-the-badge&logo=Google%20Search%20Console&logoColor=orange&label=Beta%20Download&color=orange)](https://github.com/LeoTN/gtav-tweaks/releases){:target="_blank"}
+<a href="https://github.com/LeoTN/gtav-tweaks/releases" style="text-decoration: none;">
+  <img src="https://img.shields.io/github/v/release/LeoTN/gtav-tweaks?include_prereleases&sort=semver&filter=*-beta&display_name=release&style=for-the-badge&logo=Google%20Search%20Console&logoColor=orange&label=Beta%20Download&color=orange" alt="Latest Beta Release">
+</a>
 
-[![Total Downloads](https://img.shields.io/github/downloads/LeoTN/gtav-tweaks/GTAV_Tweaks.zip?style=for-the-badge&logo=DocuSign&logoColor=green&label=Total%20Downloads&color=green)](https://github.com/LeoTN/gtav-tweaks/GTAV_Tweaks.zip){:target="_blank"}
+<a href="https://github.com/LeoTN/gtav-tweaks/GTAV_Tweaks.zip" style="text-decoration: none;">
+  <img src="https://img.shields.io/github/downloads/LeoTN/gtav-tweaks/GTAV_Tweaks.zip?style=for-the-badge&logo=DocuSign&logoColor=green&label=Total%20Downloads&color=green" alt="Total Downloads">
+</a>
 
 </div>
 
