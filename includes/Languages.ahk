@@ -135,7 +135,7 @@ createLanguageArrayMap(pLanguageCode)
         ; Main GUI
         ; ********
         mainGUI_1 := [
-            "Änderungen werden angewendet, wenn mit der rechten Maustaste auf das Fenster geklickt wird."
+            "Diese Einstellungen werden automatisch gespeichert."
         ]
         mainGUI_2 := [
             "Startverhalten"
@@ -556,7 +556,7 @@ createLanguageArrayMap(pLanguageCode)
         ; Main GUI
         ; ########
         mainGUI_1 := [
-            "Changes will be applied once you right-click this window."
+            "Changes will be applied automatically."
         ]
         mainGUI_2 := [
             "Startup Behavior"

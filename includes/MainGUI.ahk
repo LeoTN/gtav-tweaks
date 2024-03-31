@@ -104,8 +104,6 @@ createMainGUI()
 
     mainGUI := Gui(, "GTAV Tweaks")
     mainGUI.MenuBar := allMenus
-    ; When closing the main window, the changes are applied.
-    mainGUI.OnEvent("ContextMenu", (*) => handleMainGUI_writeValuesToConfigFile())
 
     ; This part begins to fill the GUI with checkboxes and all that stuff.
     applyChangesText := mainGUI.Add("Text", "", getLanguageArrayString("mainGUI_1"))
@@ -120,6 +118,31 @@ createMainGUI()
     muteGameWhileLaunchCheckbox := mainGUI.Add("Checkbox", "xp+10 yp+20 vMuteGameWhileLaunchCheckbox", getLanguageArrayString("mainGUI_9"))
     setGameProcessPriorityHighCheckbox := mainGUI.Add("Checkbox", "yp+20 vSetGameProcessPriorityHighCheckbox", getLanguageArrayString("mainGUI_10"))
     showGTALaunchMessageCheckbox := mainGUI.Add("Checkbox", "yp+20 vShowGTALaunchMessageCheckbox", getLanguageArrayString("mainGUI_11"))
+
+    ; Makes it, that every checkbox triggers the save function to apply the changes when clicked.
+    For (GUIControlObject in mainGUI)
+    {
+        If (!InStr(GUIControlObject.Type, "Checkbox"))
+        {
+            Continue
+        }
+        ; Some checkboxes require more actions.
+        Switch (GUIControlObject.Name)
+        {
+            Case "CheckForUpdateAtLaunchCheckbox":
+                {
+                    GUIControlObject.OnEvent("Click", (*) => handleMainGUI_writeValuesToConfigFile() reloadScriptPrompt())
+                }
+            Case "UpdateToBetaReleasesCheckbox":
+                {
+                    GUIControlObject.OnEvent("Click", (*) => handleMainGUI_writeValuesToConfigFile() reloadScriptPrompt())
+                }
+            Default:
+                {
+                    GUIControlObject.OnEvent("Click", (*) => handleMainGUI_writeValuesToConfigFile())
+                }
+        }
+    }
 }
 
 /*
