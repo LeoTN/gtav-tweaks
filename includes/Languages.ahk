@@ -445,6 +445,7 @@ createLanguageArrayMap(pLanguageCode)
         mainGUIMsgBox2_1 := [
             "Damit wird das Skript dazu gezwungen, auf die höchste verfügbare Version zu aktualisieren, abhängig von deinen Update-Einstellungen.",
             "`n`nEs wird sogar aktualisiert, wenn die aktuelle Version bereits die neueste ist.",
+            "`n`nDas Update sollte ca. 5-15 Sekunden nach dem Bestätigen starten."
             "`n`nNormalerweise wird diese Option nur verwendet, um deine Beta-Version zu aktualisieren,",
             "da bereits installierte Beta-Versionen keine automatischen Updates erhalten, bis die nächste Vollversion veröffentlicht wird.",
             "`n`nDies liegt daran, dass das Aktualisierungsskript nicht feststellen kann, ob die entsprechende Beta-Version",
@@ -1004,6 +1005,7 @@ createLanguageArrayMap(pLanguageCode)
         mainGUIMsgBox2_1 := [
             "This will force the script to update to the highest available version, depending on your update settings.",
             "`n`nIt will even update when the current version is the highest.",
+            "`n`nThe update should start 5-15 seconds after confirming."
             "`n`nNormally this option is only used to update your beta version,",
             "because already installed beta versions do not receive automatic updates until the next full version.",
             "`n`nThis is because the update script cannot determine whether your beta version has received an update on GitHub or not."

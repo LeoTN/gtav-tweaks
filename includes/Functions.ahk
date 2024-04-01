@@ -77,6 +77,8 @@ checkForExistingGTA()
 
 forceUpdate()
 {
+    global versionFullName
+
     If (!A_IsCompiled)
     {
         MsgBox(getLanguageArrayString("generalScriptMsgBox2_1"), getLanguageArrayString("generalScriptMsgBox2_2"), "O Iconi 262144 T3")
