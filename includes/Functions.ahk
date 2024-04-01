@@ -75,7 +75,29 @@ checkForExistingGTA()
     }
 }
 
-checkForAvailableUpdates()
+forceUpdate()
+{
+    If (!A_IsCompiled)
+    {
+        MsgBox(getLanguageArrayString("generalScriptMsgBox2_1"), getLanguageArrayString("generalScriptMsgBox2_2"), "O Iconi 262144 T3")
+        Return
+    }
+    ; This will trigger the update in any case.
+    versionFullName := "0.0.0"
+    result := MsgBox(getLanguageArrayString("mainGUIMsgBox2_1"),
+        getLanguageArrayString("mainGUIMsgBox2_2"), "OC Icon! 262144")
+    If (result != "OK")
+    {
+        Return
+    }
+    checkForAvailableUpdates(true)
+}
+
+/*
+Checks all GitHub Repository Tags to find new versions.
+@param pBooleanForceUpdate [boolean] If set to true, will not show a prompt and update instantly.
+*/
+checkForAvailableUpdates(pBooleanForceUpdate := false)
 {
     ; Does not check for updates if there is no Internet connection or the script isn't compiled.
     If (!checkInternetConnection() || !A_IsCompiled)
@@ -112,17 +134,19 @@ checkForAvailableUpdates()
                 Return
             }
             updateVersion := FileRead(availableUpdateFileLocation)
-            result := MsgBox(getLanguageArrayString("functionsMsgBox1_1", versionFullName, updateVersion),
-                getLanguageArrayString("functionsMsgBox1_2"), "YN Iconi T30 262144")
-            Switch (result)
+            ; Allows the user to cancel the update.
+            If (!pBooleanForceUpdate)
             {
-                Case "Yes":
-                    {
-                        ; Runs the PowerShell update script with the instruction to execute the update.
-                        Run('powershell.exe -executionPolicy bypass -file "' . psUpdateScriptLocationTemp . '" ' . parameterString)
-                        ExitApp()
-                    }
+                result := MsgBox(getLanguageArrayString("functionsMsgBox1_1", versionFullName, updateVersion),
+                    getLanguageArrayString("functionsMsgBox1_2"), "YN Iconi T30 262144")
+                If (result != "Yes")
+                {
+                    Return
+                }
             }
+            ; Runs the PowerShell update script with the instruction to execute the update.
+            Run('powershell.exe -executionPolicy bypass -file "' . psUpdateScriptLocationTemp . '" ' . parameterString)
+            ExitApp()
         }
     }
 }

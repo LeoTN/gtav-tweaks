@@ -217,6 +217,9 @@ createLanguageArrayMap(pLanguageCode)
         mainGUIOptionsMenu_3 := [
             "Sprache"
         ]
+        mainGUIOptionsMenu_4 := [
+            "Update erzwingen"
+        ]
         ; Main GUI info menu
         ; ******************
         mainGUIInfoMenu_1 := [
@@ -344,6 +347,13 @@ createLanguageArrayMap(pLanguageCode)
         generalScriptMsgBox1_2 := [
             "GTAV Tweaks - Skriptstatus"
         ]
+        generalScriptMsgBox2_1 := [
+            "Du nutzt eine unkompilierte Version dieses Skripts.",
+            "`n`nDiese Aktion ist daher nicht möglich."
+        ]
+        generalScriptMsgBox2_2 := [
+            "GTAV Tweaks - Unkompilierte Version"
+        ]
         ; Config File MsgBoxes
         ; ####################
         configFileMsgBox1_1 := [
@@ -431,6 +441,17 @@ createLanguageArrayMap(pLanguageCode)
         ]
         mainGUIMsgBox1_2 := [
             "Was ist das?"
+        ]
+        mainGUIMsgBox2_1 := [
+            "Damit wird das Skript dazu gezwungen, auf die höchste verfügbare Version zu aktualisieren, abhängig von deinen Update-Einstellungen.",
+            "`n`nEs wird sogar aktualisiert, wenn die aktuelle Version bereits die neueste ist.",
+            "`n`nNormalerweise wird diese Option nur verwendet, um deine Beta-Version zu aktualisieren,",
+            "da bereits installierte Beta-Versionen keine automatischen Updates erhalten, bis die nächste Vollversion veröffentlicht wird.",
+            "`n`nDies liegt daran, dass das Aktualisierungsskript nicht feststellen kann, ob die entsprechende Beta-Version",
+            "ein Update auf GitHub erhalten hat oder nicht."
+        ]
+        mainGUIMsgBox2_2 := [
+            "GTAV Tweaks - Erzwinge Update"
         ]
         ; New Custom Hotkey GUI MsgBoxes
         ; ##############################
@@ -755,6 +776,9 @@ createLanguageArrayMap(pLanguageCode)
         mainGUIOptionsMenu_3 := [
             "Language"
         ]
+        mainGUIOptionsMenu_4 := [
+            "Force Update"
+        ]
         ; Main GUI info menu
         ; ******************
         mainGUIInfoMenu_1 := [
@@ -882,6 +906,13 @@ createLanguageArrayMap(pLanguageCode)
         generalScriptMsgBox1_2 := [
             "GTAV Tweaks - Script Status"
         ]
+        generalScriptMsgBox2_1 := [
+            "You are using an uncompiled version of this script.",
+            "`n`nThis action is therefore not possible."
+        ]
+        generalScriptMsgBox2_2 := [
+            "GTAV Tweaks - Uncompiled Version"
+        ]
         ; Config File MsgBoxes
         ; #####################
         configFileMsgBox1_1 := [
@@ -969,6 +1000,16 @@ createLanguageArrayMap(pLanguageCode)
         ]
         mainGUIMsgBox1_2 := [
             "What's that?"
+        ]
+        mainGUIMsgBox2_1 := [
+            "This will force the script to update to the highest available version, depending on your update settings.",
+            "`n`nIt will even update when the current version is the highest.",
+            "`n`nNormally this option is only used to update your beta version,",
+            "because already installed beta versions do not receive automatic updates until the next full version.",
+            "`n`nThis is because the update script cannot determine whether your beta version has received an update on GitHub or not."
+        ]
+        mainGUIMsgBox2_2 := [
+            "GTAV Tweaks - Force Update"
         ]
         ; New Custom Hotkey GUI MsgBoxes
         ; ##############################
@@ -1232,6 +1273,7 @@ createLanguageArrayMap(pLanguageCode)
         "mainGUIOptionsMenu_1", mainGUIOptionsMenu_1,
         "mainGUIOptionsMenu_2", mainGUIOptionsMenu_2,
         "mainGUIOptionsMenu_3", mainGUIOptionsMenu_3,
+        "mainGUIOptionsMenu_4", mainGUIOptionsMenu_4,
         "mainGUIInfoMenu_1", mainGUIInfoMenu_1,
         "mainGUIInfoMenu_2", mainGUIInfoMenu_2,
         "mainGUIInfoMenu_3", mainGUIInfoMenu_3,
@@ -1269,6 +1311,8 @@ createLanguageArrayMap(pLanguageCode)
         "reloadAndTerminateGUI_8", reloadAndTerminateGUI_8,
         "generalScriptMsgBox1_1", generalScriptMsgBox1_1,
         "generalScriptMsgBox1_2", generalScriptMsgBox1_2,
+        "generalScriptMsgBox2_1", generalScriptMsgBox2_1,
+        "generalScriptMsgBox2_2", generalScriptMsgBox2_2,
         "configFileMsgBox1_1", configFileMsgBox1_1,
         "configFileMsgBox1_2", configFileMsgBox1_2,
         "configFileMsgBox2_1", configFileMsgBox2_1,
@@ -1291,6 +1335,8 @@ createLanguageArrayMap(pLanguageCode)
         "functionsMsgBox3_2", functionsMsgBox3_2,
         "mainGUIMsgBox1_1", mainGUIMsgBox1_1,
         "mainGUIMsgBox1_2", mainGUIMsgBox1_2,
+        "mainGUIMsgBox2_1", mainGUIMsgBox2_1,
+        "mainGUIMsgBox2_2", mainGUIMsgBox2_2,
         "newCustomHotkeyOverviewGUIMsgBox1_1", newCustomHotkeyOverviewGUIMsgBox1_1,
         "newCustomHotkeyOverviewGUIMsgBox1_2", newCustomHotkeyOverviewGUIMsgBox1_2,
         "newCustomHotkeyOverviewGUIMsgBox2_1", newCustomHotkeyOverviewGUIMsgBox2_1,
