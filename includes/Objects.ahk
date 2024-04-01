@@ -169,7 +169,7 @@ objects_onInit()
     global macroConfigFileLocation
     global builtInHK_NameArray :=
         [
-            "AFK Cayo Perico Plane Flight",
+            "Drive, Fly or Walk AFK",
             "Create Solo Lobby"
         ]
 
@@ -254,7 +254,7 @@ loadBuiltInHotkey(pHotkeyName)
     global macroConfigFileLocation
     global customMacroObjectArray
     global builtInHK_NameArray
-    global builtInHKLocation_cayoPrepPlaneAfkFlight
+    global builtInHKLocation_walkDriveFlyAFK
     global builtInHKLocation_createSololobby
 
     hotkeyNameArray := builtInHK_NameArray
@@ -270,7 +270,7 @@ loadBuiltInHotkey(pHotkeyName)
         ]
     hotkeyMacroFileLocationArray :=
         [
-            builtInHKLocation_cayoPrepPlaneAfkFlight,
+            builtInHKLocation_walkDriveFlyAFK,
             builtInHKLocation_createSololobby
         ]
 

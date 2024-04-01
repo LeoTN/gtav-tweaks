@@ -38,7 +38,7 @@ You can find all releases (including beta versions) [here](https://github.com/Le
 
 | Hotkey     | Description                                                                                     |
 |------------|-------------------------------------------------------------------------------------------------|
-| CTRL + F9* | Keeps the Cayo Perico Heist preparation plane in the air automatically.                         |
+| CTRL + F9* | Holds down the W key and sends Numpad Up periodically. To stop it, simply press the key again.  |
 | CTRL + F10 | Creates a GTA V Online solo lobby (as if you would do it with Task Manager).                    |
 
 ***This hotkey is still under development and might not work as expected.**

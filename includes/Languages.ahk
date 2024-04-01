@@ -466,7 +466,7 @@ createLanguageArrayMap(pLanguageCode)
             "GTAV Tweaks - Was ist ein Makro"
         ]
         newCustomHotkeyOverviewGUIMsgBox6_1 := [
-            "Um die Aufzeichnung eines Makros zu starten, drücke die`n[",
+            "Um die Aufzeichnung eines Makros zu starten, Drückee die`n[",
             "",
             "] Taste, nachdem du [Makro aufzeichnen] geklickt hast.`n`nDie Makrodatei wird dann unter`n[",
             "",
@@ -484,7 +484,7 @@ createLanguageArrayMap(pLanguageCode)
         ]
         newCustomHotkeyOverviewGUIMsgBox8_1 := [
             "Weitere Informationen findest du in den FAQ in der README.txt-Datei.`n`n",
-            "Drücke [Ja], um sie zu öffnen."
+            "Drückee [Ja], um sie zu öffnen."
         ]
         newCustomHotkeyOverviewGUIMsgBox8_2 := [
             "GTAV Tweaks - Makro-FAQ"
@@ -492,7 +492,7 @@ createLanguageArrayMap(pLanguageCode)
         newCustomHotkeyOverviewGUIMsgBox9_1 := [
             "Du hast 15 Sekunden nach dem Schließen dieser Info-Box Zeit, um mit der Aufzeichnung zu beginnen, indem du [",
             "",
-            "] drückst.`n`nUm die Aufzeichnung zu stoppen, drücke einfach [",
+            "] Drückest.`n`nUm die Aufzeichnung zu stoppen, Drückee einfach [",
             "",
             "] erneut."
         ]
@@ -536,13 +536,130 @@ createLanguageArrayMap(pLanguageCode)
         objectsMsgBox4_2 := [
             "GTAV Tweaks - Status der Hotkey Datenbank"
         ]
+        ; Tutorial MsgBoxes
+        ; #################
+        ; Start and stop tutorial MsgBoxes.
+        tutorialMsgBox1_1 := [
+            "Möchtest du ein kurzes Tutorial darüber haben, wie du diese Software benutzt?"
+        ]
+        tutorialMsgBox1_2 := [
+            "GTAV Tweaks - Tutorial - Tutorial Starten"
+        ]
+        tutorialMsgBox2_1 := [
+            "Drücke [Ja], um das Tutorial",
+            "beim nächsten Mal, wenn du dieses Skript ausführst, zu deaktivieren."
+        ]
+        tutorialMsgBox2_2 := [
+            "GTAV Tweaks - Tutorial - Deaktivieren für das Nächste Mal"
+        ]
+        ; Actual tutorial MsgBoxes.
+        tutorialMsgBox3_1 := [
+            "Hey! Danke, dass du diese Software installiert hast!",
+            "`n`nDamit kannst du deine eigenen Makros für GTA V mit deinen eigenen Hotkeys erstellen.",
+            "Es gibt noch ein paar andere Funktionen, aber fangen wir an.",
+            "`n`nDrücke [Okay] zum fortfahren."
+        ]
+        tutorialMsgBox3_2 := [
+            "GTAV Tweaks - Tutorial - Danke fürs Installieren"
+        ]
+        tutorialMsgBox4_1 := [
+            "Das ist das Hauptfenster.",
+            "`nVon hier aus kannst du alle Funktionen aufrufen.",
+            "`n`nDrücke [Okay] zum fortfahren."
+        ]
+        tutorialMsgBox4_2 := [
+            "GTAV Tweaks - Tutorial - Hauptfenster"
+        ]
+        tutorialMsgBox5_1 := [
+            "Bitte schau dir das [Optionen] Menü an.",
+            "`nHier kannst du die Sprache ändern.",
+            "`n`nDrücke [Okay] zum fortfahren."
+        ]
+        tutorialMsgBox5_2 := [
+            "GTAV Tweaks - Tutorial - Hauptfenster"
+        ]
+        tutorialMsgBox6_1 := [
+            "Bitte klicke auf das [Hotkeys & Makros] Menü.",
+            "`nEs öffnet das Hotkey Übersichtsfenster.",
+            "`n`nDrücke [Okay] zum fortfahren."
+        ]
+        tutorialMsgBox6_2 := [
+            "GTAV Tweaks - Tutorial - Hauptfenster"
+        ]
+        tutorialMsgBox7_1 := [
+            "Das Skript hat das Hotkey Übersichtsfenster für dich geöffnet.",
+            "`n`nKeine Sorge, du wirst schnell damit klarkommen :)"
+        ]
+        tutorialMsgBox7_2 := [
+            "GTAV Tweaks - Tutorial - Hotkey Übersichtsfenster"
+        ]
+        tutorialMsgBox8_1 := [
+            "Das ist das Hotkey Übersichtsfenster.",
+            "`nHier kannst du deine Hotkeys verwalten.",
+            "`n`nDrücke [Okay] zum fortfahren."
+        ]
+        tutorialMsgBox8_2 := [
+            "GTAV Tweaks - Tutorial - Hotkey Übersichtsfenster"
+        ]
+        tutorialMsgBox9_1 := [
+            "Beachte die Dropdown-Liste.",
+            "`nSie enthält bereits einige vorinstallierte Hotkeys.",
+            "`n`nDu kannst einen Hotkey auswählen, und das Fenster zeigt seine Eigenschaften an.",
+            "`n`nNachdem ein Hotkey ausgewählt wurde, kannst du ihn aktivieren, deaktivieren, bearbeiten oder löschen.",
+            "`n`nDrücke [Okay] zum fortfahren."
+        ]
+        tutorialMsgBox9_2 := [
+            "GTAV Tweaks - Tutorial - Hotkey Übersichtsfenster"
+        ]
+        tutorialMsgBox10_1 := [
+            "Bitte klicke auf die Schaltfläche [Hotkey erstellen].",
+            "`nDadurch wird das Hotkey Erstellungsfenster geöffnet.",
+            "`n`nDrücke [Okay] zum fortfahren."
+        ]
+        tutorialMsgBox10_2 := [
+            "GTAV Tweaks - Tutorial - Hotkey Übersichtsfenster"
+        ]
+        tutorialMsgBox11_1 := [
+            "Das Skript hat das Hotkey Erstellungsfenster für dich geöffnet.",
+            "`n`nKeine Sorge, du wirst schnell damit klarkommen :)"
+        ]
+        tutorialMsgBox11_2 := [
+            "GTAV Tweaks - Tutorial - Hotkey Erstellungsfenster"
+        ]
+        tutorialMsgBox12_1 := [
+            "Dieses Fenster sieht ähnlich aus wie das Hotkey Übersichtsfenster oder?",
+            "`n`nDiesmal darfst du die Werte darin bearbeiten.",
+            "`nDas Erstellen eines Hotkeys ist ziemlich einfach und ich bin sicher, du wirst es hinbekommen.",
+            "`n`nDrücke [Okay] zum fortfahren."
+        ]
+        tutorialMsgBox12_2 := [
+            "GTAV Tweaks - Tutorial - Hotkey Übersichtsfenster"
+        ]
+        tutorialMsgBox13_1 := [
+            "Beachte: Hotkeys sind NUR verfügbar, wenn GTA V im Vordergrund ist.",
+            "`nDas soll versehentliche Aktivierungen von Hotkeys verhindern.",
+            "`n`nDrücke [Okay] zum fortfahren."
+        ]
+        tutorialMsgBox13_2 := [
+            "GTAV Tweaks - Tutorial - Gut zu wissen"
+        ]
+        tutorialMsgBox14_1 := [
+            "Merke: Alle Funktionen können über das Hauptfenster aufgerufen werden (das standardmäßig geöffnet wird).",
+            "`n`nDas ist das Ende des Tutorials.",
+            "`n`nIch bin sicher, du hast die meisten Dinge bereits vergessen, aber der beste Weg zu lernen, ist sowieso auszuprobieren und Fehler zu machen.",
+            "`n`nDrücke [Okay] zum fortfahren."
+        ]
+        tutorialMsgBox14_2 := [
+            "GTAV Tweaks - Tutorial - Gut zu wissen"
+        ]
         ; Built-in Hotkey Description
         ; #########################
         builtInHotkeyDescription_1 := [
-            "Hält die W Taste gedrückt und sendet hin und wieder Numpad Up.",
+            "Hält die W Taste geDrücket und sendet hin und wieder Numpad Up.",
             "Dieser Hotkey eignet sich zum Beispiel gut zum AFK Laufen, Fahren oder Fliegen von Flugzeugen.",
-            "Wenn der Hotkey erneut gedrückt wird, werden die Tasten losgelassen.",
-            "[Das hier ist ein eingebauter Hotkey]"
+            "Wenn der Hotkey erneut geDrücket wird, werden die Tasten losgelassen.",
+            ; The empty space is intended.
+            " [Das hier ist ein eingebauter Hotkey]"
         ]
         builtInHotkeyDescription_2 := [
             "Pausiert den GTAV Prozess und erstellt somit eine Sololobby.",
@@ -956,13 +1073,130 @@ createLanguageArrayMap(pLanguageCode)
         objectsMsgBox4_2 := [
             "GTAV Tweaks - Hotkey Operation Status"
         ]
+        ; Tutorial MsgBoxes
+        ; #################
+        ; Start and stop tutorial MsgBoxes.
+        tutorialMsgBox1_1 := [
+            "Would you like to have a short tutorial on how to use this software?"
+        ]
+        tutorialMsgBox1_2 := [
+            "GTAV Tweaks - Tutorial - Start Tutorial"
+        ]
+        tutorialMsgBox2_1 := [
+            "Press [Yes] to disable the tutorial",
+            "for the next time you run this script."
+        ]
+        tutorialMsgBox2_2 := [
+            "GTAV Tweaks - Tutorial - Disable For Next Time"
+        ]
+        ; Actual tutorial MsgBoxes.
+        tutorialMsgBox3_1 := [
+            "Hey there! Thanks for installing this software!",
+            "`n`nIt allows you to create your own macros for GTA V binded to your own keyboard shortcuts.",
+            "There are a few other functions additionally, but let's start the tutorial.",
+            "`n`nPress [Okay] to continue."
+        ]
+        tutorialMsgBox3_2 := [
+            "GTAV Tweaks - Tutorial - Thanks for Installing"
+        ]
+        tutorialMsgBox4_1 := [
+            "This is the main window.",
+            "`nYou can navigate all functions from here.",
+            "`n`nPress [Okay] to continue."
+        ]
+        tutorialMsgBox4_2 := [
+            "GTAV Tweaks - Tutorial - Main Window"
+        ]
+        tutorialMsgBox5_1 := [
+            "Please take a look at the [Options] menu.",
+            "`nYou can change the language here.",
+            "`n`nPress [Okay] to continue."
+        ]
+        tutorialMsgBox5_2 := [
+            "GTAV Tweaks - Tutorial - Main Window"
+        ]
+        tutorialMsgBox6_1 := [
+            "Please click on the [Hotkeys & Macros] menu.",
+            "`nThis will open the hotkey overview window.",
+            "`n`nPress [Okay] to continue."
+        ]
+        tutorialMsgBox6_2 := [
+            "GTAV Tweaks - Tutorial - Main Window"
+        ]
+        tutorialMsgBox7_1 := [
+            "The script opened the hotkey overview window for you.",
+            "`n`nNo worries, you will get the hang of it soon :)"
+        ]
+        tutorialMsgBox7_2 := [
+            "GTAV Tweaks - Tutorial - Hotkey Overview Window"
+        ]
+        tutorialMsgBox8_1 := [
+            "This is the hotkey overview window.",
+            "`nYou can manage your hotkeys here.",
+            "`n`nPress [Okay] to continue."
+        ]
+        tutorialMsgBox8_2 := [
+            "GTAV Tweaks - Tutorial - Hotkey Overview Window"
+        ]
+        tutorialMsgBox9_1 := [
+            "Notice the drop down list.",
+            "`nIt already contains a few built-in hotkeys.",
+            "`n`nYou can select a hotkey and the window will show its properties.",
+            "`n`nOnce a hotkey is selected, you can activate, deactivate, edit or delete it.",
+            "`n`nPress [Okay] to continue."
+        ]
+        tutorialMsgBox9_2 := [
+            "GTAV Tweaks - Tutorial - Hotkey Overview Window"
+        ]
+        tutorialMsgBox10_1 := [
+            "Please click on the [Create Hotkey] button.",
+            "`nThis will open the hotkey creation window.",
+            "`n`nPress [Okay] to continue."
+        ]
+        tutorialMsgBox10_2 := [
+            "GTAV Tweaks - Tutorial - Hotkey Overview Window"
+        ]
+        tutorialMsgBox11_1 := [
+            "The script opened the hotkey creation window for you.",
+            "`n`nNo worries, you will get the hang of it soon :)"
+        ]
+        tutorialMsgBox11_2 := [
+            "GTAV Tweaks - Tutorial - Hotkey Creation Window"
+        ]
+        tutorialMsgBox12_1 := [
+            "This window looks similar to the hotkey overview window, doesn't it?",
+            "`n`nThis time you are allowed to edit the values inside.",
+            "`nCreating a hotkey is pretty straightforward and I'm sure you can figure it out.",
+            "`n`nPress [Okay] to continue."
+        ]
+        tutorialMsgBox12_2 := [
+            "GTAV Tweaks - Tutorial - Hotkey Overview Window"
+        ]
+        tutorialMsgBox13_1 := [
+            "Please note that hotkeys are ONLY available while GTA V is in the foreground.",
+            "`nThis should prevent accidental hotkey activations.",
+            "`n`nPress [Okay] to continue."
+        ]
+        tutorialMsgBox13_2 := [
+            "GTAV Tweaks - Tutorial - Good to Know"
+        ]
+        tutorialMsgBox14_1 := [
+            "Remember: All functions can be accessed via the main window (which opens by default).",
+            "`n`nThis is the end of the tutorial.",
+            "`n`nI'm sure you've forgotten most of it by now, but the best way to learn is to try and error anyway.",
+            "`n`nPress [Okay] to continue."
+        ]
+        tutorialMsgBox14_2 := [
+            "GTAV Tweaks - Tutorial - Good to Know"
+        ]
         ; Built-in Hotkey Description
         ; #########################
         builtInHotkeyDescription_1 := [
             "Holds the W key and sends the Numpad Up key periodically.",
             "You could use this hotkey to walk, drive or fly AFK."
             "If you press the hotkey again, it will stop holding down keys.",
-            "[This is a built-in hotkey]"
+            ; The empty space is intended.
+            " [This is a built-in hotkey]"
         ]
         builtInHotkeyDescription_2 := [
             "Pausiert den GTAV Prozess und erstellt somit eine Sololobby.",
@@ -1083,6 +1317,34 @@ createLanguageArrayMap(pLanguageCode)
         "objectsMsgBox3_2", objectsMsgBox3_2,
         "objectsMsgBox4_1", objectsMsgBox4_1,
         "objectsMsgBox4_2", objectsMsgBox4_2,
+        "tutorialMsgBox1_1", tutorialMsgBox1_1,
+        "tutorialMsgBox1_2", tutorialMsgBox1_2,
+        "tutorialMsgBox2_1", tutorialMsgBox2_1,
+        "tutorialMsgBox2_2", tutorialMsgBox2_2,
+        "tutorialMsgBox3_1", tutorialMsgBox3_1,
+        "tutorialMsgBox3_2", tutorialMsgBox3_2,
+        "tutorialMsgBox4_1", tutorialMsgBox4_1,
+        "tutorialMsgBox4_2", tutorialMsgBox4_2,
+        "tutorialMsgBox5_1", tutorialMsgBox5_1,
+        "tutorialMsgBox5_2", tutorialMsgBox5_2,
+        "tutorialMsgBox6_1", tutorialMsgBox6_1,
+        "tutorialMsgBox6_2", tutorialMsgBox6_2,
+        "tutorialMsgBox7_1", tutorialMsgBox7_1,
+        "tutorialMsgBox7_2", tutorialMsgBox7_2,
+        "tutorialMsgBox8_1", tutorialMsgBox8_1,
+        "tutorialMsgBox8_2", tutorialMsgBox8_2,
+        "tutorialMsgBox9_1", tutorialMsgBox9_1,
+        "tutorialMsgBox9_2", tutorialMsgBox9_2,
+        "tutorialMsgBox10_1", tutorialMsgBox10_1,
+        "tutorialMsgBox10_2", tutorialMsgBox10_2,
+        "tutorialMsgBox11_1", tutorialMsgBox11_1,
+        "tutorialMsgBox11_2", tutorialMsgBox11_2,
+        "tutorialMsgBox12_1", tutorialMsgBox12_1,
+        "tutorialMsgBox12_2", tutorialMsgBox12_2,
+        "tutorialMsgBox13_1", tutorialMsgBox13_1,
+        "tutorialMsgBox13_2", tutorialMsgBox13_2,
+        "tutorialMsgBox14_1", tutorialMsgBox14_1,
+        "tutorialMsgBox14_2", tutorialMsgBox14_2,
         "builtInHotkeyDescription_1", builtInHotkeyDescription_1,
         "builtInHotkeyDescription_2", builtInHotkeyDescription_2
     )

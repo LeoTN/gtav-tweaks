@@ -39,7 +39,7 @@ onInit()
     global macroFilesStorageDirectory := A_ScriptDir . "\GTAV_Tweaks\macros"
     global macroConfigFileLocation := macroFilesStorageDirectory . "\GTAV_Tweaks_MACROS.ini"
     global builtInHKLocation_createSololobby := macroFilesStorageDirectory . "\builtInHK_createSololobby.ahk"
-    global builtInHKLocation_cayoPrepPlaneAfkFlight := macroFilesStorageDirectory . "\builtInHK_cayoPrepPlaneAfkFlight.ahk"
+    global builtInHKLocation_walkDriveFlyAFK := macroFilesStorageDirectory . "\builtInHK_cayoPrepPlaneAfkFlight.ahk"
 
     global recordedMacroFilesStorageDirectory := A_ScriptDir . "\GTAV_Tweaks\recorded_macros"
 
@@ -60,6 +60,10 @@ onInit()
         TrayTip("GTAV Tweaks launched.", "GTAV Tweaks - Status", "Iconi Mute")
         Sleep(1500)
         TrayTip()
+    }
+    If (readConfigFile("ASK_FOR_TUTORIAL"))
+    {
+        scriptTutorial()
     }
     If (readConfigFile("CHECK_FOR_UPDATES_AT_LAUNCH"))
     {
@@ -154,9 +158,9 @@ onInit_unpackSupportFiles()
         IniWrite("Always back up your files!", macroConfigFileLocation, "CustomHotkeysBelow", "Advice")
     }
 
-    If (!FileExist(builtInHKLocation_cayoPrepPlaneAfkFlight))
+    If (!FileExist(builtInHKLocation_walkDriveFlyAFK))
     {
-        FileInstall("library\built_in_hotkeys\builtInHK_cayoPrepPlaneAfkFlight.ahk", builtInHKLocation_cayoPrepPlaneAfkFlight, true)
+        FileInstall("library\built_in_hotkeys\builtInHK_cayoPrepPlaneAfkFlight.ahk", builtInHKLocation_walkDriveFlyAFK, true)
     }
     If (!FileExist(builtInHKLocation_createSololobby))
     {

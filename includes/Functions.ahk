@@ -42,13 +42,13 @@ waitForGTAToExist()
 waitForUserInputInGTA()
 {
     ; This prevents the script from loading infinitely.
-    If (WinWaitActive("ahk_exe GTA5.exe", , 600) = 0)
+    If (WinWaitActive("ahk_exe GTA5.exe", , 600) == 0)
     {
         Reload()
     }
     While (WinActive("ahk_exe GTA5.exe"))
     {
-        If (KeyWait("w", "D T1") = 1)
+        If (KeyWait("w", "D T1") == 1)
         {
             Return
         }
@@ -140,7 +140,7 @@ checkInternetConnection()
         httpRequest.Open("GET", "http://www.google.com", false)
         httpRequest.Send()
 
-        If (httpRequest.Status = 200)
+        If (httpRequest.Status == 200)
         {
             Return true
         }
@@ -149,11 +149,78 @@ checkInternetConnection()
     Return false
 }
 
-; Shows a tutorial to the user.
+; A small tour to show off the basic functions of this script.
 scriptTutorial()
 {
-    ; Nothing yet
-    MsgBox("Tutorial GTAV Tweaks (not finished)")
+    result := MsgBox(getLanguageArrayString("tutorialMsgBox1_1"),
+        getLanguageArrayString("tutorialMsgBox1_2"), "YN Iconi 262144")
+    If (result == "Yes")
+    {
+        minimizeAllGUIs()
+        MsgBox(getLanguageArrayString("tutorialMsgBox3_1"), getLanguageArrayString("tutorialMsgBox3_2"), "O Iconi 262144")
+        If (!WinExist("ahk_id " . mainGUI.Hwnd))
+        {
+            mainGUI.Show()
+        }
+        ; Main GUI.
+        WinActivate("ahk_id " . mainGUI.Hwnd)
+        MsgBox(getLanguageArrayString("tutorialMsgBox4_1"), getLanguageArrayString("tutorialMsgBox4_2"), "O Iconi 262144")
+        ; Options menu.
+        MsgBox(getLanguageArrayString("tutorialMsgBox5_1"), getLanguageArrayString("tutorialMsgBox5_2"), "O Iconi 262144")
+        ; Hotkeys & Macros menu.
+        MsgBox(getLanguageArrayString("tutorialMsgBox6_1"), getLanguageArrayString("tutorialMsgBox6_2"), "O Iconi 262144")
+        ; Hotkey Overview GUI.
+        If (WinWaitActive("ahk_id " . customHotkeyOverviewGUI.Hwnd, , 5) == 0)
+        {
+            customHotkeyOverviewGUI.Show()
+            MsgBox(getLanguageArrayString("tutorialMsgBox7_1"), getLanguageArrayString("tutorialMsgBox7_2"), "O Iconi 262144 T3")
+        }
+        minimizeAllGUIs()
+        WinActivate("ahk_id " . customHotkeyOverviewGUI.Hwnd)
+        MsgBox(getLanguageArrayString("tutorialMsgBox8_1"), getLanguageArrayString("tutorialMsgBox8_2"), "O Iconi 262144")
+        ; Drop Down List.
+        ControlFocus(customHotkeyOverviewGUIHotkeyDropDownList.Hwnd, "ahk_id " . customHotkeyOverviewGUI.Hwnd) ; REMOVE
+        MsgBox(getLanguageArrayString("tutorialMsgBox9_1"), getLanguageArrayString("tutorialMsgBox9_2"), "O Iconi 262144")
+        MsgBox(getLanguageArrayString("tutorialMsgBox10_1"), getLanguageArrayString("tutorialMsgBox10_2"), "O Iconi 262144")
+        ; Hotkey Creation GUI.
+        If (WinWaitActive("ahk_id " . newCustomHotkeyGUI.Hwnd, , 5) == 0)
+        {
+            newCustomHotkeyGUI.Show()
+            MsgBox(getLanguageArrayString("tutorialMsgBox11_1"), getLanguageArrayString("tutorialMsgBox11_2"), "O Iconi 262144 T3")
+        }
+        minimizeAllGUIs()
+        WinActivate("ahk_id " . newCustomHotkeyGUI.Hwnd)
+        MsgBox(getLanguageArrayString("tutorialMsgBox12_1"), getLanguageArrayString("tutorialMsgBox12_2"), "O Iconi 262144")
+        ; Final infos.
+        MsgBox(getLanguageArrayString("tutorialMsgBox13_1"), getLanguageArrayString("tutorialMsgBox13_2"), "O Iconi 262144")
+        MsgBox(getLanguageArrayString("tutorialMsgBox14_1"), getLanguageArrayString("tutorialMsgBox14_2"), "O Iconi 262144")
+    }
+    ; The dialog to disable the tutorial for the next time is only shown when the config file entry mentioned below is true.
+    If (readConfigFile("ASK_FOR_TUTORIAL"))
+    {
+        result := MsgBox(getLanguageArrayString("tutorialMsgBox2_1"),
+            getLanguageArrayString("tutorialMsgBox2_2"), "YN Iconi 262144")
+        If (result == "Yes")
+        {
+            editConfigFile("ASK_FOR_TUTORIAL", false)
+        }
+    }
+    minimizeAllGUIs()
+    {
+        ; Minimizes all script windows to reduce diversion.
+        If (WinExist("ahk_id " . mainGUI.Hwnd))
+        {
+            WinMinimize()
+        }
+        If (WinExist("ahk_id " . customHotkeyOverviewGUI.Hwnd))
+        {
+            WinMinimize()
+        }
+        If (WinExist("ahk_id " . newCustomHotkeyGUI.Hwnd))
+        {
+            WinMinimize()
+        }
+    }
 }
 
 /*

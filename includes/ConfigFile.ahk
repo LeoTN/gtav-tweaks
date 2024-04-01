@@ -54,8 +54,8 @@ configFile_onInit()
     ;------------------------------------------------
 
     ; Will contain all config values matching with each variable name in the array below.
-    ; For example configVariableNameArray[2] = "ASK_FOR_TUTORIAL"
-    ; and configFileContentArray[2] = "true", so basically ASK_FOR_TUTORIAL = "true".
+    ; For example configVariableNameArray[2] == "ASK_FOR_TUTORIAL"
+    ; and configFileContentArray[2] == "true", so basically ASK_FOR_TUTORIAL == "true".
     ; NOTE: This had to be done because changing a global variable using a dynamic
     ; expression like global %myGlobalVarName% := "newValue" won't work.
     global configFileContentArray := []
@@ -121,7 +121,7 @@ createDefaultConfigFile(pBooleanCreateBackup := true, pBooleanShowPrompt := fals
     If (pBooleanShowPrompt)
     {
         result := MsgBox(getLanguageArrayString("configFileMsgBox1_1"), getLanguageArrayString("configFileMsgBox1_2"), "YN Icon! 262144")
-        If (result = "No" || result = "Timeout")
+        If (result == "No" || result == "Timeout")
         {
             Return
         }
@@ -360,7 +360,7 @@ validatePath(pPath, pBooleanAskForPathCreation := true, pBooleanCreatePathSilent
     }
 
     ; This means the path has no file at the end.
-    If (outExtension = "")
+    If (outExtension == "")
     {
         If (!DirExist(pPath))
         {
