@@ -3,15 +3,17 @@ Param (
     [Parameter(Mandatory = $true)]
     [String]$pGitHubRepositoryLink,
     [Parameter(Mandatory = $true)]
-    [String]$pCurrentVersion,
+    [String]$pCurrentVersionFileLocation,
     [Parameter(Mandatory = $true)]
     [String]$pCurrentExecutableLocation,
     [Parameter(Mandatory = $true)]
-    [String]$pOutputDirectory,
+    [String]$pOutputDirectory = $env:TEMP,
     [Parameter(Mandatory = $false)]
-    [Switch]$pBooleanDoNotStartUpdate = $false,
+    [switch]$pSwitchDoNotStartUpdate,
     [Parameter(Mandatory = $false)]
-    [Switch]$pBooleanConsiderBetaReleases = $false
+    [switch]$pSwitchForceUpdate,
+    [Parameter(Mandatory = $false)]
+    [switch]$pSwitchConsiderBetaReleases
 )
 
 $Host.UI.RawUI.BackgroundColor = "Black"
@@ -24,88 +26,251 @@ Clear-Host
 Write-Host "Terminal ready..."
 
 function onInit() {
+    # A list of all exit codes can be found at the end of this script.
+
+    If ($pSwitchDoNotStartUpdate -and $pSwitchForceUpdate) {
+        Write-Host "[onInit()] pSwitchDoNotStartUpdate and pSwitchForceUpdate cannot be used at the same time."
+        Return 4
+    }
     # Makes sure, that we do not have a shortened path.
+    $pCurrentVersionFileLocation = [System.IO.Path]::GetFullPath($pCurrentVersionFileLocation)
     $pCurrentExecutableLocation = [System.IO.Path]::GetFullPath($pCurrentExecutableLocation)
     $pOutputDirectory = [System.IO.Path]::GetFullPath($pOutputDirectory)
-    # Adds a subfolder so that we can delete this entire folder instead of deleting every file individually.
+    # Adds a subfolder, so that we can delete this entire folder instead of deleting every file individually.
     $pOutputDirectory = Join-Path -Path $pOutputDirectory -ChildPath "GTAV_Tweaks_temp_update"
-    $global:updateVersion = ""
-    # Removes old available update files.
-    $availableUpdateFileName = "GTAV_Tweaks_Available_Update.txt"
-    $availableUpdateFilePath = Join-Path -Path $scriptParentDirectory -ChildPath $availableUpdateFileName
-    Remove-Item -Path $availableUpdateFilePath -Force -ErrorAction SilentlyContinue
+    # These variables store information about the update.
+    $global:currentVersion = ""
+    $global:currentVersionLastUpdateDate = ""
+    
     # Exit code list at the end of this file.
-    $exitCode = 0
-
-    $tmpResult = checkIfUpdateAvailable
-    If ($tmpResult -and !$pBooleanDoNotStartUpdate) {
-        If (downloadReleaseAsset -pReleaseName $global:updateVersion -pAssetName "GTAV_Tweaks.zip" -pOutputDirectory "$pOutputDirectory") {
-            If (executeUpdate) {
-                Write-Host "[onInit()] [INFO] Successfully updated from version [$pCurrentVersion] to ["$global:updateVersion"]."
-                # Launch the new and updated script.
-                Start-Process -FilePath $pCurrentExecutableLocation
-                $exitCode = 10
-            }
-            Else {
-                Write-Host "[onInit()] [INFO] Failed to update from version [$pCurrentVersion] to ["$global:updateVersion"]."
-                $exitCode = 20
-            }
-            # Copies the log file into the back up folder.
-            $currentExecutableParentDirectory = Split-Path -Path $pCurrentExecutableLocation -Parent
-            $oldFilesBackupFolder = Join-Path -Path $currentExecutableParentDirectory -ChildPath ("GTAV_Tweaks_backup_from_version_$pCurrentVersion")
-            Copy-Item -Path $logFilePath -Destination (Join-Path -Path $oldFilesBackupFolder -ChildPath "executedUpdate.log") -Force
-        }
-    }
-    ElseIf ($tmpResult) {
-        New-Item -Path $availableUpdateFilePath -ItemType "file" -Value $global:updateVersion -Force | Out-Null
-        $exitCode = 5
-    }
-    Else {
-        $exitCode = 15
-    }
+    $exitCode = evaluateUpdate
+    Write-Host "[onInit()] [INFO] Exiting with exit code [$exitCode]."
+    <# # Copies the log file into the back up folder.
+    $currentExecutableParentDirectory = Split-Path -Path $pCurrentExecutableLocation -Parent
+    $targetBackupFolder = Join-Path -Path $currentExecutableParentDirectory -ChildPath ("GTAV_Tweaks_backup_from_version_$pCurrentVersion")
+    Copy-Item -Path $logFilePath -Destination (Join-Path -Path $targetBackupFolder -ChildPath "executedUpdate.log") -Force #>
     Start-Sleep -Seconds 3
     Exit $exitCode
 }
 
-function checkIfUpdateAvailable() {
-    If (-not (checkInternetConnectionStatus)) {
-        Write-Host "[checkIfUpdateAvailable()] [WARNING] No active Internet connection found."
+# Evaluates, if an update is available and returns an exit code accordingly.
+function evaluateUpdate() {
+    # A list of all exit codes can be found at the end of this script.
+
+    # This function fills the two variables above with a value from the currentVersion.CSV file.
+    # If the extraction is not successful, the script will delete the incorrect current version file
+    # because the AutoHotkey executable will replace it with a new and correct one at it's next launch.
+    If (-not (extractCurrentVersionFileContent)) {
+        Write-Host "`n[evaluateUpdate()] [WARNING] The file [$pCurrentVersionFileLocation] seems corrupted or unavailable. The GTAV_Tweaks.exe will create a new and valid file at next launch. Deleting file...`n"
+        Remove-Item -Path $pCurrentVersionFileLocation -ErrorAction SilentlyContinue
+        Return 1
+    }
+    Write-Host "`n[evaluateUpdate()] [INFO] The current version [$global:currentVersion] had it's last update on [$global:currentVersionLastUpdateDate].`n"
+
+    $global:availableUpdateVersion = getAvailableUpdateTag
+    If ($global:availableUpdateVersion -eq "no_available_update") {
+        Write-Host "`n[evaluateUpdate()] [INFO] There are no updates available.`n"
+        Return 100
+    }
+    If ($pSwitchDoNotStartUpdate) {
+        # Updates the current version file.
+        $currentVersionFileObject = readFromCSVFile -pFileLocation $pCurrentVersionFileLocation
+        $currentVersionFileObject["AVAILABLE_UPDATE"] = $global:availableUpdateVersion
+        # Avoids the annoying "polution" of the return values.
+        writeToCSVFile -pFileLocation $pCurrentVersionFileLocation -pContent $currentVersionFileObject -pSwitchForce | Out-Null
+        Write-Host "`n[evaluateUpdate()] [INFO] There is an update available [$global:availableUpdateVersion], but pSwitchDoNotStartUpdate has been set to true.`n" 
+        Return 101
+    }
+    # Downloads and executes the update.
+    If (-not (downloadReleaseAsset -pReleaseName $global:availableUpdateVersion -pAssetName "GTAV_Tweaks.zip" -pOutputDirectory $pOutputDirectory)) {
+        Write-Host "`n[evaluateUpdate()] [INFO] There is an update available [$global:availableUpdateVersion], but the script failed to download it.`n"
+        Return 2
+    }
+    If (-not (executeUpdate)) {
+        Write-Host "`n[evaluateUpdate()] [INFO] Failed to execute update from version [$global:currentVersion] to [$global:availableUpdateVersion].`n"
+        Return 3
+    }
+    Else {
+        Start-Process -FilePath $pCurrentExecutableLocation
+        Write-Host "`n[evaluateUpdate()] [INFO] Successfully updated from version [$global:currentVersion] to [$global:availableUpdateVersion].`n"
+        # Launch the new and updated script.
+        Start-Process -FilePath $pCurrentExecutableLocation 
+        Return 102
+    }
+}
+
+function extractCurrentVersionFileContent() {
+    $currentVersionHashtable = readFromCSVFile -pFileLocation $pCurrentVersionFileLocation
+    If (!$currentVersionHashtable) {
+        Write-Host "[extractCurrentVersionFileContent()] [ERROR] Failed to load data from [$pCurrentVersionFileLocation]."
         Return $false
     }
-    # This converts the "normal" repository link to use the GitHub API.
-    $apiUrl = $pGitHubRepositoryLink -Replace "github\.com", "api.github.com/repos"
-    $fullApiUrl = "$apiUrl/tags"
-    $tagsResponse = Invoke-RestMethod -Uri $fullApiUrl -Method Get
 
-    $highestVersion = "v0.0.0"
-    # Iterating through the tags.
-    Foreach ($tag in $tagsResponse) {
-        $tmpTag = $tag.name
-        # Removing unwanted characters and beta label.
-        $tmpTag = $tmpTag.Replace("v", "")
-        If ($tmpTag -like "*-beta" -and !$pBooleanConsiderBetaReleases) {
-            Write-Host "[checkIfUpdateAvailable()] [INFO] Skipping tag [$tmpTag] which is a beta release."
-            Continue
+    ForEach ($pair in $currentVersionHashtable.GetEnumerator()) {
+        $key = $pair.Key
+        $value = $pair.Value
+        # Extracs the data from the current version file.
+        If ($key -eq "CURRENT_VERSION") {
+            $global:currentVersion = $value
         }
-        # Checking if the version is valid.
-        $tmpTag = $tmpTag.Replace("-beta", "")
-        If (-not ($tmpTag -match '^\d+\.\d+\.\d+$')) {
-            Write-Host "[checkIfUpdateAvailable()] [WARNING] Found tag name which couldn't be converted to version: [$tmpTag]."
-            Continue
+        ElseIf ($key -eq "CURRENT_VERSION_LAST_UPDATED") {
+            # This date will be checked below.
+            $global:currentVersionLastUpdateDate = $value
         }
-        # Finds the highest version.
-        $highestVersion = compareVersions -pVersion1 $highestVersion -pVersion2 $tag.name
     }
-    # Compares the highest released version and the current version.
-    $tmpHighestVersion = compareVersions -pVersion1 $highestVersion -pVersion2 $pCurrentVersion
-    # This means there is an update available.
-    If ($tmpHighestVersion -eq $highestVersion) {
-        Write-Host "[checkIfUpdateAvailable()] [INFO] Found a higher version to update: [$highestVersion]."
-        $global:updateVersion = $highestVersion
+    # Checks if the provided tag has a valid syntaxt.
+    $tmpTag = $global:currentVersion.Replace("v", "").Replace("-beta", "")
+    If (-not ($tmpTag -match '^\d+\.\d+\.\d+$')) {
+        Write-Host "[extractCurrentVersionFileContent()] [ERROR] Found tag name which couldn't be converted to version: [$global:currentVersion]."
+        Return $false
+    }
+    If ($global:currentVersionLastUpdateDate -eq "not_updated_yet") {
+        Write-Host "[extractCurrentVersionFileContent()] [INFO] This version [$global:currentVersion] has not been updatet yet. Trying to fetch latest update date..."
+        $global:currentVersionLastUpdateDate = getLastUpdatedDateFromTag -pTagName $global:currentVersion
+        # This happens, when there is still no latest update date available.
+        If ($global:currentVersionLastUpdateDate -eq "not_updated_yet") {
+            Write-Host "[extractCurrentVersionFileContent()] [INFO] Could not fetch any update dates for [$global:currentVersion]."
+            Return $true
+        }
+        Write-Host "[extractCurrentVersionFileContent()] [INFO] Fetched last update date: [$global:currentVersionLastUpdateDate]. Updating current version file..."
+        $currentVersionHashtable["CURRENT_VERSION_LAST_UPDATED"] = $global:currentVersionLastUpdateDate
+        # Corrects the current version file.
+        If (writeToCSVFile -pFileLocation $pCurrentVersionFileLocation -pContent $currentVersionHashtable -pSwitchForce) {
+            Write-Host "[extractCurrentVersionFileContent()] [INFO] Successfully updated last update date in [$pCurrentVersionFileLocation] for [$global:currentVersion]."
+            Return $true
+        }
+        # If this fails, it isn't a big deal.
+        Write-Host "[extractCurrentVersionFileContent()] [WARNING] Failed to update last update date in [$pCurrentVersionFileLocation] for [$global:currentVersion]."
         Return $true
     }
-    Write-Host "[checkIfUpdateAvailable()] [INFO] Could not find any available updates."
-    Return $false
+    If (-not (checkIfStringIsValidDate -pDateTimeString $global:currentVersionLastUpdateDate)) {
+        Write-Host "[extractCurrentVersionFileContent()] [ERROR] Found an invalid last update [$global:currentVersionLastUpdateDate] date for [$global:currentVersion]."
+        Return $false
+    }
+    $currentDateTime = Get-Date
+    $highestDateTime = compareDates -pDateString1 $global:currentVersionLastUpdateDate -pDateString2 $currentDateTime
+    # This mean the current last update date lies in the future.
+    If ((compareDates -pDateString1 $highestDateTime -pDateString2 $currentDateTime) -ne "identical_dates") {
+        Write-Host "[extractCurrentVersionFileContent()] [WARNING] The last update date [$global:currentVersionLastUpdateDate] from [$global:currentVersion] lies in the future."
+        Return $false
+    }
+    Return $true
+}
+
+# Checks for available updates and returns either "no_available_update" or the update tag name.
+function getAvailableUpdateTag() {
+    If (-not (checkInternetConnectionStatus)) {
+        Write-Host "[getAvailableUpdateTag()] [WARNING] No active Internet connection found."
+        Return "no_available_update"
+    }
+
+    $currentTag = $global:currentVersion
+    $latestTag = getLatestTag
+    $highestTag = compareVersions -pVersion1 $currentTag -pVersion2 $latestTag
+    # This mean there is an update available. We are returning the latest tag and not the highest tag, because returning the
+    # highest tag could result in an update to the "current" beta version, when pSwitchConsiderBetaReleases is not true.
+    If ($pSwitchForceUpdate) {
+        Write-Host "[getAvailableUpdateTag()] [INFO] Forced update. Highest available version: [$latestTag]."
+        Return $latestTag
+    }
+    If ($highestTag -eq $latestTag) {
+        Write-Host "[getAvailableUpdateTag()] [INFO] Found a higher version to update: [$highestTag]."
+        Return $highestTag
+    }
+
+    $currentTagLatestUpdateDate = $global:currentVersionLastUpdateDate
+    $latestTagLatestUpdateDate = getLastUpdatedDateFromTag -pTagName $latestTag
+    # This might happen with new releases.
+    If ($latestTagLatestUpdateDate -eq "not_updated_yet") {
+        Write-Host "[getAvailableUpdateTag()] [INFO] Could not find any available updates."
+        Return "no_available_update"
+    }
+    $highestLatestUpdateDate = compareDates -pDateString1 $currentTagLatestUpdateDate -pDateString2 $latestTagLatestUpdateDate
+    # This means there is an update available.
+    If ($highestLatestUpdateDate -eq $latestTagLatestUpdateDate) {
+        Write-Host "[getAvailableUpdateTag()] [INFO] Your current version [$currentTag] has received an update."
+        Return $currentTag
+    }
+    Write-Host "[getAvailableUpdateTag()] [INFO] Could not find any available updates."
+    Return "no_available_update"
+}
+
+# This function uses semantic versioning to determine if a tag is the latest.
+function getLatestTag() {
+    If (-not (checkInternetConnectionStatus)) {
+        Write-Host "[getLatestTag()] [WARNING] No active Internet connection found."
+        Return $false
+    }
+
+    Try {
+        # This converts the "normal" repository link in order to use the GitHub API.
+        $apiUrl = $pGitHubRepositoryLink -Replace "github\.com", "api.github.com/repos"
+        $fullApiUrl = "$apiUrl/tags"
+        $tagsResponse = Invoke-RestMethod -Uri $fullApiUrl -Method Get
+
+        $latestTag = "v0.0.0"
+        # Iterating through the tags.
+        Foreach ($tag in $tagsResponse) {
+            $tmpTag = $tag.name
+            # Removing unwanted characters and beta label.
+            $tmpTag = $tmpTag.Replace("v", "")
+            If ($tmpTag -like "*-beta" -and !$pSwitchConsiderBetaReleases) {
+                Write-Host "[getLatestTag()] [INFO] Skipping tag [$tmpTag] which is a beta release."
+                Continue
+            }
+            # Checking if the version is valid.
+            $tmpTag = $tmpTag.Replace("-beta", "")
+            If (-not ($tmpTag -match '^\d+\.\d+\.\d+$')) {
+                Write-Host "[getLatestTag()] [WARNING] Found tag name which couldn't be converted to version: [$tmpTag]."
+                Continue
+            }
+            # Finds the highest version.
+            $latestTag = compareVersions -pVersion1 $latestTag -pVersion2 $tag.name
+        }
+        Write-Host "[getLatestTag()] [INFO] Found highest tag: [$latestTag]."
+        Return $latestTag
+    }
+    Catch {
+        Write-Host "[getLatestTag()] [ERROR] Failed to fetsh latest tag! Detailed error description below.`n"
+        Write-Host $Error
+        # DO NOT REMOVE THIS COMMENT! Removing this space cause the function to return parts of the error object.
+        Return $false
+    }
+}
+
+function getLastUpdatedDateFromTag() {
+    [CmdLetBinding()]
+    Param (
+        [Parameter(Mandatory = $true)]
+        [String]$pTagName
+    )
+   
+    If (-not (checkInternetConnectionStatus)) {
+        Write-Host "[getLastUpdatedDateFromTag()] [WARNING] No active Internet connection found."
+        Return "not_updated_yet"
+    }
+    Try {
+        # This converts the "normal" repository link in order to use the GitHub API.
+        $apiUrl = $pGitHubRepositoryLink -Replace "github\.com", "api.github.com/repos"
+        $fullApiUrl = "$apiUrl/releases/tags/$pTagName"
+        $tagResponse = Invoke-RestMethod -Uri $fullApiUrl
+        # The date is not a valid PowerShell datetime data type. That's why we are converting it.
+        $invalidLastUpdateDate = ($tagResponse.assets | Select-Object -ExpandProperty updated_at)
+        # This happens, when the release hasn't been updated yet.
+        If (!$invalidLastUpdateDate) {
+            Write-Host "[getLastUpdatedDateFromTag()] [INFO] No update date for [$pTagName] found."
+            Return "not_updated_yet"
+        }
+        $lastUpdateDate = Get-Date -Format "dd/MM/yyyy HH:mm:ss" $invalidLastUpdateDate
+    }
+    Catch {
+        Write-Host "[getLastUpdatedDateFromTag()] [ERROR] Failed to fetch last update date for [$pTagName]! Detailed error description below.`n"
+        Write-Host $Error
+        # DO NOT REMOVE THIS COMMENT! Removing this space cause the function to return parts of the error object.
+        Return "not_updated_yet"
+    }
+    Write-Host "[getLastUpdatedDateFromTag()] [INFO] Update date [$lastUpdateDate] for [$pTagName] found."
+    Return $lastUpdateDate
 }
 
 function downloadReleaseAsset() {
@@ -141,63 +306,103 @@ function downloadReleaseAsset() {
 function executeUpdate() {
     $updateZipArchiveLocation = Join-Path -Path $pOutputDirectory -ChildPath "GTAV_Tweaks.zip"
     $updateArchiveLocation = Join-Path -Path $pOutputDirectory -ChildPath "GTAV_Tweaks"
-    $oldExecutableLocation = $pCurrentExecutableLocation
-    $newExecutableLocation = Join-Path -Path $updateArchiveLocation -ChildPath "GTAV_Tweaks.exe"
+    $newExecutableLocation = join-path -Path $updateArchiveLocation -ChildPath "GTAV_Tweaks.exe"
 
     Write-Host "[executeUpdate()] [INFO] Starting update process..."
     If (-not (Test-Path -Path $updateZipArchiveLocation)) {
         Write-Host "[executeUpdate()] [ERROR] Could not find installer archive at [$pOutputDirectory\GTAV_Tweaks.zip]."
         Return $false
     }
-    Expand-Archive -Path $updateZipArchiveLocation -DestinationPath $updateArchiveLocation -Force
-    # Unblock every file.
-    Get-ChildItem -Path $updateArchiveLocation -Recurse | ForEach-Object {
-        If (-not $_.PSIsContainer) {
-            Unblock-File -Path $_.FullName -ErrorAction Continue
-        }
-    }
     Try {
-        Write-Host "[executeUpdate()] [INFO] Backing up files from old version..."
         $currentExecutableParentDirectory = Split-Path -Path $pCurrentExecutableLocation -Parent
-        $oldSupportFilesFolder = Join-Path -Path $currentExecutableParentDirectory -ChildPath "GTAV_Tweaks"
-        $oldFilesBackupFolder = Join-Path -Path $currentExecutableParentDirectory -ChildPath ("GTAV_Tweaks_backup_from_version_$pCurrentVersion")
-
-        # Moves the old files into a backup folder.
-        Get-ChildItem -Path $oldSupportFilesFolder -Recurse | ForEach-Object {
-            $destinationFile = Join-Path -Path $oldFilesBackupFolder -ChildPath $_.FullName.Substring($oldSupportFilesFolder.Length + 1)
-            $destinationDirectory = Split-Path -Path $destinationFile -Parent
-        
-            # Skips the temporary update files to not include them into the backup.
-            If ($_.Directory.Name -eq "GTAV_Tweaks_temp_update") {
-                Continue
-            }
-            If (-not (Test-Path -Path $destinationDirectory)) {
-                New-Item -ItemType Directory -Path $destinationDirectory -Force
-            }
-            If ($_.Extension -eq ".ini" -or $_.Extension -eq ".ini_old" -or $_.Directory.Name -eq "macros") {
-                Copy-Item -Path $_.FullName -Destination $destinationFile -Force
-            }
-            Else {
-                Move-Item -Path $_.FullName -Destination $destinationFile -Force
+        If (-not (backupOldVersionFiles -pCurrentExecutableLocation $pCurrentExecutableLocation -pBackupTargetDirectory $currentExecutableParentDirectory)) {
+            Write-Host "[executeUpdate()] [ERROR] Failed to backup old version files."
+            Return $false
+        }
+        Expand-Archive -Path $updateZipArchiveLocation -DestinationPath $updateArchiveLocation -Force
+        # Unblock every file.
+        Get-ChildItem -Path $updateArchiveLocation -Recurse | ForEach-Object {
+            If (-not $_.PSIsContainer) {
+                Unblock-File -Path $_.FullName -ErrorAction Continue
             }
         }
-        # Moves the old executable into the back up directory.
-        Move-Item -LiteralPath $oldExecutableLocation -Destination $oldFilesBackupFolder -Force
-
-        # Move the new executable into the directory that contained the old one.
-        Move-Item -Path $newExecutableLocation -Destination $currentExecutableParentDirectory -Force
-        Write-Host "[executeUpdate()] [INFO] Successfully moved new executable file to target destination."
+        # Moves the new executable to the old place.
+        Move-Item -Path $newExecutableLocation -Destination $pCurrentExecutableLocation -Force
+        Write-Host "[executeUpdate()] [INFO] Moved [$newExecutableLocation] to [$pCurrentExecutableLocation]."
         # Clean up the folder.
         If (Test-Path -Path $pOutputDirectory) {
             Remove-Item -Path $pOutputDirectory -Recurse -Force
         }
+        Write-Host "[executeUpdate()] [INFO] Successfully executed update."
         Return $true
     }
     Catch {
         Write-Host "[executeUpdate()] [ERROR] Failed update execution. Detailed error description below.`n"
-        Write-Host $Error[0]
-        # DO NOT REMOVE THIS COMMENT! Removing this space cause the function to return parts of the error object, 
-        # which are interpreted as true.
+        Write-Host $Error
+        # DO NOT REMOVE THIS COMMENT! Removing this space cause the function to return parts of the error object, which are interpreted as true.
+        Return $false
+    }
+}
+
+function backupOldVersionFiles() {
+    Param(
+        [Parameter(Mandatory = $true)]
+        [String]$pCurrentExecutableLocation,
+        [Parameter(Mandatory = $true)]
+        [String]$pBackupTargetDirectory
+    )
+    
+    $currentExecutableName = Split-Path -Path $pCurrentExecutableLocation -Leaf
+    $currentExecutableParentDirectory = Split-Path -Path $pCurrentExecutableLocation -Parent
+    $supportFilesFolderName = "GTAV_Tweaks"
+    $supportFilesFolder = Join-Path -Path $currentExecutableParentDirectory -ChildPath $supportFilesFolderName
+    $targetBackupFolderName = "GTAV_Tweaks_backup_from_version_$($global:currentVersion)_at_$(Get-Date -Format "dd.MM.yyyy_HH-mm-ss")"
+    # First backup folder.
+    $targetBackupFolder = Join-Path -Path $pBackupTargetDirectory -ChildPath $targetBackupFolderName
+    $targetBackupFolderSupportFiles = Join-Path -Path $targetBackupFolder -ChildPath $supportFilesFolderName
+    # Second backup folder.
+    $targetBackupFolderTemp = Join-Path -Path ([System.IO.Path]::GetFullPath($env:TEMP)) -ChildPath $targetBackupFolderName
+
+    If (-not (Test-Path -Path $pCurrentExecutableLocation)) {
+        Write-Host "[backupOldVersionFiles()] [WARNING] Could not find [$currentExecutableName] at [$currentExecutableParentDirectory]."
+        Return $false
+    }
+    If (-not (Test-Path -Path $supportFilesFolder)) {
+        Write-Host "[backupOldVersionFiles()] [WARNING] Could not find the support file folder [$supportFilesFolderName] at [$currentExecutableParentDirectory]."
+        Return $false
+    }
+    Try {
+        Write-Host "[backupOldVersionFiles()] [INFO] Creating old version file backup..."
+        # Moves the old support files into a backup folder.
+        $null = Get-ChildItem -Path $supportFilesFolder -Recurse | ForEach-Object {
+            $destinationFileLocation = Join-Path -Path $targetBackupFolderSupportFiles -ChildPath $_.FullName.Substring($supportFilesFolder.Length + 1)
+            $destinationFileParentDirectory = Split-Path -Path $destinationFileLocation -Parent
+            # Skips temporary update files to not include them into the backup.
+            If ($_.Directory.Name -eq "GTAV_Tweaks_temp_update") {
+                Continue
+            }
+            # Creates the parent directory if necessary.
+            If (-not (Test-Path -Path $destinationFileParentDirectory)) {
+                New-Item -ItemType Directory -Path $destinationFileParentDirectory -Force
+            }
+            # Copies the config file instead of moving it. The same goes for the content of the macro folders.
+            if ($_.Extension -in ".ini", ".ini_old" -or $_.Directory.Name -in "macros", "recorded_macros") {
+                Copy-Item -Path $_.FullName -Destination $destinationFileLocation -Force
+            }
+            Else {
+                Move-Item -Path $_.FullName -Destination $destinationFileLocation -Force
+            }
+        }
+        # Moves the old executable into the backup directory.
+        Move-Item -Path $pCurrentExecutableLocation -Destination $targetBackupFolder -Force
+        Copy-Item -Path $targetBackupFolder -Destination $targetBackupFolderTemp -Recurse
+        Write-Host "[backupOldVersionFiles()] [INFO] The files from the old version have been saved to [$targetBackupFolder] and [$targetBackupFolderTemp]."
+        Return $true
+    }
+    Catch {
+        Write-Host "[backupOldVersionFiles()] [ERROR] Failed to backup old version files. Detailed error description below.`n"
+        Write-Host $Error
+        # DO NOT REMOVE THIS COMMENT! Removing this space cause the function to return parts of the error object, which are interpreted as true.
         Return $false
     }
 }
@@ -241,6 +446,35 @@ function compareVersions {
     }
 }
 
+# Compares two date strings. Returns the higher date. If the dates are identical, it returns the string "identical_dates".
+function compareDates() {
+    [CmdletBinding()]
+    Param (
+        [Parameter(Mandatory = $true)]
+        [String]$pDateString1,
+        [Parameter(Mandatory = $true)]
+        [String]$pDateString2
+    )
+
+    # Convert the strings to PowerShell datetime objects.
+    $date1 = Get-Date $pDateString1
+    $date2 = Get-Date $pDateString2
+
+    # Compare the two dates.
+    If ($date1 -gt $date2) {
+        Write-Host "[compareDates()] [INFO] [$pDateString1] is later than [$pDateString2]."
+        Return $pDateString1
+    }
+    Elseif ($date1 -lt $date2) {
+        Write-Host "[compareDates()] [INFO] [$pDateString2] is later than [$pDateString1]."
+        Return $pDateString2
+    }
+    Else {
+        Write-Host "[compareDates()] [INFO] [$pDateString1] is identical to [$pDateString2]."
+        Return "identical_dates"
+    }
+}
+
 function checkInternetConnectionStatus() {
     Try {
         Test-Connection -ComputerName "www.google.com" -Count 1 -ErrorAction Stop
@@ -253,13 +487,98 @@ function checkInternetConnectionStatus() {
     }
 }
 
+function checkIfStringIsValidDate() {
+    Param(
+        [Parameter(Mandatory = $true)]
+        [String]$pDateTimeString
+    )
+    
+    Try {
+        Get-Date $pDateTimeString | Out-Null
+        Write-Host "[checkIfStringIsValidDate()] [INFO] The string [$pDateTimeString] is a valid date."
+        Return $true
+    }
+    Catch {
+        Write-Host "[checkIfStringIsValidDate()] [WARNING] The string [$pDateTimeString] is an invalid date."
+        Return $false
+    }
+}
+
+function writeToCSVFile() {
+    Param(
+        [Parameter(Mandatory = $true)]
+        [String]$pFileLocation,
+        [Parameter(Mandatory = $true)]
+        [hashtable]$pContent,
+        [Parameter(Mandatory = $false)]
+        [switch]$pSwitchForce
+    )
+    
+    # Stops here because the file exists and the function is told to not overwrite the file.
+    If ((Test-Path -Path $pFileLocation) -and !$pSwitchForce) {
+        Write-Host "[writeToCSVFile()] [WARNING] The file [$pFileLocation] is already present. Use [-pSwitchForce] to overwrite it."
+        Return $false
+    }
+    Try {
+        # Writes the hashtable into the file.
+        $pContent.GetEnumerator() | Select-Object -Property @{Name = "Key"; Expression = { $_.Key } }, @{Name = "Value"; Expression = { $_.Value } } | Export-Csv -Path $pFileLocation -Encoding Default -NoTypeInformation
+        Write-Host "[writeToCSVFile()] [INFO] The given hashtable has been successfully written to [$pFileLocation]."
+        Return $true
+    }
+    Catch {
+        Write-Host "[writeToCSVFile()] [ERROR] Failed to write the given hashtable to [$pFileLocation]. Detailed error description below.`n"
+        Write-Host $Error
+        # DO NOT REMOVE THIS COMMENT! Removing this space cause the function to return parts of the error object.
+        Return $false
+    }
+}
+
+# Check if the returned hashtable exists! If an error occurs, the function will return $null!
+function readFromCSVFile() {
+    Param(
+        [Parameter(Mandatory = $true)]
+        [String]$pFileLocation
+    )
+    
+    # Stops here because the file does not exist.
+    If (-not (Test-Path -Path $pFileLocation)) {
+        Write-Host "[readFromCSVFile()] [WARNING] The file [$pFileLocation] does not exist."
+        # We are using $null because $false would cause an error.
+        Return $null
+    }
+    Try {
+        # Reads the .CSV file and converts it into a hashtable.
+        $content = @{}
+        Import-Csv -Path $pFileLocation | ForEach-Object {
+            $content[$_.Key] = $_.Value
+        }
+        Write-Host "[readFromCSVFile()] [INFO] The content of the CSV file [$pFileLocation] has been successfully read."
+        Return $content
+    }
+    Catch {
+        Write-Host "[readFromCSVFile()] [ERROR] Failed to read the content of the CSV file [$pFileLocation]. Detailed error description below.`n"
+        Write-Host $Error
+        # DO NOT REMOVE THIS COMMENT! Removing this space cause the function to return parts of the error object.
+        # We are using $null because $false would cause an error.
+        Return $null
+    }
+}
+
 onInit
 
 <# 
 Exit Code List
 
-5: An update is available but it hasn't been installed yet.
-10: An available update has been successfully installed.
-15: There are no updates available.
-20: An available update has not been successfully installed.
+Bad exit codes
+Range: 1-99
+1: Corrupted current version file.
+2: Available update, but there was a download error.
+3: Available update, but there was an error while executing the update process.
+4: Invalid script parameter combination.
+
+Normal exit codes
+Range: 100-199
+100: No available updates.
+101: Available update, but pSwitchDoNotStartUpdate is true.
+102: Successful update performed.
 #>

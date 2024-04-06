@@ -75,6 +75,10 @@ checkForExistingGTA()
     }
 }
 
+/*
+Forces the script to update to the latest version, depending on the update settings.
+@returns [boolean] True or false, depending on the function's success.
+*/
 forceUpdate()
 {
     global versionFullName
@@ -82,75 +86,117 @@ forceUpdate()
     If (!A_IsCompiled)
     {
         MsgBox(getLanguageArrayString("generalScriptMsgBox2_1"), getLanguageArrayString("generalScriptMsgBox2_2"), "O Iconi 262144 T3")
-        Return
+        Return false
     }
-    ; This will trigger the update in any case.
-    versionFullName := "0.0.0"
     result := MsgBox(getLanguageArrayString("mainGUIMsgBox2_1"),
         getLanguageArrayString("mainGUIMsgBox2_2"), "OC Icon! 262144")
     If (result != "OK")
     {
-        Return
+        Return false
     }
-    checkForAvailableUpdates(true)
+    If (!startUpdate(true))
+    {
+        Return false
+    }
+    Return true
 }
 
 /*
-Checks all GitHub Repository Tags to find new versions.
-@param pBooleanForceUpdate [boolean] If set to true, will not show a prompt and update instantly.
+Checks all GitHub Repository tags to find new versions.
+@returns [boolean] Returns true, when an update is available. False otherwise.
 */
-checkForAvailableUpdates(pBooleanForceUpdate := false)
+checkForAvailableUpdates()
 {
-    ; Does not check for updates if there is no Internet connection or the script isn't compiled.
+    global currentVersionFileLocation
+    global psUpdateScriptLocation
+
+    ; Does not check for updates, if there is no Internet connection or the script isn't compiled.
     If (!checkInternetConnection() || !A_IsCompiled)
     {
-        Return
+        Return false
     }
     SplitPath(psUpdateScriptLocation, &outFileName)
     psUpdateScriptLocationTemp := A_Temp . "\" . outFileName
     updateWorkingDir := A_Temp . "\GTAV_Tweaks_AUTO_UPDATE"
-    availableUpdateFileLocation := A_Temp . "\GTAV_Tweaks_Available_Update.txt"
+
     ; Copies the script to the temp directory. This ensure that there are no file errors while the script is moving or copying files,
     ; because it cannot copy itself, while it is running.
     FileCopy(psUpdateScriptLocation, psUpdateScriptLocationTemp, true)
-    parameterString := '-pGitHubRepositoryLink "https://github.com/LeoTN/gtav-tweaks" -pCurrentVersion "' . versionFullName
+    parameterString := '-pGitHubRepositoryLink "https://github.com/LeoTN/gtav-tweaks" -pCurrentVersionFileLocation "' . currentVersionFileLocation
         . '" -pCurrentExecutableLocation "' . A_ScriptFullPath . '" -pOutputDirectory "' . updateWorkingDir . '"'
 
     If (readConfigFile("UPDATE_TO_BETA_VERSIONS"))
     {
-        parameterString .= " -pBooleanConsiderBetaReleases"
+        parameterString .= " -pSwitchConsiderBetaReleases"
     }
     ; Calls the PowerShell script to check for available updates.
     exitCode := RunWait('powershell.exe -executionPolicy bypass -file "' . psUpdateScriptLocationTemp
-        . '" ' . parameterString . ' -pBooleanDoNotStartUpdate', , "Hide")
+        . '" ' . parameterString . ' -pSwitchDoNotStartUpdate', , "Hide")
     Switch (exitCode)
     {
-        ; This exit code states that an update is available.
-        Case 5:
+        ; Available update, but pSwitchDoNotStartUpdate was set to true.
+        Case 101:
         {
-            If (!FileExist(availableUpdateFileLocation))
-            {
-                SplitPath(availableUpdateFileLocation, &outFileName, &outDir)
-                MsgBox("[" . A_ThisFunc . "()] [WARNING] Could not find [" . outFileName . "] at [" . outDir . "]`n`n"
-                    . "Update has been canceled.", "GTAV Tweaks - [" . A_ThisFunc . "()]", "Icon! 262144")
-                Return
-            }
-            updateVersion := FileRead(availableUpdateFileLocation)
-            ; Allows the user to cancel the update.
-            If (!pBooleanForceUpdate)
-            {
-                result := MsgBox(getLanguageArrayString("functionsMsgBox1_1", versionFullName, updateVersion),
-                    getLanguageArrayString("functionsMsgBox1_2"), "YN Iconi T30 262144")
-                If (result != "Yes")
-                {
-                    Return
-                }
-            }
-            ; Runs the PowerShell update script with the instruction to execute the update.
-            Run('powershell.exe -executionPolicy bypass -file "' . psUpdateScriptLocationTemp . '" ' . parameterString)
-            ExitApp()
+            startUpdate()
+            Return true
         }
     }
+    ; Maybe more cases in the future.
+}
+
+/*
+Calls the PowerShell script to start updating this software.
+@param pBooleanForceUpdate [boolean] If set to true, will not show a prompt and update instantly.
+@returns [boolean] True or false, depending on the function's success.
+*/
+startUpdate(pBooleanForceUpdate := false)
+{
+    global currentVersionFileLocation
+    global psUpdateScriptLocation
+
+    ; Does not check for updates, if there is no Internet connection or the script isn't compiled.
+    If (!checkInternetConnection() || !A_IsCompiled)
+    {
+        Return false
+    }
+    SplitPath(psUpdateScriptLocation, &outFileName)
+    psUpdateScriptLocationTemp := A_Temp . "\" . outFileName
+    updateWorkingDir := A_Temp . "\GTAV_Tweaks_AUTO_UPDATE"
+
+    ; Copies the script to the temp directory. This ensure that there are no file errors while the script is moving or copying files,
+    ; because it cannot copy itself, while it is running.
+    FileCopy(psUpdateScriptLocation, psUpdateScriptLocationTemp, true)
+    parameterString := '-pGitHubRepositoryLink "https://github.com/LeoTN/gtav-tweaks" -pCurrentVersionFileLocation "' . currentVersionFileLocation
+        . '" -pCurrentExecutableLocation "' . A_ScriptFullPath . '" -pOutputDirectory "' . updateWorkingDir . '"'
+    ; Depending on the parameters and settings.
+    If (readConfigFile("UPDATE_TO_BETA_VERSIONS"))
+    {
+        parameterString .= " -pSwitchConsiderBetaReleases"
+    }
+    ; Extracts the available update from the current version file.
+    currentVersionFileMap := readFromCSVFile(currentVersionFileLocation)
+    updateVersion := currentVersionFileMap.Get("AVAILABLE_UPDATE")
+    If (updateVersion == "no_available_update")
+    {
+        Return false
+    }
+    If (pBooleanForceUpdate)
+    {
+        ; Calls the PowerShell script to install the update.
+        Run('powershell.exe -executionPolicy bypass -file "' . psUpdateScriptLocationTemp
+            . '" ' . parameterString . ' -pSwitchForceUpdate')
+        ExitApp()
+    }
+    result := MsgBox(getLanguageArrayString("functionsMsgBox1_1", versionFullName, updateVersion),
+        getLanguageArrayString("functionsMsgBox1_2"), "YN Iconi T30 262144")
+    If (result != "Yes")
+    {
+        Return false
+    }
+    ; Calls the PowerShell script to install the update.
+    Run('powershell.exe -executionPolicy bypass -file "' . psUpdateScriptLocationTemp
+        . '" ' . parameterString, , "Hide")
+    ExitApp()
 }
 
 /*
@@ -469,6 +515,87 @@ setAutostart(pBooleanEnableAutostart)
         {
             FileDelete(A_Startup . "\" . outNameNoExt . ".lnk")
         }
+    }
+}
+
+/*
+Writes values to a comma seperated file (CSV).
+@param pFileLocation [String] Should be the path to a .CSV file. The function will create the file if necessary.
+@param pContent [Map] Should be a map object.
+@param pBooleanForce [boolean] If set to true, will overwrite already existing files.
+@returns [boolean] True or false, depending on the success.
+*/
+writeToCSVFile(pFileLocation, pContent, pBooleanForce := false) {
+    ; Checks if the file exists.
+    If (FileExist(pFileLocation) && !pBooleanForce) {
+        MsgBox("[" . A_ThisFunc . "()] [WARNING] The file [" . pFileLocation . "] does already exist.`n`n"
+            "To overwrite it, set pBooleanForce to 'true'.", "GTAV Tweaks - [" . A_ThisFunc . "()]", "Icon! 262144")
+        Return false
+    }
+
+    Try
+    {
+        fileObject := FileOpen(pFileLocation, "w")
+        ; Writes the map object to the file.
+        For (key, value in pContent)
+        {
+            fileObject.WriteLine('"' . key . '","' . value . '"')
+        }
+        fileObject.Close()
+        Return true
+    }
+    Catch As error
+    {
+        displayErrorMessage(error)
+        Return false
+    }
+}
+
+/*
+Reads values from a comma seperated file (CSV).
+@param pFileLocation [String] Should be the path to a .CSV file.
+@returns [Map] A map object containing all key and value pairs from the file.
+*/
+readFromCSVFile(pFileLocation) {
+    ; Checks, if the file is available.
+    If (!FileExist(pFileLocation)) {
+        MsgBox("[" . A_ThisFunc . "()] [WARNING] The file [" . pFileLocation . "] does not exist."
+            , "GTAV Tweaks - [" . A_ThisFunc . "()]", "Icon! 262144")
+        Return
+    }
+
+    Try
+    {
+        CSVMap := Map()
+        CSVArray := []
+        Loop Read, pFileLocation
+        {
+            Loop Parse, A_LoopReadLine, "CSV"
+            {
+                ; Those two entries are created by the PowerShell script and we don't want them in our map.
+                If (A_LoopField != "Key" && A_LoopField != "Value")
+                {
+                    CSVArray.Push(A_LoopField)
+                }
+            }
+        }
+        ; Writes the key and value data to the actual map.
+        i := 0
+        Loop (CSVArray.Length)
+        {
+            If (CSVArray.Has(A_Index + 1 + i))
+            {
+                CSVMap.Set(CSVArray.Get(A_Index + i), CSVArray.Get(A_Index + 1 + i))
+                ; This skips the loop to the next key and value pair.
+                i++
+            }
+        }
+        Return CSVMap
+    }
+    Catch As error
+    {
+        displayErrorMessage(error)
+        Return false
     }
 }
 
