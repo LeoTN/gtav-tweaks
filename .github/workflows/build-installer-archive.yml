@@ -201,7 +201,7 @@ jobs:
         rm "${{ github.workspace }}/library/build/soundvolumeview-x64.zip"
         rm "${{ github.workspace }}/library/build/AutoHotkey32.zip"
         rm "${{ github.workspace }}/library/build/checkForUpdates.ps1"
-        rm "${{ github.workspace }}/library/build/currentVersion.txt"
+        rm "${{ github.workspace }}/library/build/currentVersion.csv"
 
         cp "${{ github.workspace }}/library/setup/GTAV_Tweaks_Setup.exe" "${{ github.workspace }}/library/build/"
 
