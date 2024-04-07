@@ -112,7 +112,7 @@ createMainGUI()
     applyChangesText := mainGUI.Add("Text", "", getLanguageArrayString("mainGUI_1"))
     startupBehaviorGroupbox := mainGUI.Add("GroupBox", "yp+20 w320 R5.3", getLanguageArrayString("mainGUI_2"))
     launchWithWindowsCheckbox := mainGUI.Add("Checkbox", "xp+10 yp+20 vLaunchWithWindowsCheckbox", getLanguageArrayString("mainGUI_3"))
-    launchMinimzedToTrayCheckbox := mainGUI.Add("Checkbox", "yp+20 vLaunchMinimzedToTrayCheckbox", getLanguageArrayString("mainGUI_4"))
+    launchMinimizedToTrayCheckbox := mainGUI.Add("Checkbox", "yp+20 vLaunchMinimizedToTrayCheckbox", getLanguageArrayString("mainGUI_4"))
     showLaunchMessageCheckbox := mainGUI.Add("Checkbox", "yp+20 vShowLaunchMessageCheckbox", getLanguageArrayString("mainGUI_5"))
     checkForUpdateAtLaunchCheckbox := mainGUI.Add("Checkbox", "yp+20 vCheckForUpdateAtLaunchCheckbox", getLanguageArrayString("mainGUI_6"))
     updateToBetaReleasesCheckbox := mainGUI.Add("Checkbox", "yp+20 vUpdateToBetaReleasesCheckbox", getLanguageArrayString("mainGUI_7"))
@@ -129,16 +129,20 @@ createMainGUI()
         {
             Continue
         }
-        ; Some checkboxes require more actions.
+        ; Some checkboxes require more actions such as restarting the script.
         Switch (GUIControlObject.Name)
         {
+            Case "LaunchWithWindowsCheckbox":
+                {
+                    GUIControlObject.OnEvent("Click", (*) => handleMainGUI_checkbox_launchWithWindows())
+                }
             Case "CheckForUpdateAtLaunchCheckbox":
                 {
-                    GUIControlObject.OnEvent("Click", (*) => handleMainGUI_writeValuesToConfigFile() reloadScriptPrompt())
+                    GUIControlObject.OnEvent("Click", (*) => handleMainGUI_checkbox_checkForUpdatesAtLaunch())
                 }
             Case "UpdateToBetaReleasesCheckbox":
                 {
-                    GUIControlObject.OnEvent("Click", (*) => handleMainGUI_writeValuesToConfigFile() reloadScriptPrompt())
+                    GUIControlObject.OnEvent("Click", (*) => handleMainGUI_checkbox_updateToBetaReleases())
                 }
             Default:
                 {
@@ -160,11 +164,11 @@ mainGUI_onInit()
     ; Changes the tray icon and freezes it.
     TraySetIcon(iconFileLocation, , true)
     createMainGUI()
+    handleMainGUI_applyValuesFromConfigFile()
     If (!readConfigFile("LAUNCH_MINIMIZED"))
     {
         mainGUI.Show()
     }
-    handleMainGUI_applyValuesFromConfigFile()
     ; Adds a tray menu point to open the main GUI.
     A_TrayMenu.Insert("1&", "Open Main Window", (*) => mainGUI.Show())
     ; When clicking on the tray icon twice, this will make sure, that the main GUI is shown to the user.
@@ -177,7 +181,7 @@ handleMainGUI_writeValuesToConfigFile()
     Try
     {
         editConfigFile("LAUNCH_WITH_WINDOWS", launchWithWindowsCheckbox.Value)
-        editConfigFile("LAUNCH_MINIMIZED", launchMinimzedToTrayCheckbox.Value)
+        editConfigFile("LAUNCH_MINIMIZED", launchMinimizedToTrayCheckbox.Value)
         editConfigFile("DISPLAY_LAUNCH_NOTIFICATION", showLaunchMessageCheckbox.Value)
         editConfigFile("CHECK_FOR_UPDATES_AT_LAUNCH", checkForUpdateAtLaunchCheckbox.Value)
         editConfigFile("UPDATE_TO_BETA_VERSIONS", updateToBetaReleasesCheckbox.Value)
@@ -197,11 +201,21 @@ handleMainGUI_applyValuesFromConfigFile()
 {
     Try
     {
-        launchWithWindowsCheckbox.Value := readConfigFile("LAUNCH_WITH_WINDOWS")
-        launchMinimzedToTrayCheckbox.Value := readConfigFile("LAUNCH_MINIMIZED")
+        ; Those options are set to false, because they are impossible without using the compiled version.
+        If (!A_IsCompiled)
+        {
+            launchWithWindowsCheckbox.Value := 0
+            checkForUpdateAtLaunchCheckbox.Value := 0
+            updateToBetaReleasesCheckbox.Value := 0
+        }
+        Else
+        {
+            launchWithWindowsCheckbox.Value := readConfigFile("LAUNCH_WITH_WINDOWS")
+            checkForUpdateAtLaunchCheckbox.Value := readConfigFile("CHECK_FOR_UPDATES_AT_LAUNCH")
+            updateToBetaReleasesCheckbox.Value := readConfigFile("UPDATE_TO_BETA_VERSIONS")
+        }
+        launchMinimizedToTrayCheckbox.Value := readConfigFile("LAUNCH_MINIMIZED")
         showLaunchMessageCheckbox.Value := readConfigFile("DISPLAY_LAUNCH_NOTIFICATION")
-        checkForUpdateAtLaunchCheckbox.Value := readConfigFile("CHECK_FOR_UPDATES_AT_LAUNCH")
-        updateToBetaReleasesCheckbox.Value := readConfigFile("UPDATE_TO_BETA_VERSIONS")
         muteGameWhileLaunchCheckbox.Value := readConfigFile("MUTE_GAME_WHILE_LAUNCH")
         setGameProcessPriorityHighCheckbox.Value := readConfigFile("INCREASE_GAME_PRIORITY")
         showGTALaunchMessageCheckbox.Value := readConfigFile("DISPLAY_GTA_LAUNCH_NOTIFICATION")
@@ -237,4 +251,56 @@ handleMainGUI_helpSectionEasterEgg()
         i := 0
         MsgBox(getLanguageArrayString("mainGUIMsgBox1_1"), getLanguageArrayString("mainGUIMsgBox1_2"), "Iconi")
     }
+}
+
+/*
+GUI ELEMENT SUPPORT FUNCTIONS
+-------------------------------------------------
+*/
+
+handleMainGUI_checkbox_checkForUpdatesAtLaunch()
+{
+    If (!A_IsCompiled)
+    {
+        ; Tells the user that he cannot use this checkbox, because the script is not compiled.
+        MsgBox(getLanguageArrayString("generalScriptMsgBox2_1"), getLanguageArrayString("generalScriptMsgBox2_2"), "O Iconi 262144 T3")
+        checkForUpdateAtLaunchCheckbox.Value := 0
+        handleMainGUI_writeValuesToConfigFile()
+        Return false
+    }
+    handleMainGUI_writeValuesToConfigFile()
+    reloadScriptPrompt()
+    ; The function above usually exits the script. This mean the code below won't be executed, unless the user cancels the reload.
+    checkForUpdateAtLaunchCheckbox.Value := !checkForUpdateAtLaunchCheckbox.Value
+    handleMainGUI_writeValuesToConfigFile()
+}
+
+handleMainGUI_checkbox_updateToBetaReleases()
+{
+    If (!A_IsCompiled)
+    {
+        ; Tells the user that he cannot use this checkbox, because the script is not compiled.
+        MsgBox(getLanguageArrayString("generalScriptMsgBox2_1"), getLanguageArrayString("generalScriptMsgBox2_2"), "O Iconi 262144 T3")
+        updateToBetaReleasesCheckbox.Value := 0
+        handleMainGUI_writeValuesToConfigFile()
+        Return false
+    }
+    handleMainGUI_writeValuesToConfigFile()
+    reloadScriptPrompt()
+    ; The function above usually exits the script. This mean the code below won't be executed, unless the user cancels the reload.
+    updateToBetaReleasesCheckbox.Value := !updateToBetaReleasesCheckbox.Value
+    handleMainGUI_writeValuesToConfigFile()
+}
+
+handleMainGUI_checkbox_launchWithWindows()
+{
+    If (!A_IsCompiled)
+    {
+        ; Tells the user that he cannot use this checkbox, because the script is not compiled.
+        MsgBox(getLanguageArrayString("generalScriptMsgBox2_1"), getLanguageArrayString("generalScriptMsgBox2_2"), "O Iconi 262144 T3")
+        launchWithWindowsCheckbox.Value := 0
+        handleMainGUI_writeValuesToConfigFile()
+        Return false
+    }
+    handleMainGUI_writeValuesToConfigFile()
 }

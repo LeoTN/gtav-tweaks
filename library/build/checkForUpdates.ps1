@@ -18,6 +18,7 @@ Param (
 
 $Host.UI.RawUI.BackgroundColor = "Black"
 $Host.UI.RawUI.ForegroundColor = "White"
+$Host.UI.RawUI.WindowTitle = "GTAV Tweaks - Update Script"
 $scriptParentDirectory = Split-Path -Parent $MyInvocation.MyCommand.Path
 $logFileName = "checkForUpdates.log"
 $logFilePath = Join-Path -Path $scriptParentDirectory -ChildPath $logFileName
