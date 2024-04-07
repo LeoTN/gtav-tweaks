@@ -32,7 +32,7 @@ waitForGTAToExist()
     WinWait("ahk_exe GTA5.exe")
     If (readConfigFile("DISPLAY_GTA_LAUNCH_NOTIFICATION"))
     {
-        TrayTip("Running GTAV instance detected.", "GTAV Tweaks - Status", "Iconi Mute")
+        TrayTip(getLanguageArrayString("generalScriptTrayTip1_1"), getLanguageArrayString("generalScriptTrayTip1_2"), "Iconi Mute")
         Sleep(1500)
         TrayTip()
     }
@@ -176,7 +176,7 @@ startUpdate(pBooleanForceUpdate := false)
     ; Extracts the available update from the current version file.
     currentVersionFileMap := readFromCSVFile(currentVersionFileLocation)
     updateVersion := currentVersionFileMap.Get("AVAILABLE_UPDATE")
-    If (updateVersion == "no_available_update")
+    If (updateVersion == "no_available_update" && !pBooleanForceUpdate)
     {
         Return false
     }
@@ -195,7 +195,7 @@ startUpdate(pBooleanForceUpdate := false)
     }
     ; Calls the PowerShell script to install the update.
     Run('powershell.exe -executionPolicy bypass -file "' . psUpdateScriptLocationTemp
-        . '" ' . parameterString, , "Hide")
+        . '" ' . parameterString)
     ExitApp()
 }
 

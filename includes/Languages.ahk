@@ -339,6 +339,20 @@ createLanguageArrayMap(pLanguageCode)
         reloadAndTerminateGUI_8 := [
             "Abbrechen"
         ]
+        ; General Script TrayTips
+        ; #######################
+        generalScriptTrayTip1_1 := [
+            "Aktive GTA V Instanz gefunden."
+        ]
+        generalScriptTrayTip1_2 := [
+            "GTAV Tweaks - Status"
+        ]
+        generalScriptTrayTip2_1 := [
+            "GTAV Tweaks gestartet."
+        ]
+        generalScriptTrayTip2_2 := [
+            "GTAV Tweaks - Status"
+        ]
         ; General Script MsgBoxes
         ; #######################
         generalScriptMsgBox1_1 := [
@@ -895,6 +909,20 @@ createLanguageArrayMap(pLanguageCode)
         reloadAndTerminateGUI_8 := [
             "Cancel"
         ]
+        ; General Script TrayTips
+        ; #######################
+        generalScriptTrayTip1_1 := [
+            "Running GTA V instance detected."
+        ]
+        generalScriptTrayTip1_2 := [
+            "GTAV Tweaks - Status"
+        ]
+        generalScriptTrayTip2_1 := [
+            "GTAV Tweaks launched."
+        ]
+        generalScriptTrayTip2_2 := [
+            "GTAV Tweaks - Status"
+        ]
         ; General Script MsgBoxes
         ; #######################
         generalScriptMsgBox1_1 := [
@@ -1304,6 +1332,10 @@ createLanguageArrayMap(pLanguageCode)
         "reloadAndTerminateGUI_6", reloadAndTerminateGUI_6,
         "reloadAndTerminateGUI_7", reloadAndTerminateGUI_7,
         "reloadAndTerminateGUI_8", reloadAndTerminateGUI_8,
+        "generalScriptTrayTip1_1", generalScriptTrayTip1_1,
+        "generalScriptTrayTip1_2", generalScriptTrayTip1_2,
+        "generalScriptTrayTip2_1", generalScriptTrayTip2_1,
+        "generalScriptTrayTip2_2", generalScriptTrayTip2_2,
         "generalScriptMsgBox1_1", generalScriptMsgBox1_1,
         "generalScriptMsgBox1_2", generalScriptMsgBox1_2,
         "generalScriptMsgBox2_1", generalScriptMsgBox2_1,

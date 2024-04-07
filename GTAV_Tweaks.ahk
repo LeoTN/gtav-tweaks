@@ -65,7 +65,7 @@ onInit()
 
     If (readConfigFile("DISPLAY_LAUNCH_NOTIFICATION"))
     {
-        TrayTip("GTAV Tweaks launched.", "GTAV Tweaks - Status", "Iconi Mute")
+        TrayTip(getLanguageArrayString("generalScriptTrayTip2_1"), getLanguageArrayString("generalScriptTrayTip2_2"), "Iconi Mute")
         Sleep(1500)
         TrayTip()
     }
