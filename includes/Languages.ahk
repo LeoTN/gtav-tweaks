@@ -448,7 +448,7 @@ createLanguageArrayMap(pLanguageCode)
             "`n`nDas Update sollte ca. 5-15 Sekunden nach dem Bestätigen starten."
         ]
         mainGUIMsgBox2_2 := [
-            "GTAV Tweaks - Erzwinge Update"
+            "GTAV Tweaks - Update erzwingen"
         ]
         ; New Custom Hotkey GUI MsgBoxes
         ; ##############################

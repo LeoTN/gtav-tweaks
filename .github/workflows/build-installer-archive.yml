@@ -55,7 +55,7 @@ jobs:
             
             # Stops here because the file does not exist.
             If (-not (Test-Path -Path $pFileLocation)) {
-                Write-Host "[readFromCSVFile()] [WARNING] The file [$pFileLocation] does not exist."
+                Write-Host "[readFromCSVFile()] [WARNING] The file [$pFileLocation] does not exist." -ForegroundColor "Yellow"
                 # We are using $null because $false would cause an error.
                 Return $null
             }
@@ -69,8 +69,8 @@ jobs:
                 Return $content
             }
             Catch {
-                Write-Host "[readFromCSVFile()] [ERROR] Failed to read the content of the CSV file [$pFileLocation]. Detailed error description below.`n"
-                Write-Host $Error
+                Write-Host "[readFromCSVFile()] [ERROR] Failed to read the content of the CSV file [$pFileLocation]. Detailed error description below.`n" -ForegroundColor "Red"
+                Write-Host "***START***[`n$Error`n]***END***" -ForegroundColor "Red"
                 # DO NOT REMOVE THIS COMMENT! Removing this space cause the function to return parts of the error object.
                 # We are using $null because $false would cause an error.
                 Return $null
@@ -89,7 +89,7 @@ jobs:
         
             # Stops here because the file exists and the function is told to not overwrite the file.
             If ((Test-Path -Path $pFileLocation) -and !$pSwitchForce) {
-                Write-Host "[writeToCSVFile()] [WARNING] The file [$pFileLocation] is already present. Use [-pSwitchForce] to overwrite it."
+                Write-Host "[writeToCSVFile()] [WARNING] The file [$pFileLocation] is already present. Use [-pSwitchForce] to overwrite it." -ForegroundColor "Yellow"
                 Return $false
             }
             Try {
@@ -99,8 +99,8 @@ jobs:
                 Return $true
             }
             Catch {
-                Write-Host "[writeToCSVFile()] [ERROR] Failed to write the given hashtable to [$pFileLocation]. Detailed error description below.`n"
-                Write-Host $Error
+                Write-Host "[writeToCSVFile()] [ERROR] Failed to write the given hashtable to [$pFileLocation]. Detailed error description below.`n" -ForegroundColor "Red"
+                Write-Host "***START***[`n$Error`n]***END***" -ForegroundColor "Red"
                 # DO NOT REMOVE THIS COMMENT! Removing this space cause the function to return parts of the error object.
                 Return $false
             }

@@ -29,7 +29,7 @@ function onInit() {
     # A list of all exit codes can be found at the end of this script.
 
     If ($pSwitchDoNotStartUpdate -and $pSwitchForceUpdate) {
-        Write-Host "[onInit()] pSwitchDoNotStartUpdate and pSwitchForceUpdate cannot be used at the same time."
+        Write-Host "`n`n[onInit()] pSwitchDoNotStartUpdate and pSwitchForceUpdate cannot be used at the same time.`n`n"
         Return 4
     }
     # Makes sure, that we do not have a shortened path.
@@ -45,10 +45,24 @@ function onInit() {
     # Exit code list at the end of this file.
     $exitCode = evaluateUpdate
     Write-Host "[onInit()] [INFO] Exiting with exit code [$exitCode]."
-    <# # Copies the log file into the back up folder.
+
     $currentExecutableParentDirectory = Split-Path -Path $pCurrentExecutableLocation -Parent
-    $targetBackupFolder = Join-Path -Path $currentExecutableParentDirectory -ChildPath ("GTAV_Tweaks_backup_from_version_$pCurrentVersion")
-    Copy-Item -Path $logFilePath -Destination (Join-Path -Path $targetBackupFolder -ChildPath "executedUpdate.log") -Force #>
+    $supportFilesFolderName = "GTAV_Tweaks"
+    $supportFilesFolder = Join-Path -Path $currentExecutableParentDirectory -ChildPath $supportFilesFolderName
+    $supportFilesFolderUpdateFolder = Join-Path -Path $supportFilesFolder -ChildPath "update"
+    $logFileNameUpdate = "executedUpdate.log"
+    # Copies the log file into the back up folders.
+    If (Test-Path -Path $global:targetBackupFolder)
+    {
+        Copy-Item -Path $logFilePath -Destination (Join-Path -Path $global:targetBackupFolder -ChildPath $logFileNameUpdate) -Force
+        Copy-Item -Path $logFilePath -Destination (Join-Path -Path $global:targetBackupFolderTemp -ChildPath $logFileNameUpdate) -Force
+    }
+    # Copies the log file into the support file folder.
+    If (Test-Path -Path $supportFilesFolderUpdateFolder)
+    {
+        Copy-Item -Path $logFilePath -Destination (Join-Path -Path $supportFilesFolderUpdateFolder -ChildPath $logFileName) -Force
+    }
+    
     Start-Sleep -Seconds 3
     Exit $exitCode
 }
@@ -61,38 +75,38 @@ function evaluateUpdate() {
     # If the extraction is not successful, the script will delete the incorrect current version file
     # because the AutoHotkey executable will replace it with a new and correct one at it's next launch.
     If (-not (extractCurrentVersionFileContent)) {
-        Write-Host "`n[evaluateUpdate()] [WARNING] The file [$pCurrentVersionFileLocation] seems corrupted or unavailable. The GTAV_Tweaks.exe will create a new and valid file at next launch. Deleting file...`n"
+        Write-Host "`n`n[evaluateUpdate()] [WARNING] The file [$pCurrentVersionFileLocation] seems corrupted or unavailable. The GTAV_Tweaks.exe will create a new and valid file at next launch. Deleting file...`n`n" -ForegroundColor "Yellow"
         Remove-Item -Path $pCurrentVersionFileLocation -ErrorAction SilentlyContinue
         Return 1
     }
-    Write-Host "`n[evaluateUpdate()] [INFO] The current version [$global:currentVersion] had it's last update on [$global:currentVersionLastUpdateDate].`n"
+    Write-Host "`n`n[evaluateUpdate()] [INFO] The current version [$global:currentVersion] had it's last update on [$global:currentVersionLastUpdateDate].`n`n" -ForegroundColor "Green"
 
-    $global:availableUpdateVersion = getAvailableUpdateTag
-    If ($global:availableUpdateVersion -eq "no_available_update") {
-        Write-Host "`n[evaluateUpdate()] [INFO] There are no updates available.`n"
+    $availableUpdateVersion = getAvailableUpdateTag
+    If ($availableUpdateVersion -eq "no_available_update") {
+        Write-Host "`n`n[evaluateUpdate()] [INFO] There are no updates available.`n`n" -ForegroundColor "Green"
         Return 100
     }
     If ($pSwitchDoNotStartUpdate) {
         # Updates the current version file.
         $currentVersionFileObject = readFromCSVFile -pFileLocation $pCurrentVersionFileLocation
-        $currentVersionFileObject["AVAILABLE_UPDATE"] = $global:availableUpdateVersion
+        $currentVersionFileObject["AVAILABLE_UPDATE"] = $availableUpdateVersion
         # Avoids the annoying "polution" of the return values.
         writeToCSVFile -pFileLocation $pCurrentVersionFileLocation -pContent $currentVersionFileObject -pSwitchForce | Out-Null
-        Write-Host "`n[evaluateUpdate()] [INFO] There is an update available [$global:availableUpdateVersion], but pSwitchDoNotStartUpdate has been set to true.`n" 
+        Write-Host "`n`n[evaluateUpdate()] [INFO] There is an update available [$availableUpdateVersion], but pSwitchDoNotStartUpdate has been set to true.`n`n" -ForegroundColor "Green"
         Return 101
     }
     # Downloads and executes the update.
-    If (-not (downloadReleaseAsset -pReleaseName $global:availableUpdateVersion -pAssetName "GTAV_Tweaks.zip" -pOutputDirectory $pOutputDirectory)) {
-        Write-Host "`n[evaluateUpdate()] [INFO] There is an update available [$global:availableUpdateVersion], but the script failed to download it.`n"
+    If (-not (downloadReleaseAsset -pReleaseName $availableUpdateVersion -pAssetName "GTAV_Tweaks.zip" -pOutputDirectory $pOutputDirectory)) {
+        Write-Host "`n`n[evaluateUpdate()] [INFO] There is an update available [$availableUpdateVersion], but the script failed to download it.`n`n" -ForegroundColor "Green"
         Return 2
     }
     If (-not (executeUpdate)) {
-        Write-Host "`n[evaluateUpdate()] [INFO] Failed to execute update from version [$global:currentVersion] to [$global:availableUpdateVersion].`n"
+        Write-Host "`n`n[evaluateUpdate()] [INFO] Failed to execute update from version [$global:currentVersion] to [$availableUpdateVersion].`n`n" -ForegroundColor "Green"
         Return 3
     }
     Else {
         Start-Process -FilePath $pCurrentExecutableLocation
-        Write-Host "`n[evaluateUpdate()] [INFO] Successfully updated from version [$global:currentVersion] to [$global:availableUpdateVersion].`n"
+        Write-Host "`n`n[evaluateUpdate()] [INFO] Successfully updated from version [$global:currentVersion] to [$availableUpdateVersion].`n`n" -ForegroundColor "Green"
         # Launch the new and updated script.
         Start-Process -FilePath $pCurrentExecutableLocation 
         Return 102
@@ -102,7 +116,7 @@ function evaluateUpdate() {
 function extractCurrentVersionFileContent() {
     $currentVersionHashtable = readFromCSVFile -pFileLocation $pCurrentVersionFileLocation
     If (!$currentVersionHashtable) {
-        Write-Host "[extractCurrentVersionFileContent()] [ERROR] Failed to load data from [$pCurrentVersionFileLocation]."
+        Write-Host "[extractCurrentVersionFileContent()] [ERROR] Failed to load data from [$pCurrentVersionFileLocation]." -ForegroundColor "Red"
         Return $false
     }
 
@@ -121,7 +135,7 @@ function extractCurrentVersionFileContent() {
     # Checks if the provided tag has a valid syntaxt.
     $tmpTag = $global:currentVersion.Replace("v", "").Replace("-beta", "")
     If (-not ($tmpTag -match '^\d+\.\d+\.\d+$')) {
-        Write-Host "[extractCurrentVersionFileContent()] [ERROR] Found tag name which couldn't be converted to version: [$global:currentVersion]."
+        Write-Host "[extractCurrentVersionFileContent()] [ERROR] Found tag name which couldn't be converted to version: [$global:currentVersion]." -ForegroundColor "Red"
         Return $false
     }
     If ($global:currentVersionLastUpdateDate -eq "not_updated_yet") {
@@ -140,18 +154,18 @@ function extractCurrentVersionFileContent() {
             Return $true
         }
         # If this fails, it isn't a big deal.
-        Write-Host "[extractCurrentVersionFileContent()] [WARNING] Failed to update last update date in [$pCurrentVersionFileLocation] for [$global:currentVersion]."
+        Write-Host "[extractCurrentVersionFileContent()] [WARNING] Failed to update last update date in [$pCurrentVersionFileLocation] for [$global:currentVersion]." -ForegroundColor "Yellow"
         Return $true
     }
     If (-not (checkIfStringIsValidDate -pDateTimeString $global:currentVersionLastUpdateDate)) {
-        Write-Host "[extractCurrentVersionFileContent()] [ERROR] Found an invalid last update [$global:currentVersionLastUpdateDate] date for [$global:currentVersion]."
+        Write-Host "[extractCurrentVersionFileContent()] [ERROR] Found an invalid last update [$global:currentVersionLastUpdateDate] date for [$global:currentVersion]." -ForegroundColor "Red"
         Return $false
     }
     $currentDateTime = Get-Date
     $highestDateTime = compareDates -pDateString1 $global:currentVersionLastUpdateDate -pDateString2 $currentDateTime
     # This mean the current last update date lies in the future.
     If ((compareDates -pDateString1 $highestDateTime -pDateString2 $currentDateTime) -ne "identical_dates") {
-        Write-Host "[extractCurrentVersionFileContent()] [WARNING] The last update date [$global:currentVersionLastUpdateDate] from [$global:currentVersion] lies in the future."
+        Write-Host "[extractCurrentVersionFileContent()] [WARNING] The last update date [$global:currentVersionLastUpdateDate] from [$global:currentVersion] lies in the future." -ForegroundColor "Yellow"
         Return $false
     }
     Return $true
@@ -160,7 +174,7 @@ function extractCurrentVersionFileContent() {
 # Checks for available updates and returns either "no_available_update" or the update tag name.
 function getAvailableUpdateTag() {
     If (-not (checkInternetConnectionStatus)) {
-        Write-Host "[getAvailableUpdateTag()] [WARNING] No active Internet connection found."
+        Write-Host "[getAvailableUpdateTag()] [WARNING] No active Internet connection found." -ForegroundColor "Yellow"
         Return "no_available_update"
     }
 
@@ -198,7 +212,7 @@ function getAvailableUpdateTag() {
 # This function uses semantic versioning to determine if a tag is the latest.
 function getLatestTag() {
     If (-not (checkInternetConnectionStatus)) {
-        Write-Host "[getLatestTag()] [WARNING] No active Internet connection found."
+        Write-Host "[getLatestTag()] [WARNING] No active Internet connection found." -ForegroundColor "Yellow"
         Return $false
     }
 
@@ -221,7 +235,7 @@ function getLatestTag() {
             # Checking if the version is valid.
             $tmpTag = $tmpTag.Replace("-beta", "")
             If (-not ($tmpTag -match '^\d+\.\d+\.\d+$')) {
-                Write-Host "[getLatestTag()] [WARNING] Found tag name which couldn't be converted to version: [$tmpTag]."
+                Write-Host "[getLatestTag()] [WARNING] Found tag name which couldn't be converted to version: [$tmpTag]." -ForegroundColor "Yellow"
                 Continue
             }
             # Finds the highest version.
@@ -231,8 +245,8 @@ function getLatestTag() {
         Return $latestTag
     }
     Catch {
-        Write-Host "[getLatestTag()] [ERROR] Failed to fetsh latest tag! Detailed error description below.`n"
-        Write-Host $Error
+        Write-Host "[getLatestTag()] [ERROR] Failed to fetsh latest tag! Detailed error description below.`n" -ForegroundColor "Red"
+        Write-Host "***START***[`n$Error`n]***END***" -ForegroundColor "Red"
         # DO NOT REMOVE THIS COMMENT! Removing this space cause the function to return parts of the error object.
         Return $false
     }
@@ -246,7 +260,7 @@ function getLastUpdatedDateFromTag() {
     )
    
     If (-not (checkInternetConnectionStatus)) {
-        Write-Host "[getLastUpdatedDateFromTag()] [WARNING] No active Internet connection found."
+        Write-Host "[getLastUpdatedDateFromTag()] [WARNING] No active Internet connection found." -ForegroundColor "Yellow"
         Return "not_updated_yet"
     }
     Try {
@@ -264,8 +278,8 @@ function getLastUpdatedDateFromTag() {
         $lastUpdateDate = Get-Date -Format "dd/MM/yyyy HH:mm:ss" $invalidLastUpdateDate
     }
     Catch {
-        Write-Host "[getLastUpdatedDateFromTag()] [ERROR] Failed to fetch last update date for [$pTagName]! Detailed error description below.`n"
-        Write-Host $Error
+        Write-Host "[getLastUpdatedDateFromTag()] [ERROR] Failed to fetch last update date for [$pTagName]! Detailed error description below.`n" -ForegroundColor "Red"
+        Write-Host "***START***[`n$Error`n]***END***" -ForegroundColor "Red"
         # DO NOT REMOVE THIS COMMENT! Removing this space cause the function to return parts of the error object.
         Return "not_updated_yet"
     }
@@ -284,7 +298,7 @@ function downloadReleaseAsset() {
         [String]$pOutputDirectory
     )
     If (-not (checkInternetConnectionStatus)) {
-        Write-Host "[downloadReleaseAsset()] [WARNING] No active Internet connection found."
+        Write-Host "[downloadReleaseAsset()] [WARNING] No active Internet connection found." -ForegroundColor "Yellow"
         Return $false
     }
     If (-not (Test-Path -Path $pOutputDirectory)) {
@@ -298,7 +312,7 @@ function downloadReleaseAsset() {
         Return $true
     }
     Catch {
-        Write-Host "[downloadReleaseAsset()] [ERROR] Could not download assets from [$gitHubUrl]!"
+        Write-Host "[downloadReleaseAsset()] [ERROR] Could not download assets from [$gitHubUrl]!" -ForegroundColor "Red"
         Return $false
     }
 }
@@ -310,13 +324,13 @@ function executeUpdate() {
 
     Write-Host "[executeUpdate()] [INFO] Starting update process..."
     If (-not (Test-Path -Path $updateZipArchiveLocation)) {
-        Write-Host "[executeUpdate()] [ERROR] Could not find installer archive at [$pOutputDirectory\GTAV_Tweaks.zip]."
+        Write-Host "[executeUpdate()] [ERROR] Could not find installer archive at [$pOutputDirectory\GTAV_Tweaks.zip]." -ForegroundColor "Red"
         Return $false
     }
     Try {
         $currentExecutableParentDirectory = Split-Path -Path $pCurrentExecutableLocation -Parent
         If (-not (backupOldVersionFiles -pCurrentExecutableLocation $pCurrentExecutableLocation -pBackupTargetDirectory $currentExecutableParentDirectory)) {
-            Write-Host "[executeUpdate()] [ERROR] Failed to backup old version files."
+            Write-Host "[executeUpdate()] [ERROR] Failed to backup old version files." -ForegroundColor "Red"
             Return $false
         }
         Expand-Archive -Path $updateZipArchiveLocation -DestinationPath $updateArchiveLocation -Force
@@ -337,8 +351,8 @@ function executeUpdate() {
         Return $true
     }
     Catch {
-        Write-Host "[executeUpdate()] [ERROR] Failed update execution. Detailed error description below.`n"
-        Write-Host $Error
+        Write-Host "[executeUpdate()] [ERROR] Failed update execution. Detailed error description below.`n" -ForegroundColor "Red"
+        Write-Host "***START***[`n$Error`n]***END***" -ForegroundColor "Red"
         # DO NOT REMOVE THIS COMMENT! Removing this space cause the function to return parts of the error object, which are interpreted as true.
         Return $false
     }
@@ -358,17 +372,17 @@ function backupOldVersionFiles() {
     $supportFilesFolder = Join-Path -Path $currentExecutableParentDirectory -ChildPath $supportFilesFolderName
     $targetBackupFolderName = "GTAV_Tweaks_backup_from_version_$($global:currentVersion)_at_$(Get-Date -Format "dd.MM.yyyy_HH-mm-ss")"
     # First backup folder.
-    $targetBackupFolder = Join-Path -Path $pBackupTargetDirectory -ChildPath $targetBackupFolderName
-    $targetBackupFolderSupportFiles = Join-Path -Path $targetBackupFolder -ChildPath $supportFilesFolderName
+    $global:targetBackupFolder = Join-Path -Path $pBackupTargetDirectory -ChildPath $targetBackupFolderName
+    $targetBackupFolderSupportFiles = Join-Path -Path $global:targetBackupFolder -ChildPath $supportFilesFolderName
     # Second backup folder.
-    $targetBackupFolderTemp = Join-Path -Path ([System.IO.Path]::GetFullPath($env:TEMP)) -ChildPath $targetBackupFolderName
+    $global:targetBackupFolderTemp = Join-Path -Path ([System.IO.Path]::GetFullPath($env:TEMP)) -ChildPath $targetBackupFolderName
 
     If (-not (Test-Path -Path $pCurrentExecutableLocation)) {
-        Write-Host "[backupOldVersionFiles()] [WARNING] Could not find [$currentExecutableName] at [$currentExecutableParentDirectory]."
+        Write-Host "[backupOldVersionFiles()] [WARNING] Could not find [$currentExecutableName] at [$currentExecutableParentDirectory]." -ForegroundColor "Yellow"
         Return $false
     }
     If (-not (Test-Path -Path $supportFilesFolder)) {
-        Write-Host "[backupOldVersionFiles()] [WARNING] Could not find the support file folder [$supportFilesFolderName] at [$currentExecutableParentDirectory]."
+        Write-Host "[backupOldVersionFiles()] [WARNING] Could not find the support file folder [$supportFilesFolderName] at [$currentExecutableParentDirectory]." -ForegroundColor "Yellow"
         Return $false
     }
     Try {
@@ -394,14 +408,14 @@ function backupOldVersionFiles() {
             }
         }
         # Moves the old executable into the backup directory.
-        Move-Item -Path $pCurrentExecutableLocation -Destination $targetBackupFolder -Force
-        Copy-Item -Path $targetBackupFolder -Destination $targetBackupFolderTemp -Recurse
-        Write-Host "[backupOldVersionFiles()] [INFO] The files from the old version have been saved to [$targetBackupFolder] and [$targetBackupFolderTemp]."
+        Move-Item -Path $pCurrentExecutableLocation -Destination $global:targetBackupFolder -Force
+        Copy-Item -Path $global:targetBackupFolder -Destination $global:targetBackupFolderTemp -Recurse
+        Write-Host "[backupOldVersionFiles()] [INFO] The files from the old version have been saved to [$global:targetBackupFolder] and [$global:targetBackupFolderTemp]."
         Return $true
     }
     Catch {
-        Write-Host "[backupOldVersionFiles()] [ERROR] Failed to backup old version files. Detailed error description below.`n"
-        Write-Host $Error
+        Write-Host "[backupOldVersionFiles()] [ERROR] Failed to backup old version files. Detailed error description below.`n" -ForegroundColor "Red"
+        Write-Host "***START***[`n$Error`n]***END***" -ForegroundColor "Red"
         # DO NOT REMOVE THIS COMMENT! Removing this space cause the function to return parts of the error object, which are interpreted as true.
         Return $false
     }
@@ -482,7 +496,7 @@ function checkInternetConnectionStatus() {
         Return $true
     }
     Catch {
-        Write-Host "[checkInternetConnectionStatus()] [WARNING] Computer is not connected to the Internet."
+        Write-Host "[checkInternetConnectionStatus()] [WARNING] Computer is not connected to the Internet." -ForegroundColor "Yellow"
         Return $false
     }
 }
@@ -499,7 +513,7 @@ function checkIfStringIsValidDate() {
         Return $true
     }
     Catch {
-        Write-Host "[checkIfStringIsValidDate()] [WARNING] The string [$pDateTimeString] is an invalid date."
+        Write-Host "[checkIfStringIsValidDate()] [WARNING] The string [$pDateTimeString] is an invalid date." -ForegroundColor "Yellow"
         Return $false
     }
 }
@@ -516,7 +530,7 @@ function writeToCSVFile() {
     
     # Stops here because the file exists and the function is told to not overwrite the file.
     If ((Test-Path -Path $pFileLocation) -and !$pSwitchForce) {
-        Write-Host "[writeToCSVFile()] [WARNING] The file [$pFileLocation] is already present. Use [-pSwitchForce] to overwrite it."
+        Write-Host "[writeToCSVFile()] [WARNING] The file [$pFileLocation] is already present. Use [-pSwitchForce] to overwrite it." -ForegroundColor "Yellow"
         Return $false
     }
     Try {
@@ -526,8 +540,8 @@ function writeToCSVFile() {
         Return $true
     }
     Catch {
-        Write-Host "[writeToCSVFile()] [ERROR] Failed to write the given hashtable to [$pFileLocation]. Detailed error description below.`n"
-        Write-Host $Error
+        Write-Host "[writeToCSVFile()] [ERROR] Failed to write the given hashtable to [$pFileLocation]. Detailed error description below.`n" -ForegroundColor "Red"
+        Write-Host "***START***[`n$Error`n]***END***" -ForegroundColor "Red"
         # DO NOT REMOVE THIS COMMENT! Removing this space cause the function to return parts of the error object.
         Return $false
     }
@@ -542,7 +556,7 @@ function readFromCSVFile() {
     
     # Stops here because the file does not exist.
     If (-not (Test-Path -Path $pFileLocation)) {
-        Write-Host "[readFromCSVFile()] [WARNING] The file [$pFileLocation] does not exist."
+        Write-Host "[readFromCSVFile()] [WARNING] The file [$pFileLocation] does not exist." -ForegroundColor "Yellow"
         # We are using $null because $false would cause an error.
         Return $null
     }
@@ -556,8 +570,8 @@ function readFromCSVFile() {
         Return $content
     }
     Catch {
-        Write-Host "[readFromCSVFile()] [ERROR] Failed to read the content of the CSV file [$pFileLocation]. Detailed error description below.`n"
-        Write-Host $Error
+        Write-Host "[readFromCSVFile()] [ERROR] Failed to read the content of the CSV file [$pFileLocation]. Detailed error description below.`n" -ForegroundColor "Red"
+        Write-Host "***START***[`n$Error`n]***END***" -ForegroundColor "Red"
         # DO NOT REMOVE THIS COMMENT! Removing this space cause the function to return parts of the error object.
         # We are using $null because $false would cause an error.
         Return $null
