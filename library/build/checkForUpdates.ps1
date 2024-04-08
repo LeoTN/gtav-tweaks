@@ -53,14 +53,12 @@ function onInit() {
     $supportFilesFolderUpdateFolder = Join-Path -Path $supportFilesFolder -ChildPath "update"
     $logFileNameUpdate = "executedUpdate.log"
     # Copies the log file into the back up folders.
-    If (Test-Path -Path $global:targetBackupFolder)
-    {
+    If (Test-Path -Path $global:targetBackupFolder) {
         Copy-Item -Path $logFilePath -Destination (Join-Path -Path $global:targetBackupFolder -ChildPath $logFileNameUpdate) -Force
         Copy-Item -Path $logFilePath -Destination (Join-Path -Path $global:targetBackupFolderTemp -ChildPath $logFileNameUpdate) -Force
     }
     # Copies the log file into the support file folder.
-    If (Test-Path -Path $supportFilesFolderUpdateFolder)
-    {
+    If (Test-Path -Path $supportFilesFolderUpdateFolder) {
         Copy-Item -Path $logFilePath -Destination (Join-Path -Path $supportFilesFolderUpdateFolder -ChildPath $logFileName) -Force
     }
     
@@ -389,29 +387,38 @@ function backupOldVersionFiles() {
     Try {
         Write-Host "[backupOldVersionFiles()] [INFO] Creating old version file backup..."
         # Moves the old support files into a backup folder.
-        $null = Get-ChildItem -Path $supportFilesFolder -Recurse | ForEach-Object {
-            $destinationFileLocation = Join-Path -Path $targetBackupFolderSupportFiles -ChildPath $_.FullName.Substring($supportFilesFolder.Length + 1)
+        # Gets every file object.
+        $files = Get-ChildItem -Path $supportFilesFolder -File -Recurse
+        foreach ($file in $files) {
+            $relativePath = $file.FullName.Substring($supportFilesFolder.Length + 1)
+            $destinationFileLocation = Join-Path -Path $targetBackupFolderSupportFiles -ChildPath $relativePath
             $destinationFileParentDirectory = Split-Path -Path $destinationFileLocation -Parent
+  
             # Skips temporary update files to not include them into the backup.
-            If ($_.Directory.Name -eq "GTAV_Tweaks_temp_update") {
+            If ($file.Directory.Name -eq "GTAV_Tweaks_temp_update") {
                 Continue
             }
             # Creates the parent directory if necessary.
             If (-not (Test-Path -Path $destinationFileParentDirectory)) {
-                New-Item -ItemType Directory -Path $destinationFileParentDirectory -Force
+                New-Item -ItemType Directory -Path $destinationFileParentDirectory | Out-Null
             }
             # Copies the config file instead of moving it. The same goes for the content of the macro folders.
-            if ($_.Extension -in ".ini", ".ini_old" -or $_.Directory.Name -in "macros", "recorded_macros") {
-                Copy-Item -Path $_.FullName -Destination $destinationFileLocation -Force
+            If ($file.Extension -in ".ini", ".ini_old" -or $file.Directory.Name -in "macros", "recorded_macros") {
+                Copy-Item -Path $file.FullName -Destination $destinationFileLocation -Force
+                Write-Host "[backupOldVersionFiles()] [INFO] Copied [$($file.FullName)] to [$destinationFileLocation]." -ForegroundColor "Blue"
             }
             Else {
-                Move-Item -Path $_.FullName -Destination $destinationFileLocation -Force
+                Move-Item -Path $file.FullName -Destination $destinationFileLocation -Force
+                Write-Host "[backupOldVersionFiles()] [INFO] Moved [$($file.FullName)] to [$destinationFileLocation]." -ForegroundColor "DarkBlue"
             }
         }
+        # Deletes empty folders in the source directory.
+        Get-ChildItem -Path $supportFilesFolder -Directory | Where-Object { $_.GetFileSystemInfos().Count -eq 0 } | Remove-Item -Force
         # Moves the old executable into the backup directory.
         Move-Item -Path $pCurrentExecutableLocation -Destination $global:targetBackupFolder -Force
         Copy-Item -Path $global:targetBackupFolder -Destination $global:targetBackupFolderTemp -Recurse
         Write-Host "[backupOldVersionFiles()] [INFO] The files from the old version have been saved to [$global:targetBackupFolder] and [$global:targetBackupFolderTemp]."
+        Write-Host "[backupOldVersionFiles()] [INFO] Moved a total of [$($files.Count) file(s).]"
         Return $true
     }
     Catch {

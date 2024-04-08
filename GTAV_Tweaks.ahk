@@ -39,7 +39,7 @@ onInit()
     global macroFilesStorageDirectory := A_ScriptDir . "\GTAV_Tweaks\macros"
     global macroConfigFileLocation := macroFilesStorageDirectory . "\GTAV_Tweaks_MACROS.ini"
     global builtInHKLocation_createSololobby := macroFilesStorageDirectory . "\builtInHK_createSololobby.ahk"
-    global builtInHKLocation_walkDriveFlyAFK := macroFilesStorageDirectory . "\builtInHK_cayoPrepPlaneAfkFlight.ahk"
+    global builtInHKLocation_walkDriveFlyAFK := macroFilesStorageDirectory . "\builtInHK_AFKWalkDriveFly.ahk"
 
     global recordedMacroFilesStorageDirectory := A_ScriptDir . "\GTAV_Tweaks\recorded_macros"
 
@@ -168,7 +168,7 @@ onInit_unpackSupportFiles()
 
     If (!FileExist(builtInHKLocation_walkDriveFlyAFK))
     {
-        FileInstall("library\built_in_hotkeys\builtInHK_cayoPrepPlaneAfkFlight.ahk", builtInHKLocation_walkDriveFlyAFK, true)
+        FileInstall("library\built_in_hotkeys\builtInHK_AFKWalkDriveFly.ahk", builtInHKLocation_walkDriveFlyAFK, true)
     }
     If (!FileExist(builtInHKLocation_createSololobby))
     {
