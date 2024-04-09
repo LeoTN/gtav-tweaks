@@ -61,13 +61,21 @@ the script checks the macro config file at every launch if all built-in hotkeys 
 
 3. Where are my hotkeys saved?
 -> The macro configuration file is saved in the "GTAV_Tweaks" folder in a subfolder called "macros". The "GTAV_Tweaks" folder is always in the same directory as the GTAV_Tweaks executable.
-You can also open the file under the [File] menu in the main window.
+You can also open the file at the [File] menu in the main window.
 
 4. How do I create custom hotkeys?
--> When you launch the script, the first thing you should see is the main window. There will be a menu called [Hotkeys].
+-> When you launch the script, the first thing you should see is the main window. There will be a menu called [Hotkeys & Macros].
 Clicking on it will open another window. On the bottom left you can find the button to create your own hotkeys.
 From there on you will just have to fill in the values and confirm the creation. If the name and keyboard shortcut
 aren't used by any other hotkey yet, you are ready.
+
+5. My hotkey doesn't work!
+-> This can be caused by multiple issues.
+1. Note, that hotkeys are only enabled when GTA V is the active window (in the foreground). It takes 2 - 3 seconds for the script to realize this
+and turn on the hotkeys when switching applications fast.
+2. Your recorded macro file is broken. You might have to fix the file manually or record a new one. I will try to improve the macro recorder to avoid those issues from time to time.
+3. You have other hotkey or macro programs installed using the same keyboard shortcut already. In this case, the corresponding program sort of "captures" the key
+and does not redirect it to this script.
 
 
 **********END**********

@@ -7,28 +7,28 @@ CoordMode "Mouse", "Window"
 createCustomHotkeyOverviewGUI()
 {
     Global
-    customHotkeyOverviewGUI := Gui(, "GTAV Tweaks - Hotkey Overview")
+    customHotkeyOverviewGUI := Gui(, getLanguageArrayString("hotkeyOverviewGUI_1"))
 
-    customHotkeyOverviewGUITotalHotkeyAmountText := customHotkeyOverviewGUI.Add("Text", "yp+10 w140", "Total Hotkeys: NUMBER")
+    customHotkeyOverviewGUITotalHotkeyAmountText := customHotkeyOverviewGUI.Add("Text", "yp+10 w140", getLanguageArrayString("hotkeyOverviewGUI_2", "NUMBER"))
 
-    customHotkeyOverviewGUIHotkeyFieldText := customHotkeyOverviewGUI.Add("Text", "yp+30", "Keyboard Shortcut")
+    customHotkeyOverviewGUIHotkeyFieldText := customHotkeyOverviewGUI.Add("Text", "yp+30", getLanguageArrayString("hotkeyOverviewGUI_3"))
     customHotkeyOverviewGUIHotkeyField := customHotkeyOverviewGUI.Add("Hotkey", "yp+20 w200 Disabled")
-    customHotkeyOverviewGUIHotkeyDescriptionEditText := customHotkeyOverviewGUI.Add("Text", "xp+210 yp-30", "Description")
+    customHotkeyOverviewGUIHotkeyDescriptionEditText := customHotkeyOverviewGUI.Add("Text", "xp+210 yp-30", getLanguageArrayString("hotkeyOverviewGUI_4"))
     customHotkeyOverviewGUIHotkeyDescriptionEdit := customHotkeyOverviewGUI.Add("Edit", "yp+30 w109 R5.2 ReadOnly")
 
     customHotkeyNameArray := []
-    customHotkeyOverviewGUIHotkeyDropDownListText := customHotkeyOverviewGUI.Add("Text", "xp-210 yp+35", "Select a hotkey below.")
+    customHotkeyOverviewGUIHotkeyDropDownListText := customHotkeyOverviewGUI.Add("Text", "xp-210 yp+35", getLanguageArrayString("hotkeyOverviewGUI_5"))
     customHotkeyOverviewGUIHotkeyDropDownList := customHotkeyOverviewGUI.Add("DropDownList", "yp+20 w200", customHotkeyNameArray)
 
-    customHotkeyOverviewGUIHotkeyStatusIsEnabledRadio := customHotkeyOverviewGUI.Add("Radio", "yp+30 Disabled", "Hotkey enabled")
-    customHotkeyOverviewGUIHotkeyStatusIsDisabledRadio := customHotkeyOverviewGUI.Add("Radio", "xp+100 Disabled", "Hotkey disabled")
+    customHotkeyOverviewGUIHotkeyStatusIsEnabledRadio := customHotkeyOverviewGUI.Add("Radio", "yp+30 Disabled", getLanguageArrayString("hotkeyOverviewGUI_6"))
+    customHotkeyOverviewGUIHotkeyStatusIsDisabledRadio := customHotkeyOverviewGUI.Add("Radio", "xp+100 Disabled", getLanguageArrayString("hotkeyOverviewGUI_7"))
 
-    customHotkeyOverviewGUIToggleHotkeyButton := customHotkeyOverviewGUI.Add("Button", "xp-101 yp+40 w100 Default", "Toggle Status")
-    customHotkeyOverviewGUIActivateAllHotkeysButton := customHotkeyOverviewGUI.Add("Button", "xp+110 w100", "Enable All")
-    customHotkeyOverviewGUIDeactivateAllHotkeysButton := customHotkeyOverviewGUI.Add("Button", "xp+110 w100", "Disable All")
-    customHotkeyOverviewGUICreateHotkeyButton := customHotkeyOverviewGUI.Add("Button", "xp-220 yp+30 w100", "Create Hotkey")
-    customHotkeyOverviewGUIEditHotkeyButton := customHotkeyOverviewGUI.Add("Button", "xp+110 w100", "Edit")
-    customHotkeyOverviewGUIDeleteHotkeyButton := customHotkeyOverviewGUI.Add("Button", "xp+110 w100", "Delete")
+    customHotkeyOverviewGUIToggleHotkeyButton := customHotkeyOverviewGUI.Add("Button", "xp-101 yp+40 w100 Default", getLanguageArrayString("hotkeyOverviewGUI_8"))
+    customHotkeyOverviewGUIActivateAllHotkeysButton := customHotkeyOverviewGUI.Add("Button", "xp+110 w100", getLanguageArrayString("hotkeyOverviewGUI_9"))
+    customHotkeyOverviewGUIDeactivateAllHotkeysButton := customHotkeyOverviewGUI.Add("Button", "xp+110 w100", getLanguageArrayString("hotkeyOverviewGUI_10"))
+    customHotkeyOverviewGUICreateHotkeyButton := customHotkeyOverviewGUI.Add("Button", "xp-220 yp+30 w100", getLanguageArrayString("hotkeyOverviewGUI_11"))
+    customHotkeyOverviewGUIEditHotkeyButton := customHotkeyOverviewGUI.Add("Button", "xp+110 w100", getLanguageArrayString("hotkeyOverviewGUI_12"))
+    customHotkeyOverviewGUIDeleteHotkeyButton := customHotkeyOverviewGUI.Add("Button", "xp+110 w100", getLanguageArrayString("hotkeyOverviewGUI_13"))
     ; This triggers the GUI to refresh the element values in case a new hotkey is selected.
     customHotkeyOverviewGUIHotkeyDropDownList.OnEvent("Change", (*) => handleCustomHotkeyOverviewGUI_changeValuesDependingOnWhichHotkeyIsSelected())
     ; Enables or disables a hotkey.
@@ -70,7 +70,7 @@ handleCustomHotkeyOverviewGUI_fillInValuesFromCustomMacroObject()
     If (!customMacroObjectArray.Has(1))
     {
         ; Adjusts the GUI element values to match with the fact, that there are no hotkeys.
-        customHotkeyOverviewGUITotalHotkeyAmountText.Text := "Total Hotkeys: 0"
+        customHotkeyOverviewGUITotalHotkeyAmountText.Text := getLanguageArrayString("hotkeyOverviewGUI_2", "0")
         customHotkeyNameArray.InsertAt(1, "No hotkeys in config file found.")
         ; Disables all buttons that are only usefull with at least one hotkey.
         customHotkeyOverviewGUIToggleHotkeyButton.Opt("+Disabled")
@@ -89,7 +89,7 @@ handleCustomHotkeyOverviewGUI_fillInValuesFromCustomMacroObject()
             i++
         }
         ; Updates the total hotkey counter.
-        customHotkeyOverviewGUITotalHotkeyAmountText.Text := "Total Hotkeys: " . customHotkeyNameArray.Length
+        customHotkeyOverviewGUITotalHotkeyAmountText.Text := getLanguageArrayString("hotkeyOverviewGUI_2", customHotkeyNameArray.Length)
         ; Enables all buttons that are only usefull with at least one hotkey.
         customHotkeyOverviewGUIToggleHotkeyButton.Opt("-Disabled")
         customHotkeyOverviewGUIActivateAllHotkeysButton.Opt("-Disabled")
@@ -201,7 +201,7 @@ handleCustomHotkeyOverviewGUI_deleteHotkey()
     {
         Return
     }
-    result := MsgBox("Are you sure, that you want to delete this hotkey?", "GTAV Tweaks - Delete Hotkey", "YN Icon! 262144")
+    result := MsgBox(getLanguageArrayString("customHotkeyOverviewGUIMsgBox1_1"), getLanguageArrayString("customHotkeyOverviewGUIMsgBox1_2"), "YN Icon! 262144")
     If (result != "Yes")
     {
         Return

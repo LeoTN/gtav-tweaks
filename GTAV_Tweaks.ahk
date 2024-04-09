@@ -14,6 +14,7 @@ CoordMode "Mouse", "Window"
 #Include "ConfigFile.ahk"
 #Include "CustomHotkeyOverviewGUI.ahk"
 #Include "Functions.ahk"
+#Include "Languages.ahk"
 #Include "MainGUI.ahk"
 #Include "NewCustomHotkeyGUI.ahk"
 #Include "Objects.ahk"
@@ -31,21 +32,30 @@ onInit()
     global iconFileLocation := A_ScriptDir . "\GTAV_Tweaks\assets\gtav_tweaks_icon.ico"
 
     global psUpdateScriptLocation := A_ScriptDir . "\GTAV_Tweaks\update\checkForUpdates.ps1"
-    global versionFileLocation := A_ScriptDir . "\GTAV_Tweaks\update\currentVersion.txt"
+    global currentVersionFileLocation := A_ScriptDir . "\GTAV_Tweaks\update\currentVersion.csv"
 
     global audioHookFileLocation := A_ScriptDir . "\GTAV_Tweaks\soundvolumeview-x64\SoundVolumeView.exe"
 
     global macroFilesStorageDirectory := A_ScriptDir . "\GTAV_Tweaks\macros"
     global macroConfigFileLocation := macroFilesStorageDirectory . "\GTAV_Tweaks_MACROS.ini"
     global builtInHKLocation_createSololobby := macroFilesStorageDirectory . "\builtInHK_createSololobby.ahk"
-    global builtInHKLocation_cayoPrepPlaneAfkFlight := macroFilesStorageDirectory . "\builtInHK_cayoPrepPlaneAfkFlight.ahk"
+    global builtInHKLocation_walkDriveFlyAFK := macroFilesStorageDirectory . "\builtInHK_AFKWalkDriveFly.ahk"
 
     global recordedMacroFilesStorageDirectory := A_ScriptDir . "\GTAV_Tweaks\recorded_macros"
 
     onInit_unpackSupportFiles()
     ; The version can now be specified because the version file should now be available.
-    global versionFullName := FileRead(versionFileLocation)
-    ; Run all onInit() functions from included files.
+    Try
+    {
+        currentVersionFileMap := readFromCSVFile(currentVersionFileLocation)
+        global versionFullName := currentVersionFileMap.Get("CURRENT_VERSION")
+    }
+    Catch
+    {
+        global versionFullName := "v0.0.1"
+    }
+    ; Runs all onInit() functions from included files.
+    ; languages_onInit() is included in configFile_onInit().
     configFile_onInit()
     functions_onInit()
     objects_onInit()
@@ -55,9 +65,13 @@ onInit()
 
     If (readConfigFile("DISPLAY_LAUNCH_NOTIFICATION"))
     {
-        TrayTip("GTAV Tweaks launched.", "GTAV Tweaks - Status", "Iconi Mute")
+        TrayTip(getLanguageArrayString("generalScriptTrayTip2_1"), getLanguageArrayString("generalScriptTrayTip2_2"), "Iconi Mute")
         Sleep(1500)
         TrayTip()
+    }
+    If (readConfigFile("ASK_FOR_TUTORIAL"))
+    {
+        scriptTutorial()
     }
     If (readConfigFile("CHECK_FOR_UPDATES_AT_LAUNCH"))
     {
@@ -134,9 +148,9 @@ onInit_unpackSupportFiles()
     {
         FileInstall("library\build\checkForUpdates.ps1", psUpdateScriptLocation, true)
     }
-    If (!FileExist(versionFileLocation))
+    If (!FileExist(currentVersionFileLocation))
     {
-        FileInstall("library\build\currentVersion.txt", versionFileLocation, true)
+        FileInstall("library\build\currentVersion.csv", currentVersionFileLocation, true)
     }
 
     If (!FileExist(audioHookFileLocation))
@@ -152,9 +166,9 @@ onInit_unpackSupportFiles()
         IniWrite("Always back up your files!", macroConfigFileLocation, "CustomHotkeysBelow", "Advice")
     }
 
-    If (!FileExist(builtInHKLocation_cayoPrepPlaneAfkFlight))
+    If (!FileExist(builtInHKLocation_walkDriveFlyAFK))
     {
-        FileInstall("library\built_in_hotkeys\builtInHK_cayoPrepPlaneAfkFlight.ahk", builtInHKLocation_cayoPrepPlaneAfkFlight, true)
+        FileInstall("library\built_in_hotkeys\builtInHK_AFKWalkDriveFly.ahk", builtInHKLocation_walkDriveFlyAFK, true)
     }
     If (!FileExist(builtInHKLocation_createSololobby))
     {

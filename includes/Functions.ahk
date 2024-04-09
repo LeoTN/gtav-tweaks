@@ -32,7 +32,7 @@ waitForGTAToExist()
     WinWait("ahk_exe GTA5.exe")
     If (readConfigFile("DISPLAY_GTA_LAUNCH_NOTIFICATION"))
     {
-        TrayTip("Running GTAV instance detected.", "GTAV Tweaks - Status", "Iconi Mute")
+        TrayTip(getLanguageArrayString("generalScriptTrayTip1_1"), getLanguageArrayString("generalScriptTrayTip1_2"), "Iconi Mute")
         Sleep(1500)
         TrayTip()
     }
@@ -42,13 +42,13 @@ waitForGTAToExist()
 waitForUserInputInGTA()
 {
     ; This prevents the script from loading infinitely.
-    If (WinWaitActive("ahk_exe GTA5.exe", , 600) = 0)
+    If (WinWaitActive("ahk_exe GTA5.exe", , 600) == 0)
     {
         Reload()
     }
     While (WinActive("ahk_exe GTA5.exe"))
     {
-        If (KeyWait("w", "D T1") = 1)
+        If (KeyWait("w", "D T1") == 1)
         {
             Return
         }
@@ -75,56 +75,128 @@ checkForExistingGTA()
     }
 }
 
+/*
+Forces the script to update to the latest version, depending on the update settings.
+@returns [boolean] True or false, depending on the function's success.
+*/
+forceUpdate()
+{
+    global versionFullName
+
+    If (!A_IsCompiled)
+    {
+        MsgBox(getLanguageArrayString("generalScriptMsgBox2_1"), getLanguageArrayString("generalScriptMsgBox2_2"), "O Iconi 262144 T3")
+        Return false
+    }
+    result := MsgBox(getLanguageArrayString("mainGUIMsgBox2_1"),
+        getLanguageArrayString("mainGUIMsgBox2_2"), "OC Icon! 262144")
+    If (result != "OK")
+    {
+        Return false
+    }
+    If (!startUpdate(true))
+    {
+        Return false
+    }
+    Return true
+}
+
+/*
+Checks all GitHub Repository tags to find new versions.
+@returns [boolean] Returns true, when an update is available. False otherwise.
+*/
 checkForAvailableUpdates()
 {
-    ; Does not check for updates if there is no Internet connection or the script isn't compiled.
+    global currentVersionFileLocation
+    global psUpdateScriptLocation
+
+    ; Does not check for updates, if there is no Internet connection or the script isn't compiled.
     If (!checkInternetConnection() || !A_IsCompiled)
     {
-        Return
+        Return false
     }
     SplitPath(psUpdateScriptLocation, &outFileName)
     psUpdateScriptLocationTemp := A_Temp . "\" . outFileName
     updateWorkingDir := A_Temp . "\GTAV_Tweaks_AUTO_UPDATE"
-    availableUpdateFileLocation := A_Temp . "\GTAV_Tweaks_Available_Update.txt"
+
     ; Copies the script to the temp directory. This ensure that there are no file errors while the script is moving or copying files,
     ; because it cannot copy itself, while it is running.
     FileCopy(psUpdateScriptLocation, psUpdateScriptLocationTemp, true)
-    parameterString := '-pGitHubRepositoryLink "https://github.com/LeoTN/gtav-tweaks" -pCurrentVersion "' . versionFullName
+    parameterString := '-pGitHubRepositoryLink "https://github.com/LeoTN/gtav-tweaks" -pCurrentVersionFileLocation "' . currentVersionFileLocation
         . '" -pCurrentExecutableLocation "' . A_ScriptFullPath . '" -pOutputDirectory "' . updateWorkingDir . '"'
 
     If (readConfigFile("UPDATE_TO_BETA_VERSIONS"))
     {
-        parameterString .= " -pBooleanConsiderBetaReleases"
+        parameterString .= " -pSwitchConsiderBetaReleases"
     }
     ; Calls the PowerShell script to check for available updates.
     exitCode := RunWait('powershell.exe -executionPolicy bypass -file "' . psUpdateScriptLocationTemp
-        . '" ' . parameterString . ' -pBooleanDoNotStartUpdate', , "Hide")
+        . '" ' . parameterString . ' -pSwitchDoNotStartUpdate', , "Hide")
     Switch (exitCode)
     {
-        ; This exit code states that an update is available.
-        Case 5:
+        ; Available update, but pSwitchDoNotStartUpdate was set to true.
+        Case 101:
         {
-            If (!FileExist(availableUpdateFileLocation))
-            {
-                SplitPath(availableUpdateFileLocation, &outFileName, &outDir)
-                MsgBox("[" . A_ThisFunc . "()] [WARNING] Could not find [" . outFileName . "] at [" . outDir . "]`n`n"
-                    . "Update has been canceled.", "GTAV Tweaks - [" . A_ThisFunc . "()]", "Icon! 262144")
-                Return
-            }
-            updateVersion := FileRead(availableUpdateFileLocation)
-            result := MsgBox("There is an update available. `n`nUpdate from [" . versionFullName . "] to [" . updateVersion . "] now?",
-                "GTAV Tweaks - Update Available", "YN Iconi T30 262144")
-            Switch (result)
-            {
-                Case "Yes":
-                    {
-                        ; Runs the PowerShell update script with the instruction to execute the update.
-                        Run('powershell.exe -executionPolicy bypass -file "' . psUpdateScriptLocationTemp . '" ' . parameterString)
-                        ExitApp()
-                    }
-            }
+            startUpdate()
+            Return true
         }
     }
+    ; Maybe more cases in the future.
+}
+
+/*
+Calls the PowerShell script to start updating this software.
+@param pBooleanForceUpdate [boolean] If set to true, will not show a prompt and update instantly.
+@returns [boolean] True or false, depending on the function's success.
+*/
+startUpdate(pBooleanForceUpdate := false)
+{
+    global currentVersionFileLocation
+    global psUpdateScriptLocation
+
+    ; Does not check for updates, if there is no Internet connection or the script isn't compiled.
+    If (!checkInternetConnection() || !A_IsCompiled)
+    {
+        Return false
+    }
+    SplitPath(psUpdateScriptLocation, &outFileName)
+    psUpdateScriptLocationTemp := A_Temp . "\" . outFileName
+    updateWorkingDir := A_Temp . "\GTAV_Tweaks_AUTO_UPDATE"
+
+    ; Copies the script to the temp directory. This ensure that there are no file errors while the script is moving or copying files,
+    ; because it cannot copy itself, while it is running.
+    FileCopy(psUpdateScriptLocation, psUpdateScriptLocationTemp, true)
+    parameterString := '-pGitHubRepositoryLink "https://github.com/LeoTN/gtav-tweaks" -pCurrentVersionFileLocation "' . currentVersionFileLocation
+        . '" -pCurrentExecutableLocation "' . A_ScriptFullPath . '" -pOutputDirectory "' . updateWorkingDir . '"'
+    ; Depending on the parameters and settings.
+    If (readConfigFile("UPDATE_TO_BETA_VERSIONS"))
+    {
+        parameterString .= " -pSwitchConsiderBetaReleases"
+    }
+    ; Extracts the available update from the current version file.
+    currentVersionFileMap := readFromCSVFile(currentVersionFileLocation)
+    updateVersion := currentVersionFileMap.Get("AVAILABLE_UPDATE")
+    If (updateVersion == "no_available_update" && !pBooleanForceUpdate)
+    {
+        Return false
+    }
+    If (pBooleanForceUpdate)
+    {
+        ; Calls the PowerShell script to install the update.
+        Run('powershell.exe -executionPolicy bypass -file "' . psUpdateScriptLocationTemp
+            . '" ' . parameterString . ' -pSwitchForceUpdate')
+        ExitApp()
+    }
+    result := MsgBox(getLanguageArrayString("functionsMsgBox1_1", versionFullName, updateVersion),
+        getLanguageArrayString("functionsMsgBox1_2"), "YN Iconi T30 262144")
+    If (result != "Yes")
+    {
+        Return false
+    }
+    ; Calls the PowerShell script to install the update.
+    Run('powershell.exe -executionPolicy bypass -file "' . psUpdateScriptLocationTemp
+        . '" ' . parameterString)
+    ExitApp()
 }
 
 /*
@@ -140,7 +212,7 @@ checkInternetConnection()
         httpRequest.Open("GET", "http://www.google.com", false)
         httpRequest.Send()
 
-        If (httpRequest.Status = 200)
+        If (httpRequest.Status == 200)
         {
             Return true
         }
@@ -149,11 +221,78 @@ checkInternetConnection()
     Return false
 }
 
-; Shows a tutorial to the user.
+; A small tour to show off the basic functions of this script.
 scriptTutorial()
 {
-    ; Nothing yet
-    MsgBox("Tutorial GTAV Tweaks (not finished)")
+    result := MsgBox(getLanguageArrayString("tutorialMsgBox1_1"),
+        getLanguageArrayString("tutorialMsgBox1_2"), "YN Iconi 262144")
+    If (result == "Yes")
+    {
+        minimizeAllGUIs()
+        MsgBox(getLanguageArrayString("tutorialMsgBox3_1"), getLanguageArrayString("tutorialMsgBox3_2"), "O Iconi 262144")
+        If (!WinExist("ahk_id " . mainGUI.Hwnd))
+        {
+            mainGUI.Show()
+        }
+        ; Main GUI.
+        WinActivate("ahk_id " . mainGUI.Hwnd)
+        MsgBox(getLanguageArrayString("tutorialMsgBox4_1"), getLanguageArrayString("tutorialMsgBox4_2"), "O Iconi 262144")
+        ; Options menu.
+        MsgBox(getLanguageArrayString("tutorialMsgBox5_1"), getLanguageArrayString("tutorialMsgBox5_2"), "O Iconi 262144")
+        ; Hotkeys & Macros menu.
+        MsgBox(getLanguageArrayString("tutorialMsgBox6_1"), getLanguageArrayString("tutorialMsgBox6_2"), "O Iconi 262144")
+        ; Hotkey Overview GUI.
+        If (WinWaitActive("ahk_id " . customHotkeyOverviewGUI.Hwnd, , 5) == 0)
+        {
+            customHotkeyOverviewGUI.Show()
+            MsgBox(getLanguageArrayString("tutorialMsgBox7_1"), getLanguageArrayString("tutorialMsgBox7_2"), "O Iconi 262144 T3")
+        }
+        minimizeAllGUIs()
+        WinActivate("ahk_id " . customHotkeyOverviewGUI.Hwnd)
+        MsgBox(getLanguageArrayString("tutorialMsgBox8_1"), getLanguageArrayString("tutorialMsgBox8_2"), "O Iconi 262144")
+        ; Drop Down List.
+        ControlFocus(customHotkeyOverviewGUIHotkeyDropDownList.Hwnd, "ahk_id " . customHotkeyOverviewGUI.Hwnd) ; REMOVE
+        MsgBox(getLanguageArrayString("tutorialMsgBox9_1"), getLanguageArrayString("tutorialMsgBox9_2"), "O Iconi 262144")
+        MsgBox(getLanguageArrayString("tutorialMsgBox10_1"), getLanguageArrayString("tutorialMsgBox10_2"), "O Iconi 262144")
+        ; Hotkey Creation GUI.
+        If (WinWaitActive("ahk_id " . newCustomHotkeyGUI.Hwnd, , 5) == 0)
+        {
+            newCustomHotkeyGUI.Show()
+            MsgBox(getLanguageArrayString("tutorialMsgBox11_1"), getLanguageArrayString("tutorialMsgBox11_2"), "O Iconi 262144 T3")
+        }
+        minimizeAllGUIs()
+        WinActivate("ahk_id " . newCustomHotkeyGUI.Hwnd)
+        MsgBox(getLanguageArrayString("tutorialMsgBox12_1"), getLanguageArrayString("tutorialMsgBox12_2"), "O Iconi 262144")
+        ; Final infos.
+        MsgBox(getLanguageArrayString("tutorialMsgBox13_1"), getLanguageArrayString("tutorialMsgBox13_2"), "O Iconi 262144")
+        MsgBox(getLanguageArrayString("tutorialMsgBox14_1"), getLanguageArrayString("tutorialMsgBox14_2"), "O Iconi 262144")
+    }
+    ; The dialog to disable the tutorial for the next time is only shown when the config file entry mentioned below is true.
+    If (readConfigFile("ASK_FOR_TUTORIAL"))
+    {
+        result := MsgBox(getLanguageArrayString("tutorialMsgBox2_1"),
+            getLanguageArrayString("tutorialMsgBox2_2"), "YN Iconi 262144")
+        If (result == "Yes")
+        {
+            editConfigFile("ASK_FOR_TUTORIAL", false)
+        }
+    }
+    minimizeAllGUIs()
+    {
+        ; Minimizes all script windows to reduce diversion.
+        If (WinExist("ahk_id " . mainGUI.Hwnd))
+        {
+            WinMinimize()
+        }
+        If (WinExist("ahk_id " . customHotkeyOverviewGUI.Hwnd))
+        {
+            WinMinimize()
+        }
+        If (WinExist("ahk_id " . newCustomHotkeyGUI.Hwnd))
+        {
+            WinMinimize()
+        }
+    }
 }
 
 /*
@@ -230,7 +369,7 @@ openReadMeFile()
         }
         Else
         {
-            MsgBox("No README file found.", "GTAV Tweaks - Missing README File", "Icon! T5")
+            MsgBox(getLanguageArrayString("functionsMsgBox2_1"), getLanguageArrayString("functionsMsgBox2_2"), "Icon! T5")
             Return false
         }
     }
@@ -360,8 +499,8 @@ setAutostart(pBooleanEnableAutostart)
             FileGetShortcut(A_Startup . "\" . outNameNoExt . ".lnk", &outTarget)
             If (outTarget != A_ScriptFullPath)
             {
-                result := MsgBox("There seems to be a shortcut in the autostart folder already.`n`nWould you like to overwrite it?",
-                    "GTAV Tweaks - Found Existing Autostart Shortcut", "YN Icon? 262144")
+                result := MsgBox(getLanguageArrayString("functionsMsgBox3_1"),
+                    getLanguageArrayString("functionsMsgBox3_2"), "YN Icon? 262144")
                 If (result != "Yes")
                 {
                     Return
@@ -379,19 +518,100 @@ setAutostart(pBooleanEnableAutostart)
     }
 }
 
+/*
+Writes values to a comma seperated file (CSV).
+@param pFileLocation [String] Should be the path to a .CSV file. The function will create the file if necessary.
+@param pContent [Map] Should be a map object.
+@param pBooleanForce [boolean] If set to true, will overwrite already existing files.
+@returns [boolean] True or false, depending on the success.
+*/
+writeToCSVFile(pFileLocation, pContent, pBooleanForce := false) {
+    ; Checks if the file exists.
+    If (FileExist(pFileLocation) && !pBooleanForce) {
+        MsgBox("[" . A_ThisFunc . "()] [WARNING] The file [" . pFileLocation . "] does already exist.`n`n"
+            "To overwrite it, set pBooleanForce to 'true'.", "GTAV Tweaks - [" . A_ThisFunc . "()]", "Icon! 262144")
+        Return false
+    }
+
+    Try
+    {
+        fileObject := FileOpen(pFileLocation, "w")
+        ; Writes the map object to the file.
+        For (key, value in pContent)
+        {
+            fileObject.WriteLine('"' . key . '","' . value . '"')
+        }
+        fileObject.Close()
+        Return true
+    }
+    Catch As error
+    {
+        displayErrorMessage(error)
+        Return false
+    }
+}
+
+/*
+Reads values from a comma seperated file (CSV).
+@param pFileLocation [String] Should be the path to a .CSV file.
+@returns [Map] A map object containing all key and value pairs from the file.
+*/
+readFromCSVFile(pFileLocation) {
+    ; Checks, if the file is available.
+    If (!FileExist(pFileLocation)) {
+        MsgBox("[" . A_ThisFunc . "()] [WARNING] The file [" . pFileLocation . "] does not exist."
+            , "GTAV Tweaks - [" . A_ThisFunc . "()]", "Icon! 262144")
+        Return
+    }
+
+    Try
+    {
+        CSVMap := Map()
+        CSVArray := []
+        Loop Read, pFileLocation
+        {
+            Loop Parse, A_LoopReadLine, "CSV"
+            {
+                ; Those two entries are created by the PowerShell script and we don't want them in our map.
+                If (A_LoopField != "Key" && A_LoopField != "Value")
+                {
+                    CSVArray.Push(A_LoopField)
+                }
+            }
+        }
+        ; Writes the key and value data to the actual map.
+        i := 0
+        Loop (CSVArray.Length)
+        {
+            If (CSVArray.Has(A_Index + 1 + i))
+            {
+                CSVMap.Set(CSVArray.Get(A_Index + i), CSVArray.Get(A_Index + 1 + i))
+                ; This skips the loop to the next key and value pair.
+                i++
+            }
+        }
+        Return CSVMap
+    }
+    Catch As error
+    {
+        displayErrorMessage(error)
+        Return false
+    }
+}
+
 reloadScriptPrompt()
 {
     ; Number in seconds.
     i := 4
 
-    reloadScriptGUI := Gui(, "GTAV Tweaks - Reloading Script")
-    textField := reloadScriptGUI.Add("Text", "r3 w260 x20 y40", "The script will be`n reloaded in " . i . " seconds.")
+    reloadScriptGUI := Gui(, getLanguageArrayString("reloadAndTerminateGUI_1"))
+    textField := reloadScriptGUI.Add("Text", "r6 w260 x20 y40", getLanguageArrayString("reloadAndTerminateGUI_2", i))
     textField.SetFont("s12")
     textField.SetFont("bold")
-    progressBar := reloadScriptGUI.Add("Progress", "w280 h20 x10 y100", 0)
-    buttonOkay := reloadScriptGUI.Add("Button", "Default w80 x60 y170", "Okay")
-    buttonCancel := reloadScriptGUI.Add("Button", "w80 x160 y170", "Cancel")
-    reloadScriptGUI.Show("w300 h200")
+    progressBar := reloadScriptGUI.Add("Progress", "w280 h20 x10 y120", 0)
+    buttonOkay := reloadScriptGUI.Add("Button", "Default w80 x60 y190", getLanguageArrayString("reloadAndTerminateGUI_7"))
+    buttonCancel := reloadScriptGUI.Add("Button", "w80 x160 y190", getLanguageArrayString("reloadAndTerminateGUI_8"))
+    reloadScriptGUI.Show("AutoSize")
 
     buttonOkay.OnEvent("Click", (*) => Reload())
     buttonCancel.OnEvent("Click", (*) => reloadScriptGUI.Destroy())
@@ -408,15 +628,7 @@ reloadScriptPrompt()
                 progressBar.Value += 1.25
                 Sleep(50)
             }
-
-            If (i = 1)
-            {
-                textField.Text := "The script will be`n reloaded in " . i . " second."
-            }
-            Else
-            {
-                textField.Text := "The script will be`n reloaded in " . i . " seconds."
-            }
+            textField.Text := getLanguageArrayString("reloadAndTerminateGUI_2", i)
             i--
         }
         textField.Text := "The script has been reloaded."
@@ -432,14 +644,14 @@ terminateScriptPrompt()
     ; Number in seconds.
     i := 4
 
-    terminateScriptGUI := Gui(, "GTAV Tweaks - Terminating Script")
-    textField := terminateScriptGUI.Add("Text", "r3 w260 x20 y40", "The script will be`n terminated in " . i . " seconds.")
+    terminateScriptGUI := Gui(, getLanguageArrayString("reloadAndTerminateGUI_4"))
+    textField := terminateScriptGUI.Add("Text", "r6 w260 x20 y40", getLanguageArrayString("reloadAndTerminateGUI_5", i))
     textField.SetFont("s12")
     textField.SetFont("bold")
-    progressBar := terminateScriptGUI.Add("Progress", "w280 h20 x10 y100 cRed backgroundBlack", 0)
-    buttonOkay := terminateScriptGUI.Add("Button", "Default w80 x60 y170", "Okay")
-    buttonCancel := terminateScriptGUI.Add("Button", "w80 x160 y170", "Cancel")
-    terminateScriptGUI.Show("w300 h200")
+    progressBar := terminateScriptGUI.Add("Progress", "w280 h20 x10 y120 cRed backgroundBlack", 0)
+    buttonOkay := terminateScriptGUI.Add("Button", "Default w80 x60 y190", getLanguageArrayString("reloadAndTerminateGUI_7"))
+    buttonCancel := terminateScriptGUI.Add("Button", "w80 x160 y190", getLanguageArrayString("reloadAndTerminateGUI_8"))
+    terminateScriptGUI.Show("AutoSize")
 
     buttonOkay.OnEvent("Click", (*) => ExitApp())
     buttonCancel.OnEvent("Click", (*) => terminateScriptGUI.Destroy())
@@ -456,15 +668,7 @@ terminateScriptPrompt()
                 progressBar.Value += 1.25
                 Sleep(50)
             }
-
-            If (i = 1)
-            {
-                textField.Text := "The script will be`n terminated in " . i . " second."
-            }
-            Else
-            {
-                textField.Text := "The script will be`n terminated in " . i . " seconds."
-            }
+            textField.Text := getLanguageArrayString("reloadAndTerminateGUI_5", i)
             i--
         }
         textField.Text := "The script has been terminated."

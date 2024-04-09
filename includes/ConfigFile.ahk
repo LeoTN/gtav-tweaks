@@ -28,6 +28,9 @@ configFile_onInit()
     ; Determines the location of the script's configuration file.
     global configFileLocation := A_ScriptDir . "\GTAV_Tweaks\GTAV_Tweaks.ini"
 
+    ; Specifies the preferred language for text boxes. Leave it to "SYSTEM", to use the system language, if available.
+    global PREFERRED_LANGUAGE := "SYSTEM"
+
     ; Defines if the script should ask the user for a brief explaination of it's core functions.
     global ASK_FOR_TUTORIAL := true
     ; Launch script with windows.
@@ -51,8 +54,8 @@ configFile_onInit()
     ;------------------------------------------------
 
     ; Will contain all config values matching with each variable name in the array below.
-    ; For example configVariableNameArray[2] = "ASK_FOR_TUTORIAL"
-    ; and configFileContentArray[2] = "true", so basically ASK_FOR_TUTORIAL = "true".
+    ; For example configVariableNameArray[2] == "ASK_FOR_TUTORIAL"
+    ; and configFileContentArray[2] == "true", so basically ASK_FOR_TUTORIAL == "true".
     ; NOTE: This had to be done because changing a global variable using a dynamic
     ; expression like global %myGlobalVarName% := "newValue" won't work.
     global configFileContentArray := []
@@ -64,6 +67,7 @@ configFile_onInit()
         [
             "booleanDebugMode",
             "loadBuiltInHotkeys",
+            "PREFERRED_LANGUAGE",
             "ASK_FOR_TUTORIAL",
             "LAUNCH_WITH_WINDOWS",
             "LAUNCH_MINIMIZED",
@@ -82,11 +86,12 @@ configFile_onInit()
             "DebugSettings",
             "DebugSettings",
             "GeneralSettings",
-            "GeneralSettings",
-            "GeneralSettings",
-            "GeneralSettings",
-            "GeneralSettings",
-            "GeneralSettings",
+            "StartupSettings",
+            "StartupSettings",
+            "StartupSettings",
+            "StartupSettings",
+            "StartupSettings",
+            "StartupSettings",
             "GameSettings",
             "GameSettings",
             "GameSettings"
@@ -96,6 +101,7 @@ configFile_onInit()
     {
         global booleanFirstTimeLaunch := true
     }
+    languages_onInit()
     checkConfigFileIntegrity()
 }
 
@@ -114,8 +120,8 @@ createDefaultConfigFile(pBooleanCreateBackup := true, pBooleanShowPrompt := fals
 {
     If (pBooleanShowPrompt)
     {
-        result := MsgBox("Do you really want to replace the current config file with a new one ?", "GTAV Tweaks - Replace Config File?", "YN Icon! 262144")
-        If (result = "No" || result = "Timeout")
+        result := MsgBox(getLanguageArrayString("configFileMsgBox1_1"), getLanguageArrayString("configFileMsgBox1_2"), "YN Icon! 262144")
+        If (result == "No" || result == "Timeout")
         {
             Return
         }
@@ -136,9 +142,10 @@ createDefaultConfigFile(pBooleanCreateBackup := true, pBooleanShowPrompt := fals
     ; In case you forget to specify a section for EACH new config file entry this will remind you to do so :D
     If (configVariableNameArray.Length != configSectionNameArray.Length)
     {
+        ; Those MsgBoxes typically only appear when changing the code. This means, that they don't need language support.
         MsgBox("Not every config file entry has been asigned to a section!`n`nPlease fix this by checking both arrays.",
-            "GTAV Tweaks - Config File Status - Error!", "O IconX 262144")
-        MsgBox("Script terminated.", "GTAV Tweaks - Script Status", "O IconX T1.5")
+            "GTAV Tweaks - Config File Status - Error", "O IconX 262144")
+        MsgBox(getLanguageArrayString("generalScriptMsgBox1_1"), getLanguageArrayString("generalScriptMsgBox1_2"), "O IconX T1.5")
         ExitApp()
     }
     Else
@@ -154,7 +161,7 @@ createDefaultConfigFile(pBooleanCreateBackup := true, pBooleanShowPrompt := fals
         }
         If (pBooleanShowPrompt)
         {
-            MsgBox("A default config file has been generated.", "GTAV Tweaks - Config File Status", "O Iconi T3")
+            MsgBox(getLanguageArrayString("configFileMsgBox2_1"), getLanguageArrayString("configFileMsgBox2_2"), "O Iconi T3")
         }
     }
 }
@@ -195,9 +202,9 @@ readConfigFile(pOptionName, pBooleanAskForPathCreation := true, pBooleanCheckCon
                 }
                 If (!validatePath(configFileContentArray.Get(A_Index), pBooleanAskForPathCreation, booleanCreatePathSilent))
                 {
-                    MsgBox("Check the config file for a valid path at`n["
-                        . configVariableNameArray.Get(A_Index) . "]", "GTAV Tweaks - Config File Status - Error!", "O Icon! 262144")
-                    MsgBox("Script terminated.", "GTAV Tweaks - Script Status", "O IconX T1.5")
+                    MsgBox(getLanguageArrayString("configFileMsgBox3_1", configVariableNameArray.Get(A_Index)),
+                        getLanguageArrayString("configFileMsgBox3_2"), "O Icon! 262144")
+                    MsgBox(getLanguageArrayString("generalScriptMsgBox1_1"), getLanguageArrayString("generalScriptMsgBox1_2"), "O IconX T1.5")
                     ExitApp()
                 }
                 Else
@@ -212,7 +219,7 @@ readConfigFile(pOptionName, pBooleanAskForPathCreation := true, pBooleanCheckCon
             }
         }
     }
-    MsgBox("Could not find " . pOptionName . " in the config file.`nScript terminated.", "GTAV Tweaks - Config File Status - Error!", "O IconX 262144")
+    MsgBox(getLanguageArrayString("configFileMsgBox4_1", pOptionName), getLanguageArrayString("configFileMsgBox4_2"), "O IconX 262144")
     ExitApp()
 }
 
@@ -264,8 +271,13 @@ editConfigFile(pOptionName, pData)
     }
 }
 
-; Reads the whole config file and throws an error when something is not right.
-checkConfigFileIntegrity()
+/*
+Reads the whole config file and throws an error when something is not right.
+@param pBooleanResultOnly [boolean] If set to true, the function will not take any actions and just return
+the state of of the config file.
+@returns [boolean] True, if the config file is not corrupted. False otherwise.
+*/
+checkConfigFileIntegrity(pBooleanResultOnly := false)
 {
     global booleanFirstTimeLaunch
 
@@ -279,15 +291,18 @@ checkConfigFileIntegrity()
         }
         Catch
         {
+            If (pBooleanResultOnly)
+            {
+                Return false
+            }
             ; Does not show a prompt when the script is launched for the very first time.
             If (booleanFirstTimeLaunch)
             {
                 createDefaultConfigFile()
                 Return true
             }
-            result := MsgBox("The script config file seems to be corrupted or unavailable!"
-                "`n`nDo you want to create a new one using the template?"
-                , "GTAV Tweaks - Config File Status - Warning!", "YN Icon! 262144")
+            result := MsgBox(getLanguageArrayString("configFileMsgBox5_1"),
+                getLanguageArrayString("configFileMsgBox5_2"), "YN Icon! 262144")
             Switch (result)
             {
                 Case "Yes":
@@ -297,12 +312,13 @@ checkConfigFileIntegrity()
                     }
                 Default:
                     {
-                        MsgBox("Script terminated.", "GTAV Tweaks - Script Status", "O IconX T1.5")
+                        MsgBox(getLanguageArrayString("generalScriptMsgBox1_1"), getLanguageArrayString("generalScriptMsgBox1_2"), "O IconX T1.5")
                         ExitApp()
                     }
             }
         }
     }
+    Return true
 }
 
 /*
@@ -344,14 +360,14 @@ validatePath(pPath, pBooleanAskForPathCreation := true, pBooleanCreatePathSilent
     }
 
     ; This means the path has no file at the end.
-    If (outExtension = "")
+    If (outExtension == "")
     {
         If (!DirExist(pPath))
         {
             If (pBooleanAskForPathCreation)
             {
-                result := MsgBox("The directory`n[" . pPath . "] does not exist."
-                    "`nWould you like to create it ?", "GTAV Tweaks - Config File Status - Warning!", "YN Icon! 262144")
+                result := MsgBox(getLanguageArrayString("configFileMsgBox6_1", pPath),
+                    getLanguageArrayString("configFileMsgBox6_1"), "YN Icon! 262144")
                 Switch (result)
                 {
                     Case "Yes":
@@ -360,7 +376,7 @@ validatePath(pPath, pBooleanAskForPathCreation := true, pBooleanCreatePathSilent
                         }
                     Default:
                         {
-                            MsgBox("Script terminated.", "GTAV Tweaks - Script Status", "O IconX T1.5")
+                            MsgBox(getLanguageArrayString("generalScriptMsgBox1_1"), getLanguageArrayString("generalScriptMsgBox1_2"), "O IconX T1.5")
                             ExitApp()
                         }
                 }
@@ -378,8 +394,8 @@ validatePath(pPath, pBooleanAskForPathCreation := true, pBooleanCreatePathSilent
         {
             If (pBooleanAskForPathCreation)
             {
-                result := MsgBox("The directory`n[" . outDir . "] does not exist."
-                    "`nWould you like to create it ?", "GTAV Tweaks - Config File Status - Warning!", "YN Icon! 262144")
+                result := MsgBox(getLanguageArrayString("configFileMsgBox6_1", outDir),
+                    getLanguageArrayString("configFileMsgBox6_1"), "YN Icon! 262144")
                 Switch (result)
                 {
                     Case "Yes":
@@ -388,7 +404,7 @@ validatePath(pPath, pBooleanAskForPathCreation := true, pBooleanCreatePathSilent
                         }
                     Default:
                         {
-                            MsgBox("Script terminated.", "GTAV Tweaks - Script Status", "O IconX T1.5")
+                            MsgBox(getLanguageArrayString("generalScriptMsgBox1_1"), getLanguageArrayString("generalScriptMsgBox1_2"), "O IconX T1.5")
                             ExitApp()
                         }
                 }

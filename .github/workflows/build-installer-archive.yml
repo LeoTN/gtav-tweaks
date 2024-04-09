@@ -47,13 +47,77 @@ jobs:
 
     - name: Create Version File
       run: |
+        function readFromCSVFile() {
+            Param(
+                [Parameter(Mandatory = $true)]
+                [String]$pFileLocation
+            )
+            
+            # Stops here because the file does not exist.
+            If (-not (Test-Path -Path $pFileLocation)) {
+                Write-Host "[readFromCSVFile()] [WARNING] The file [$pFileLocation] does not exist." -ForegroundColor "Yellow"
+                # We are using $null because $false would cause an error.
+                Return $null
+            }
+            Try {
+                # Reads the .CSV file and converts it into a hashtable.
+                $content = @{}
+                Import-Csv -Path $pFileLocation | ForEach-Object {
+                    $content[$_.Key] = $_.Value
+                }
+                Write-Host "[readFromCSVFile()] [INFO] The content of the CSV file [$pFileLocation] has been successfully read."
+                Return $content
+            }
+            Catch {
+                Write-Host "[readFromCSVFile()] [ERROR] Failed to read the content of the CSV file [$pFileLocation]. Detailed error description below.`n" -ForegroundColor "Red"
+                Write-Host "***START***[`n$Error`n]***END***" -ForegroundColor "Red"
+                # DO NOT REMOVE THIS COMMENT! Removing this space cause the function to return parts of the error object.
+                # We are using $null because $false would cause an error.
+                Return $null
+            }
+        }
+
+        function writeToCSVFile() {
+            Param(
+                [Parameter(Mandatory = $true)]
+                [String]$pFileLocation,
+                [Parameter(Mandatory = $true)]
+                [hashtable]$pContent,
+                [Parameter(Mandatory = $false)]
+                [switch]$pSwitchForce
+            )
+        
+            # Stops here because the file exists and the function is told to not overwrite the file.
+            If ((Test-Path -Path $pFileLocation) -and !$pSwitchForce) {
+                Write-Host "[writeToCSVFile()] [WARNING] The file [$pFileLocation] is already present. Use [-pSwitchForce] to overwrite it." -ForegroundColor "Yellow"
+                Return $false
+            }
+            Try {
+                # Writes the hashtable into the file.
+                $pContent.GetEnumerator() | Select-Object -Property @{Name = "Key"; Expression = { $_.Key } }, @{Name = "Value"; Expression = { $_.Value } } | Export-Csv -Path $pFileLocation -Encoding Default -NoTypeInformation
+                Write-Host "[writeToCSVFile()] [INFO] The given hashtable has been successfully written to [$pFileLocation]."
+                Return $true
+            }
+            Catch {
+                Write-Host "[writeToCSVFile()] [ERROR] Failed to write the given hashtable to [$pFileLocation]. Detailed error description below.`n" -ForegroundColor "Red"
+                Write-Host "***START***[`n$Error`n]***END***" -ForegroundColor "Red"
+                # DO NOT REMOVE THIS COMMENT! Removing this space cause the function to return parts of the error object.
+                Return $false
+            }
+        }
+
         if ($env:IS_PRE_RELEASE -eq "true") {
-        $releaseName = "v${env:RELEASE_VERSION}-beta"
+            $releaseName = "v${env:RELEASE_VERSION}-beta"
         }
         else {
-        $releaseName = "v${env:RELEASE_VERSION}"
+            $releaseName = "v${env:RELEASE_VERSION}"
         }
-        New-Item -Path "${{ github.workspace }}\library\build\currentVersion.txt" -ItemType "file" -Value $releaseName -Force | Out-Null
+
+        # Updates the current version file.
+        $currentVersionFileLocation = "${{ github.workspace }}\library\build\currentVersion.csv"
+        $currentVersionFileObject = readFromCSVFile -pFileLocation $currentVersionFileLocation
+        $currentVersionFileObject["CURRENT_VERSION"] = $releaseName
+        writeToCSVFile -pFileLocation $currentVersionFileLocation -pContent $currentVersionFileObject -pSwitchForce | Out-Null
 
     - name: Extract Autohotkey Compiler
       run: |
@@ -137,7 +201,7 @@ jobs:
         rm "${{ github.workspace }}/library/build/soundvolumeview-x64.zip"
         rm "${{ github.workspace }}/library/build/AutoHotkey32.zip"
         rm "${{ github.workspace }}/library/build/checkForUpdates.ps1"
-        rm "${{ github.workspace }}/library/build/currentVersion.txt"
+        rm "${{ github.workspace }}/library/build/currentVersion.csv"
 
         cp "${{ github.workspace }}/library/setup/GTAV_Tweaks_Setup.exe" "${{ github.workspace }}/library/build/"
 

@@ -4,7 +4,7 @@
 *.log
 GTAV_Tweaks.exe
 library\build\AutoHotkey32.zip
-library\build\currentVersion.txt
+library\build\currentVersion.csv
 library\build\soundvolumeview-x64.zip
 library\setup\GTAV_Tweaks_Setup.exe
 .vscode/
