@@ -3,11 +3,9 @@
 <p align="left">
 
 <a href="#installation" style="text-decoration: none;"><img src="https://img.shields.io/github/v/release/LeoTN/gtav-tweaks?sort=semver&display_name=release&style=for-the-badge&logo=Autohotkey&logoColor=green&label=Download&color=green" alt="Latest Download"></a>
-&nbsp;
 <a href="https://github.com/LeoTN/gtav-tweaks/releases" style="text-decoration: none;"><img src="https://img.shields.io/github/v/release/LeoTN/gtav-tweaks?include_prereleases&sort=semver&filter=*-beta&display_name=release&style=for-the-badge&logo=Google%20Search%20Console&logoColor=orange&label=Beta%20Download&color=orange" alt="Latest Beta Release"></a>
 <br>
 <a href="https://github.com/LeoTN/gtav-tweaks/blob/main/LICENSE" style="text-decoration: none;"><img src="https://img.shields.io/github/license/LeoTN/gtav-tweaks?style=for-the-badge&logo=Google%20Docs&logoColor=orange&label=License&color=orange" alt="GitHub License"></a>
-&nbsp;
 <a href="https://github.com/LeoTN/gtav-tweaks/releases/latest/download/GTAV_Tweaks.zip" style="text-decoration: none;"><img src="https://img.shields.io/github/downloads/LeoTN/gtav-tweaks/GTAV_Tweaks.zip?style=for-the-badge&logo=DocuSign&logoColor=green&label=Total%20Downloads&color=green" alt="Total Downloads"></a>
 
 </p>
@@ -18,15 +16,15 @@ This program adds **hotkeys** in combination with **macros** for GTA V Online. Y
 
 ## Installation
 
->  1. Download the installer archive from [here](https://github.com/LeoTN/gtav-tweaks/releases/latest/download/GTAV_Tweaks.zip).
->  2. Extract the archive, move both the **GTAV_Tweaks_Setup.exe** and **GTAV_Tweaks.exe** to a desired location (or leave them there for now). Just make sure they are in the **same folder**.
->  3. Execute the **GTAV_Tweaks_Setup.exe** and you are done.
+> 1. Download the [installer archive](https://github.com/LeoTN/gtav-tweaks/releases/latest/download/GTAV_Tweaks.zip).
+> 2. Extract the archive, move both the **GTAV_Tweaks_Setup.exe** and **GTAV_Tweaks.exe** to a desired location (or leave them there for now). Just make sure they are in the **same folder**.
+> 3. Execute the **GTAV_Tweaks_Setup.exe** and you are done.
 
 You can find all releases (including beta versions) [here](https://github.com/LeoTN/gtav-tweaks/releases).
 
-## Currently available built-in hotkeys
+## Currently Available Built-in Hotkeys
 
->  **You can change every hotkey in the config file or use the hotkey overview window.**
+**You can change every hotkey in the config file or use the hotkey overview window.**
 
 | Hotkey     | Description                                                                                     |
 |------------|-------------------------------------------------------------------------------------------------|
@@ -35,7 +33,7 @@ You can find all releases (including beta versions) [here](https://github.com/Le
 
 ***This hotkey is still under development and might not work as expected.**
 
-## Create your own macros & hotkeys
+## Create Your Own Macros & Hotkeys
 
 To make this possible, I also created a simple *macro recorder* in AutoHotkey.
 
@@ -47,14 +45,14 @@ More information about this topic, including a FAQ section, can be found in the 
 
 * It is possible to create **custom GTA V actions**, for instance calling NPCs on the phone, depositing cash into your bank account and so on. You can achieve this by creating **macros** and binding them to **hotkeys**.
 
-
 * Ability to mute GTA V during launch and unmute it, once you start playing.
 
 * Many customizable script startup options, for example an autostart feature or a silent launch.
+* Currently supported languages are **English** and **German**.
 
 ## Credits & License
 
-*  **NirSoft** (https://www.nirsoft.net/utils/sound_volume_view.html) for providing such an incredibly useful application.
+*  **NirSoft** ([source](https://www.nirsoft.net/utils/sound_volume_view.html)) for providing such an incredibly useful application.
 
 I appreciate your **constructive** and **honest** feedback. Feel free to create an **issue** or **feature request**.
 
