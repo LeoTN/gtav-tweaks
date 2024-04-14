@@ -57,3 +57,5 @@ More information about this topic, including a FAQ section, can be found in the 
 I appreciate your **constructive** and **honest** feedback. Feel free to create an **issue** or **feature request**.
 
 *This repository is licensed under the [MIT License](https://github.com/LeoTN/gtav-tweaks/blob/main/LICENSE).*
+
+This is a test line. The beta release workflow should not activate. # REMOVE

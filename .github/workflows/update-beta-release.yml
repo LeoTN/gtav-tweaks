@@ -4,6 +4,14 @@ on:
     push:
         branches: 
             - development
+        paths-ignore:
+            - ".github/ISSUE_TEMPLATE/**"
+            - "compiler/**"
+            - "library/assets/gtav_tweaks_repository_icon.png"
+            - ".gitattributes"
+            - ".gitignore"
+            - "LICENSE"
+            - "README.md"
 
 env:
   LATEST_TAG_NAME: "null"
