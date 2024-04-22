@@ -53,7 +53,9 @@ function onInit() {
     $supportFilesFolderUpdateFolder = Join-Path -Path $supportFilesFolder -ChildPath "update"
     $logFileNameUpdate = "executedUpdate.log"
     # Copies the log file into the back up folders.
-    If (Test-Path -Path $global:targetBackupFolder) {
+    # This if statement checks wether $global:targetBackupFolder contains a value. If the first of the two and conditions
+    # isn't met, the system won't check the second one, therefore preventing an error thrown by Test-Path due to an empty string.
+    If ($global:targetBackupFolder -and (Test-Path -Path $global:targetBackupFolder)) {
         Copy-Item -Path $logFilePath -Destination (Join-Path -Path $global:targetBackupFolder -ChildPath $logFileNameUpdate) -Force
         Copy-Item -Path $logFilePath -Destination (Join-Path -Path $global:targetBackupFolderTemp -ChildPath $logFileNameUpdate) -Force
     }
@@ -100,12 +102,12 @@ function evaluateUpdate() {
         Return 2
     }
     If (-not (executeUpdate)) {
-        Write-Host "`n`n[evaluateUpdate()] [INFO] Failed to execute update from version [$global:currentVersion] to [$availableUpdateVersion].`n`n" -ForegroundColor "Green"
+        Write-Host "`n`n[evaluateUpdate()] [INFO] Failed to change version from [$global:currentVersion] to [$availableUpdateVersion].`n`n" -ForegroundColor "Green"
         Return 3
     }
     Else {
         Start-Process -FilePath $pCurrentExecutableLocation
-        Write-Host "`n`n[evaluateUpdate()] [INFO] Successfully updated from version [$global:currentVersion] to [$availableUpdateVersion].`n`n" -ForegroundColor "Green"
+        Write-Host "`n`n[evaluateUpdate()] [INFO] Successfully changed version from [$global:currentVersion] to [$availableUpdateVersion].`n`n" -ForegroundColor "Green"
         # Launch the new and updated script.
         Start-Process -FilePath $pCurrentExecutableLocation 
         Return 102
@@ -160,7 +162,8 @@ function extractCurrentVersionFileContent() {
         Write-Host "[extractCurrentVersionFileContent()] [ERROR] Found an invalid last update [$global:currentVersionLastUpdateDate] date for [$global:currentVersion]." -ForegroundColor "Red"
         Return $false
     }
-    $currentDateTime = Get-Date
+    # This date is forced into a specific format to avoid formatting issues.
+    $currentDateTime = Get-Date -Format "dd.MM.yyyy HH:mm:ss"
     $highestDateTime = compareDates -pDateString1 $global:currentVersionLastUpdateDate -pDateString2 $currentDateTime
     # This mean the current last update date lies in the future.
     If ((compareDates -pDateString1 $highestDateTime -pDateString2 $currentDateTime) -ne "identical_dates") {
