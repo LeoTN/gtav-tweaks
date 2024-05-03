@@ -99,7 +99,8 @@ waitForAnyKey()
 {
     global macroRecordHotkey
     global macroRecorderInputHook := InputHook("V")
-    idleTime := 0
+    keyboardKeyMinimumWaitTimeMilliseconds := 800
+    idleTimeMilliseconds := 0
     ; Waits for any key to be pressed (except for mouse keys for what ever reason).
     macroRecorderInputHook.KeyOpt("{All}", "E")
     macroRecorderInputHook.Start()
@@ -127,7 +128,7 @@ waitForAnyKey()
         {
             Break
         }
-        idleTime += 10
+        idleTimeMilliseconds += 10
         Sleep(10)
     }
     ; We don't want the macro record hotkey to be included into the file.
@@ -136,39 +137,38 @@ waitForAnyKey()
         Return
     }
     ; ##### MOUSE KEY #####
-    Else If (mouseKey != "invalid_mouse_key_received" && mouseKey != "no_mouse_key_pressed")
+    If (mouseKey != "invalid_mouse_key_received" && mouseKey != "no_mouse_key_pressed")
     {
         ; The array is returned by the checkIfMouseButtonPressed() function and contains all values at the specific indexes.
-        mouseX := mouseKeyReturnedArray.Get(2)
-        mouseY := mouseKeyReturnedArray.Get(3)
-        pixelColorToWaitFor := mouseKeyReturnedArray.Get(4)
-        mouseKeyIncompleteString := mouseKeyReturnedArray.Get(5)
-        ; The unfinished string from the checkIfMouseButtonPressed() function is being finished here, because we know the idleTime value at this point.
-        waitForPixelColorString := 'waitForPixelColor("' . pixelColorToWaitFor . '", ' . idleTime . ', ' . mouseX . ', ' . mouseY . ')'
-        pressedKeyCompleteString := StrReplace(mouseKeyIncompleteString, "insert_wait_for_pixel_color_here", waitForPixelColorString)
+        mouseKeyIncompleteString := mouseKeyReturnedArray.Get(2)
+        ; We now know the idleTimeMilliseconds and can fill in the value.
+        pressedKeyCompleteString := StrReplace(mouseKeyIncompleteString, "insert_sleep_time_milliseconds_here", idleTimeMilliseconds)
         Return pressedKeyCompleteString
     }
-    ; This checks, if the pressed key is not a letter and the idle time has to be at least 800 milliseconds.
-    Else If (!RegExMatch(macroRecorderInputHook.EndKey, "\p{L}") && idleTime < 800)
+    ; ##### KEYBOARD KEY #####
+    ; Checks if the given key is not a letter.
+    If (!RegExMatch(macroRecorderInputHook.EndKey, "\A\p{L}\z") && idleTimeMilliseconds < keyboardKeyMinimumWaitTimeMilliseconds)
     {
         ; This is a safety feature to make sure the game has enough time to process the inputs. Otherwise the macros might be broken.
-        idleTime := 800
+        idleTimeMilliseconds := keyboardKeyMinimumWaitTimeMilliseconds
     }
     ; ##### KEYBOARD KEY #####
     pressedKeyCompleteString := "; " . macroRecorderInputHook.EndKey . "`n"
-    pressedKeyCompleteString .= "Sleep(" . idleTime . ")`n"
-    pressedKeyCompleteString .= 'Send("{' . macroRecorderInputHook.EndKey . ' down}")`n'
-    pressedKeyCompleteString .= "Sleep(keyboardKeysMinimumWaitTimeMilliseconds) "
-    pressedKeyCompleteString .= "; DO NOT MODIFY`n"
-    pressedKeyCompleteString .= 'Send("{' . macroRecorderInputHook.EndKey . ' up}")`n'
+    pressedKeyCompleteString .= 'keyboardKey := "' . macroRecorderInputHook.EndKey . '"`n'
+    pressedKeyCompleteString .= "sleepTimeMilliseconds := " . idleTimeMilliseconds . "`n"
+    pressedKeyCompleteString .= "Sleep(sleepTimeMilliseconds)`n"
+    pressedKeyCompleteString .= "Send(`"{`" . keyboardKey . `" down}`")`n"
+    pressedKeyCompleteString .= "Sleep(keyboardKeyWaitTimeMilliseconds) "
+    pressedKeyCompleteString .= "; Be careful when changing this value.`n"
+    pressedKeyCompleteString .= "Send(`"{`" . keyboardKey . `" up}`")`n"
     Return pressedKeyCompleteString
 }
 
 /*
 Checks if the given mouse button is pressed.
 @param pMouseButton [String] Should be a valid mouse button, for instance "RButton".
-@returns [Array] An array which contains multiple values. The string (conained in the 5th index) needs to be further processed,
-using the other values in the array from index 2-4.
+@returns [Array] An array which contains multiple values. The string (conained in the 2th index) needs to be further processed,
+using the other values in the array from index 1-2.
 */
 checkIfMouseButtonPressed(pMouseButton)
 {
@@ -201,22 +201,21 @@ checkIfMouseButtonPressed(pMouseButton)
     If (GetKeyState(pMouseButton, "P"))
     {
         MouseGetPos(&mouseX, &mouseY)
-        pixelColorToWaitFor := getPixelColor(mouseX, mouseY)
         mouseKeyIncompleteString .= 'mouseKey := "' . mouseKeyLongName . '"`n'
         mouseKeyIncompleteString .= "mouseX := " . mouseX . "`n"
         mouseKeyIncompleteString .= "mouseY := " . mouseY . "`n"
-        mouseKeyIncompleteString .= 'pixelColorToWaitFor := "' . pixelColorToWaitFor . '"`n'
-        ; The function will be inserted, once the sleep time (idleTime) is known.
-        mouseKeyIncompleteString .= "insert_wait_for_pixel_color_here`n"
+        ; The value will be inserted, once the sleep time (idleTimeMilliseconds) is known.
+        mouseKeyIncompleteString .= "sleepTimeMilliseconds := insert_sleep_time_milliseconds_here`n"
+        mouseKeyIncompleteString .= "Sleep(sleepTimeMilliseconds)`n"
         mouseKeyIncompleteString .= "MouseMove(mouseX, mouseY)`n"
-        mouseKeyIncompleteString .= "Sleep(mouseClickMinimumWaitTimeMilliseconds) "
+        mouseKeyIncompleteString .= "Sleep(mouseClickWaitTimeMilliseconds) "
         mouseKeyIncompleteString .= "; Be careful when changing this value.`n"
         mouseKeyIncompleteString .= 'Click(mouseX, mouseY, "mouseKey", "D")`n'
-        mouseKeyIncompleteString .= "Sleep(mouseClickMinimumWaitTimeMilliseconds) "
+        mouseKeyIncompleteString .= "Sleep(mouseClickWaitTimeMilliseconds) "
         mouseKeyIncompleteString .= "; Be careful when changing this value.`n"
         mouseKeyIncompleteString .= 'Click(mouseX, mouseY, "mouseKey", "U")`n'
         ; We need an array, because we have multiple values, that need to be returned.
-        mouseKeyReturnArray := Array(mouseKeyLongName, mouseX, mouseY, pixelColorToWaitFor, mouseKeyIncompleteString)
+        mouseKeyReturnArray := Array(mouseKeyLongName, mouseKeyIncompleteString)
         macroRecorderInputHook.Stop()
         ; Waits for the mouse button to be released.
         KeyWait(pMouseButton, "L")
@@ -224,49 +223,4 @@ checkIfMouseButtonPressed(pMouseButton)
     }
     mouseKeyReturnArray := Array("no_mouse_key_pressed")
     Return mouseKeyReturnArray
-}
-
-/*
-Tries to find a given color at a specific pixel coordinate.
-@param pMouseX [int] Should be a x coordinate from the computer screen or window.
-@param pMouseY [int] Here goes the same as for the x coordinate. Both coordinates can be omitted. The function will
-use the current mouse cursor position instead.
-@param pColor [String] Should be a valid color in the hexadecimal format.
-@param pVariation [int] Can be a value from 0 to 255. This allows for similar colors to be detected, depending on how high the
-value is set. 255 would allow for all colors to be found and 0 only for the exact color given.
-@returns [boolean] True, if the given color was found. False otherwise.
-*/
-getPixelColor(pMouseX := unset, pMouseY := unset, pColor := unset, pVariation := 0)
-{
-    ; Both parameters are omitted.
-    If (!IsSet(pMouseX) && !IsSet(pMouseY))
-    {
-        ; We use the current mouse cursor position here.
-        MouseGetPos(&pMouseX, &pMouseY)
-    }
-    ; Only one parameter is given and the other one is missing.
-    Else If (!IsSet(pMouseX) || !IsSet(pMouseY))
-    {
-        MsgBox("[" . A_ThisFunc . "()] [WARNING] Make sure that either both (pMouseX and pMouseY) are given or omitted entirely.")
-        Return false
-    }
-    If (IsSet(pColor))
-    {
-        If (pVariation < 0 || pVariation > 255)
-        {
-            MsgBox("[" . A_ThisFunc . "()] [WARNING] pVariation is an invalid value: [" . pVariation . "].")
-            Return false
-        }
-        ; Tries to find the color with an optional variation.
-        If (PixelSearch(&outputX_not_used, &outputY_not_used, pMouseX, pMouseY, pMouseX, pMouseX, pColor, pVariation))
-        {
-            Return true
-        }
-        Else
-        {
-            Return false
-        }
-    }
-    buttonColor := PixelGetColor(pMouseX, pMouseY)
-    Return buttonColor
 }

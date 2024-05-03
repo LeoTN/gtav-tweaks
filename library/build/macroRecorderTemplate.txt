@@ -1,0 +1,22 @@
+Make sure to take a look at the README.txt before changing this file!
+You can find it in the script folder (GTAV_Tweaks)
+or in the installer archive (downloaded from GitHub).
+**************************************************
+*/
+
+#Requires AutoHotkey >=v2.0
+#SingleInstance Force
+SendMode "Input"
+CoordMode "Mouse", "Window"
+
+; Be careful when changing the values below. They might break your macro.
+global mouseClickWaitTimeMilliseconds := 50
+global keyboardKeyWaitTimeMilliseconds := 50
+
+; Works like speeding up or slowing down a youtube video basically.
+global macroPlayBackSpeedModificator := 1
+
+/*
+The actual macro code starts below this line.
+**************************************************
+*/
