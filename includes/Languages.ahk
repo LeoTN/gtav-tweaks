@@ -498,7 +498,7 @@ createLanguageArrayMap(pLanguageCode)
             "GTAV Tweaks - Was ist ein Makro"
         ]
         newCustomHotkeyOverviewGUIMsgBox6_1 := [
-            "Um die Aufzeichnung eines Makros zu starten, Drückee die`n[",
+            "Um die Aufzeichnung eines Makros zu starten, Drücke die`n[",
             "",
             "] Taste, nachdem du [Makro aufzeichnen] geklickt hast.`n`nDie Makrodatei wird dann unter`n[",
             "",
@@ -516,7 +516,7 @@ createLanguageArrayMap(pLanguageCode)
         ]
         newCustomHotkeyOverviewGUIMsgBox8_1 := [
             "Weitere Informationen findest du in den FAQ in der README.txt-Datei.`n`n",
-            "Drückee [Ja], um sie zu öffnen."
+            "Drücke [Ja], um sie zu öffnen."
         ]
         newCustomHotkeyOverviewGUIMsgBox8_2 := [
             "GTAV Tweaks - Makro-FAQ"
@@ -524,7 +524,7 @@ createLanguageArrayMap(pLanguageCode)
         newCustomHotkeyOverviewGUIMsgBox9_1 := [
             "Du hast 15 Sekunden nach dem Schließen dieser Info-Box Zeit, um mit der Aufzeichnung zu beginnen, indem du [",
             "",
-            "] Drückest.`n`nUm die Aufzeichnung zu stoppen, Drückee einfach [",
+            "] drückst.`n`nUm die Aufzeichnung zu stoppen, Drücke einfach [",
             "",
             "] erneut."
         ]
