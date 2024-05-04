@@ -522,9 +522,9 @@ createLanguageArrayMap(pLanguageCode)
             "GTAV Tweaks - Makro-FAQ"
         ]
         newCustomHotkeyOverviewGUIMsgBox9_1 := [
-            "Du hast 15 Sekunden nach dem Schließen dieser Info-Box Zeit, um mit der Aufzeichnung zu beginnen, indem du [",
+            "Du hast 15 Sekunden nach dem Schließen dieser Info-Box Zeit, um mit der Aufzeichnung zu beginnen indem du [",
             "",
-            "] drückst.`n`nUm die Aufzeichnung zu stoppen, Drücke einfach [",
+            "] drückst.`n`nUm die Aufzeichnung zu stoppen, drücke einfach [",
             "",
             "] erneut."
         ]

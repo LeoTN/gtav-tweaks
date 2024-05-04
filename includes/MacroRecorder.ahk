@@ -4,16 +4,9 @@
 SendMode "Input"
 CoordMode "Mouse", "Window"
 
-macroRecorder_onInit ; REMOVE
-
 macroRecorder_onInit()
 {
-    global macroRecorderTemplateFileLocation := "G:\GitHub Repositories\gtav-tweaks\GTAV_Tweaks\macros\templates\macroRecorderTemplate.txt" ; REMOVE
-    global recordedMacroFilesStorageDirectory := "C:\Users\Donnerbaer\Downloads\Macro Test gelände" ; REMOVE
-    global macroRecordHotkey := "F5" ; REMOVE
 
-    Hotkey(macroRecordHotkey, (*) => startMacroRecording(), "On S") ; REMOVE
-    Hotkey("F6", (*) => stopMacroRecording(), "On S") ; REMOVE
 }
 
 /*
@@ -55,16 +48,23 @@ Creates the basic template for every macro file.
 getMacroFileTemplateString(pMacroCreationTimeStampString)
 {
     global macroRecorderTemplateFileLocation
+    global scriptMainDirectory
 
     If (!FileExist(macroRecorderTemplateFileLocation))
     {
         MsgBox("[" . A_ThisFunc . "()] [WARNING] Unable to find template file [" . macroRecorderTemplateFileLocation . "].")
         stopMacroRecording()
     }
+    SplitPath(scriptMainDirectory, &outFolderName)
     macroTemplateString .= "/*`n"
     macroTemplateString .= "Created on " . pMacroCreationTimeStampString . "`n"
     macroTemplateString .= "with GTAV Tweaks macro recorder`n"
     macroTemplateString .= "(https://github.com/LeoTN/gtav-tweaks).`n`n"
+    macroTemplateString .= "Make sure to take a look at the README.txt before changing this file!`n"
+    macroTemplateString .= "You can find it in the script folder (" . outFolderName . ")`n"
+    macroTemplateString .= "or in the installer archive (downloaded from GitHub).`n"
+    macroTemplateString .= "**************************************************`n"
+    macroTemplateString .= "*/`n`n"
     macroTemplateString .= FileRead(macroRecorderTemplateFileLocation) . "`n`n"
     Return macroTemplateString
 }
@@ -134,7 +134,7 @@ waitForAnyKey()
     ; We don't want the macro record hotkey to be included into the file.
     If (macroRecorderInputHook.EndKey == macroRecordHotkey)
     {
-        Return
+        Return "; This is the end of the macro."
     }
     ; ##### MOUSE KEY #####
     If (mouseKey != "invalid_mouse_key_received" && mouseKey != "no_mouse_key_pressed")
@@ -152,11 +152,10 @@ waitForAnyKey()
         ; This is a safety feature to make sure the game has enough time to process the inputs. Otherwise the macros might be broken.
         idleTimeMilliseconds := keyboardKeyMinimumWaitTimeMilliseconds
     }
-    ; ##### KEYBOARD KEY #####
     pressedKeyCompleteString := "; " . macroRecorderInputHook.EndKey . "`n"
     pressedKeyCompleteString .= 'keyboardKey := "' . macroRecorderInputHook.EndKey . '"`n'
     pressedKeyCompleteString .= "sleepTimeMilliseconds := " . idleTimeMilliseconds . "`n"
-    pressedKeyCompleteString .= "Sleep(sleepTimeMilliseconds)`n"
+    pressedKeyCompleteString .= "Sleep(sleepTimeMilliseconds / macroPlayBackSpeedModificator)`n"
     pressedKeyCompleteString .= "Send(`"{`" . keyboardKey . `" down}`")`n"
     pressedKeyCompleteString .= "Sleep(keyboardKeyWaitTimeMilliseconds) "
     pressedKeyCompleteString .= "; Be careful when changing this value.`n"
@@ -206,7 +205,7 @@ checkIfMouseButtonPressed(pMouseButton)
         mouseKeyIncompleteString .= "mouseY := " . mouseY . "`n"
         ; The value will be inserted, once the sleep time (idleTimeMilliseconds) is known.
         mouseKeyIncompleteString .= "sleepTimeMilliseconds := insert_sleep_time_milliseconds_here`n"
-        mouseKeyIncompleteString .= "Sleep(sleepTimeMilliseconds)`n"
+        mouseKeyIncompleteString .= "Sleep(sleepTimeMilliseconds / macroPlayBackSpeedModificator)`n"
         mouseKeyIncompleteString .= "MouseMove(mouseX, mouseY)`n"
         mouseKeyIncompleteString .= "Sleep(mouseClickWaitTimeMilliseconds) "
         mouseKeyIncompleteString .= "; Be careful when changing this value.`n"
