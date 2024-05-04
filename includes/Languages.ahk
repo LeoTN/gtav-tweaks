@@ -353,6 +353,24 @@ createLanguageArrayMap(pLanguageCode)
         generalScriptTrayTip2_2 := [
             "GTAV Tweaks - Status"
         ]
+        ; Macro Recorder TrayTips
+        ; #######################
+        macroRecorderTrayTip1_1 := [
+            "Drücke [",
+            "",
+            "] um die Aufnahme zu beenden."
+        ]
+        macroRecorderTrayTip1_2 := [
+            "Makro Aufnahme Gestartet"
+        ]
+        macroRecorderTrayTip2_1 := [
+            "Datei gespeichert unter [",
+            "",
+            "]."
+        ]
+        macroRecorderTrayTip2_2 := [
+            "Makro Aufnahme Gestoppt"
+        ]
         ; General Script MsgBoxes
         ; #######################
         generalScriptMsgBox1_1 := [
@@ -923,6 +941,24 @@ createLanguageArrayMap(pLanguageCode)
         generalScriptTrayTip2_2 := [
             "GTAV Tweaks - Status"
         ]
+        ; Macro Recorder TrayTips
+        ; #######################
+        macroRecorderTrayTip1_1 := [
+            "Press [",
+            "",
+            "] to stop recording."
+        ]
+        macroRecorderTrayTip1_2 := [
+            "Macro Recording Started"
+        ]
+        macroRecorderTrayTip2_1 := [
+            "File saved at [",
+            "",
+            "]."
+        ]
+        macroRecorderTrayTip2_2 := [
+            "Macro Recording Stopped"
+        ]
         ; General Script MsgBoxes
         ; #######################
         generalScriptMsgBox1_1 := [
@@ -1336,6 +1372,10 @@ createLanguageArrayMap(pLanguageCode)
         "generalScriptTrayTip1_2", generalScriptTrayTip1_2,
         "generalScriptTrayTip2_1", generalScriptTrayTip2_1,
         "generalScriptTrayTip2_2", generalScriptTrayTip2_2,
+        "macroRecorderTrayTip1_1", macroRecorderTrayTip1_1,
+        "macroRecorderTrayTip1_2", macroRecorderTrayTip1_2,
+        "macroRecorderTrayTip2_1", macroRecorderTrayTip2_1,
+        "macroRecorderTrayTip2_2", macroRecorderTrayTip2_2,
         "generalScriptMsgBox1_1", generalScriptMsgBox1_1,
         "generalScriptMsgBox1_2", generalScriptMsgBox1_2,
         "generalScriptMsgBox2_1", generalScriptMsgBox2_1,

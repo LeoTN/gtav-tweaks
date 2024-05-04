@@ -1,9 +1,3 @@
-Make sure to take a look at the README.txt before changing this file!
-You can find it in the script folder (GTAV_Tweaks)
-or in the installer archive (downloaded from GitHub).
-**************************************************
-*/
-
 #Requires AutoHotkey >=v2.0
 #SingleInstance Force
 SendMode "Input"

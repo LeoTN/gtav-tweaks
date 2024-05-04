@@ -21,8 +21,8 @@ startMacroRecording()
     currentDateString := FormatTime(A_Now, "dd.MM.yyyy_HH-mm-ss")
     macroFileLocation := recordedMacroFilesStorageDirectory . "\" . currentDateString . ".ahk"
 
-    TrayTip("Press [" . macroRecordHotkey . "] to stop recording.", "Macro Recording Started", "20")
-    SetTimer(TrayTip, -2000)
+    TrayTip(getLanguageArrayString("macroRecorderTrayTip1_1", macroRecordHotkey), getLanguageArrayString("macroRecorderTrayTip1_2"), "20")
+    SetTimer(TrayTip, -6000)
     macroFileString .= getMacroFileTemplateString(currentDateString)
 
     While (booleanMacroIsRecording)
@@ -35,10 +35,11 @@ startMacroRecording()
 
 stopMacroRecording()
 {
+    global recordedMacroFilesStorageDirectory
     global booleanMacroIsRecording := false
 
-    TrayTip("", "Macro Recording Stopped", "20")
-    SetTimer(TrayTip, -2000)
+    TrayTip(getLanguageArrayString("macroRecorderTrayTip2_1", recordedMacroFilesStorageDirectory), getLanguageArrayString("macroRecorderTrayTip2_2"), "20")
+    SetTimer(TrayTip, -6000)
 }
 
 /*
