@@ -7,7 +7,10 @@ CoordMode "Mouse", "Window"
 global mouseClickWaitTimeMilliseconds := 50
 global keyboardKeyWaitTimeMilliseconds := 50
 
-; Works like speeding up or slowing down a youtube video basically.
+/*
+Works like speeding up or slowing down a youtube video basically.
+For instance: 0.5 will play the macro at half the normal speed and 2 will double the speed.
+*/
 global macroPlayBackSpeedModificator := 1
 
 /*

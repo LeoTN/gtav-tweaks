@@ -89,12 +89,12 @@ onInit()
         checkForAvailableUpdates()
     }
     waitForGTAToExist()
+    ; Checks every 3 seconds if GTA is still existing and if it is the active window.
+    SetTimer(checkForExistingGTA, 3000)
     If (readConfigFile("MUTE_GAME_WHILE_LAUNCH"))
     {
         muteGTAWhileInLoadingScreen()
     }
-    ; Checks every 3 seconds if GTA is still existing and if it is the active window.
-    SetTimer(checkForExistingGTA, 3000)
 }
 
 onInit_unpackSupportFiles()
