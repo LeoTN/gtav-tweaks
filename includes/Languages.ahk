@@ -1299,9 +1299,9 @@ createLanguageArrayMap(pLanguageCode)
             " [This is a built-in hotkey]"
         ]
         builtInHotkeyDescription_2 := [
-            "Pausiert den GTAV Prozess und erstellt somit eine Sololobby.",
+            "Pauses the GTA V process and creates a solo lobby.",
             ; The empty space is intended.
-            " [Das hier ist ein eingebauter Hotkey]"
+            " [This is a built-in hotkey]"
         ]
     }
     ; Saves every array object with it's real name to find them more easily.
