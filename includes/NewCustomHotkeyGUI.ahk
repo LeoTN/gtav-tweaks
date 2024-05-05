@@ -187,14 +187,9 @@ handleNewCustomHotkeyGUI_recordMacro()
     If (KeyWait(macroRecordHotkey, "D T15"))
     {
         ; This hotkey cannot be suspended.
-        Hotkey(macroRecordHotkey, (*) => hotkey_stopMacroRecording(), "On S")
+        Hotkey(macroRecordHotkey, (*) => stopMacroRecording(), "On S")
         ; Records the macro file with the current time stamp as it's file name.
-        recordMacro(recordedMacroFilesStorageDirectory . "\" . FormatTime(A_Now, "dd.MM.yyyy_HH-mm-ss") . ".ahk")
-        Hotkey(macroRecordHotkey, (*) => hotkey_stopMacroRecording(), "On S")
+        startMacroRecording()
     }
-    ; Only enabled temporarily while recording.
-    hotkey_stopMacroRecording()
-    {
-        global booleanMacroIsRecording := false
-    }
+    Hotkey(macroRecordHotkey, (*) => stopMacroRecording(), "Off S")
 }

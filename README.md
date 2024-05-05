@@ -14,6 +14,24 @@
 
 This program adds **hotkeys** in combination with **macros** for GTA V Online. You can even create your **very own hotkeys**.
 
+<div style="text-align: left;">
+    <div style="display: inline-block; text-align: center;">
+        <img src="library\assets\gtav_tweaks_main_window.png">
+        <div><em>This is the main window</em></div>
+    </div>
+    <p><br></p>
+    <div style="display: inline-block; text-align: center;">
+        <img src="library\assets\gtav_tweaks_hotkey_overview_window.png">
+        <div><em>Provides an overview over all hotkeys</em></div>
+    </div>
+    <p><br></p>
+    <div style="display: inline-block; text-align: center;">
+        <img src="library\assets\gtav_tweaks_hotkey_window.png">
+        <div><em>You can create and edit hotkeys here</em></div>
+    </div>
+    <p><br></p>
+</div>
+
 ## Installation
 
 > 1. Download the [installer archive](https://github.com/LeoTN/gtav-tweaks/releases/latest/download/GTAV_Tweaks.zip).

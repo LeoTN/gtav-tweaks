@@ -353,6 +353,24 @@ createLanguageArrayMap(pLanguageCode)
         generalScriptTrayTip2_2 := [
             "GTAV Tweaks - Status"
         ]
+        ; Macro Recorder TrayTips
+        ; #######################
+        macroRecorderTrayTip1_1 := [
+            "Drücke [",
+            "",
+            "] um die Aufnahme zu beenden."
+        ]
+        macroRecorderTrayTip1_2 := [
+            "Makro Aufnahme Gestartet"
+        ]
+        macroRecorderTrayTip2_1 := [
+            "Datei gespeichert unter [",
+            "",
+            "]."
+        ]
+        macroRecorderTrayTip2_2 := [
+            "Makro Aufnahme Gestoppt"
+        ]
         ; General Script MsgBoxes
         ; #######################
         generalScriptMsgBox1_1 := [
@@ -498,7 +516,7 @@ createLanguageArrayMap(pLanguageCode)
             "GTAV Tweaks - Was ist ein Makro"
         ]
         newCustomHotkeyOverviewGUIMsgBox6_1 := [
-            "Um die Aufzeichnung eines Makros zu starten, Drückee die`n[",
+            "Um die Aufzeichnung eines Makros zu starten, Drücke die`n[",
             "",
             "] Taste, nachdem du [Makro aufzeichnen] geklickt hast.`n`nDie Makrodatei wird dann unter`n[",
             "",
@@ -516,15 +534,15 @@ createLanguageArrayMap(pLanguageCode)
         ]
         newCustomHotkeyOverviewGUIMsgBox8_1 := [
             "Weitere Informationen findest du in den FAQ in der README.txt-Datei.`n`n",
-            "Drückee [Ja], um sie zu öffnen."
+            "Drücke [Ja], um sie zu öffnen."
         ]
         newCustomHotkeyOverviewGUIMsgBox8_2 := [
             "GTAV Tweaks - Makro-FAQ"
         ]
         newCustomHotkeyOverviewGUIMsgBox9_1 := [
-            "Du hast 15 Sekunden nach dem Schließen dieser Info-Box Zeit, um mit der Aufzeichnung zu beginnen, indem du [",
+            "Du hast 15 Sekunden nach dem Schließen dieser Info-Box Zeit, um mit der Aufzeichnung zu beginnen indem du [",
             "",
-            "] Drückest.`n`nUm die Aufzeichnung zu stoppen, Drückee einfach [",
+            "] drückst.`n`nUm die Aufzeichnung zu stoppen, drücke einfach [",
             "",
             "] erneut."
         ]
@@ -923,6 +941,24 @@ createLanguageArrayMap(pLanguageCode)
         generalScriptTrayTip2_2 := [
             "GTAV Tweaks - Status"
         ]
+        ; Macro Recorder TrayTips
+        ; #######################
+        macroRecorderTrayTip1_1 := [
+            "Press [",
+            "",
+            "] to stop recording."
+        ]
+        macroRecorderTrayTip1_2 := [
+            "Macro Recording Started"
+        ]
+        macroRecorderTrayTip2_1 := [
+            "File saved at [",
+            "",
+            "]."
+        ]
+        macroRecorderTrayTip2_2 := [
+            "Macro Recording Stopped"
+        ]
         ; General Script MsgBoxes
         ; #######################
         generalScriptMsgBox1_1 := [
@@ -1263,9 +1299,9 @@ createLanguageArrayMap(pLanguageCode)
             " [This is a built-in hotkey]"
         ]
         builtInHotkeyDescription_2 := [
-            "Pausiert den GTAV Prozess und erstellt somit eine Sololobby.",
+            "Pauses the GTA V process and creates a solo lobby.",
             ; The empty space is intended.
-            " [Das hier ist ein eingebauter Hotkey]"
+            " [This is a built-in hotkey]"
         ]
     }
     ; Saves every array object with it's real name to find them more easily.
@@ -1336,6 +1372,10 @@ createLanguageArrayMap(pLanguageCode)
         "generalScriptTrayTip1_2", generalScriptTrayTip1_2,
         "generalScriptTrayTip2_1", generalScriptTrayTip2_1,
         "generalScriptTrayTip2_2", generalScriptTrayTip2_2,
+        "macroRecorderTrayTip1_1", macroRecorderTrayTip1_1,
+        "macroRecorderTrayTip1_2", macroRecorderTrayTip1_2,
+        "macroRecorderTrayTip2_1", macroRecorderTrayTip2_1,
+        "macroRecorderTrayTip2_2", macroRecorderTrayTip2_2,
         "generalScriptMsgBox1_1", generalScriptMsgBox1_1,
         "generalScriptMsgBox1_2", generalScriptMsgBox1_2,
         "generalScriptMsgBox2_1", generalScriptMsgBox2_1,
