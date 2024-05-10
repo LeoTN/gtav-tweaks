@@ -579,13 +579,13 @@ terminateScriptPrompt()
 }
 
 /*
-Outputs an MsgBox containing information about the error. Allows to be copied to the clipboard.
+Outputs a little GUI containing information about the error. Allows to be copied to the clipboard.
 @param pErrorObject [Error Object] Usually created when catching an error via Try / Catch.
 @param pAdditionalErrorMessage [String] An optional error message to show.
-@param pBooleanTerminatingError [boolean] If set to true, will force the script to terminate once message disappears.
-@param pMessageTimeout [double] Optional message timeout. Closes the message after a delay of time.
+@param pBooleanTerminatingError [boolean] If set to true, will force the script to terminate once the message disappears.
+@param pMessageTimeoutMilliseconds [double] Optional message timeout. Closes the message after a delay of time.
 */
-displayErrorMessage(pErrorObject := unset, pAdditionalErrorMessage := unset, pBooleanTerminatingError := false, pMessageTimeout := unset)
+displayErrorMessage(pErrorObject := unset, pAdditionalErrorMessage := unset, pBooleanTerminatingError := false, pMessageTimeoutMilliseconds := unset)
 {
     If (IsSet(pErrorObject))
     {
@@ -605,27 +605,60 @@ displayErrorMessage(pErrorObject := unset, pAdditionalErrorMessage := unset, pBo
     {
         errorMessageBlock .= "`n`nScript has to exit!"
     }
-    If (IsSet(pMessageTimeout))
+    If (IsSet(pMessageTimeoutMilliseconds))
     {
-        If (pMessageTimeout > 0)
-        {
-            result := MsgBox(errorMessageBlock . "`n`nPress [Yes] to copy error to clipboard.", "GTAV Tweaks - Error Details", "YN IconX T" . pMessageTimeout)
-        }
-        Else
-        {
-            result := MsgBox(errorMessageBlock . "`n`nPress [Yes] to copy error to clipboard.", "GTAV Tweaks - Error Details", "YN IconX")
-        }
+        ; Hides the GUI and therefore
+        SetTimer((*) => errorGUI.Destroy(), "-" . pMessageTimeoutMilliseconds)
+    }
+
+    funnyErrorMessageArray := Array(
+        "This shouldn't have happened :(",
+        "Well, this is akward...",
+        "Why did we stop?!",
+        "Looks like we're lost in the code jungle...",
+        "That's not supposed to happen!",
+        "Whoopsie daisy, looks like an error!",
+        "Error 404: Sense of humor not found",
+        "Looks like a glitch in the Matrix...",
+        "Houston, we have a problem...",
+        "Unexpected error: Please blame the developer",
+        "Error: Keyboard not responding, press any key to continue... oh wait",
+    )
+    ; Selects a "random" funny error message to be displayed.
+    funnyErrorMessage := funnyErrorMessageArray.Get(Random(1, funnyErrorMessageArray.Length))
+
+    errorGUI := Gui(, "GTAV Tweaks - Error")
+
+    errorGUIfunnyErrorMessageText := errorGUI.Add("Text", "yp+10 r4 w300", funnyErrorMessage)
+    errorGUIfunnyErrorMessageText.SetFont("italic S10")
+    errorGUIerrorMessageBlockText := errorGUI.Add("Text", "yp+50", errorMessageBlock)
+
+    errorGUIbuttonGroupBox := errorGUI.Add("GroupBox", "r2.1 w340")
+    errorGUIgitHubIssuePageButton := errorGUI.Add("Button", "xp+10 yp+15 w100 R2 Default", "Report this issue on GitHub")
+    errorGUIgitHubIssuePageButton.OnEvent("Click", (*) => Run("https://github.com/LeoTN/gtav-tweaks/issues/new/choose"))
+    errorGUIcopyErrorToClipboardButton := errorGUI.Add("Button", "xp+110 w100 R2", "Copy error to clipboard")
+    errorGUIcopyErrorToClipboardButton.OnEvent("Click", (*) => A_Clipboard := errorMessageBlock)
+
+    If (pBooleanTerminatingError)
+    {
+        errorGUIActionButton := errorGUI.Add("Button", "xp+110 w100 R2", "Exit Script")
     }
     Else
     {
-        result := MsgBox(errorMessageBlock . "`n`nPress [Yes] to copy error to clipboard.", "GTAV Tweaks - Error Details", "YN IconX")
+        errorGUIActionButton := errorGUI.Add("Button", "xp+110 w100 R2", "Continue Script")
     }
-    Switch (result) {
-        Case "Yes":
-            {
-                A_Clipboard := errorMessageBlock
-            }
+    errorGUIActionButton.OnEvent("Click", (*) => errorGUI.Destroy())
+    errorGUI.Show()
+    errorGUI.Flash()
+    ; There might be an error with the while condition, once the GUI is destroyed.
+    Try
+    {
+        While (WinExist("ahk_id " . errorGUI.Hwnd))
+        {
+            Sleep(500)
+        }
     }
+
     If (pBooleanTerminatingError)
     {
         ExitApp()
