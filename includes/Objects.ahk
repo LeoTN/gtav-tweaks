@@ -136,8 +136,7 @@ class CustomMacro
     {
         Try
         {
-            ; Combines the given hotkey with another key, to avoid overwriting existing hotkeys.
-            Hotkey(this.hotkey . " & NumLock", (*) => "Off")
+            Hotkey(this.hotkey, (*) => "Off")
             Return true
         }
         Catch
@@ -208,6 +207,9 @@ loadHotkeys()
         }
         ; This allows the custom macro object to load the rest of it's configuration from the macro config file all by itself.
         tmpObject.name := name
+        ; To avoid an error due to an invalid hotkey, we just give a random hotkey as a parameter here.
+        ; It doesn't matter because the hotkey will be loaded from the file anyway.
+        tmpObject.hotkey := "^!+CapsLock"
         tmpObject.loadMacroFromFile()
 
         ; Checks if a macro file path correction is required.
