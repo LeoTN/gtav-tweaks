@@ -79,21 +79,14 @@ createMainGUI()
     optionsMenu.SetIcon(getLanguageArrayString("mainGUIOptionsMenu_2"), "shell32.dll", 207)
 
     helpMenu := Menu()
-    If (versionFullName != "")
-    {
-        helpMenu.Add(getLanguageArrayString("mainGUIInfoMenu_1", versionFullName), (*) => handleMainGUI_helpSectionEasterEgg())
-        helpMenu.SetIcon(getLanguageArrayString("mainGUIInfoMenu_1", versionFullName), "shell32.dll", 79)
-    }
-    helpMenu.Add(getLanguageArrayString("mainGUIInfoMenu_2"),
+    ; REMOVE DO NOT FORGET TO IMPLEMENT EASTER EGG!
+    helpMenu.Add(getLanguageArrayString("mainGUIHelpMenu_2"),
         (*) => Run("https://github.com/LeoTN/gtav-tweaks#readme"))
-    helpMenu.SetIcon(getLanguageArrayString("mainGUIInfoMenu_2"), "shell32.dll", 26)
-    helpMenu.Add(getLanguageArrayString("mainGUIInfoMenu_3"),
-        (*) => Run("https://github.com/LeoTN/gtav-tweaks/issues/new/choose"))
-    helpMenu.SetIcon(getLanguageArrayString("mainGUIInfoMenu_3"), "shell32.dll", 81)
-    helpMenu.Add(getLanguageArrayString("mainGUIInfoMenu_4"), (*) => openReadMeFile())
-    helpMenu.SetIcon(getLanguageArrayString("mainGUIInfoMenu_4"), "shell32.dll", 2)
-    helpMenu.Add(getLanguageArrayString("mainGUIInfoMenu_5"), (*) => scriptTutorial())
-    helpMenu.SetIcon(getLanguageArrayString("mainGUIInfoMenu_5"), "shell32.dll", 24)
+    helpMenu.SetIcon(getLanguageArrayString("mainGUIHelpMenu_2"), "shell32.dll", 26)
+    helpMenu.Add(getLanguageArrayString("mainGUIHelpMenu_4"), (*) => openReadMeFile())
+    helpMenu.SetIcon(getLanguageArrayString("mainGUIHelpMenu_4"), "shell32.dll", 2)
+    helpMenu.Add(getLanguageArrayString("mainGUIHelpMenu_5"), (*) => tutorialGUI.Show())
+    helpMenu.SetIcon(getLanguageArrayString("mainGUIHelpMenu_5"), "shell32.dll", 24)
 
     allMenus := MenuBar()
     allMenus.Add("&" . getLanguageArrayString("mainGUIMenu_1"), fileMenu)
@@ -145,9 +138,9 @@ createMainGUI()
                     GUIControlObject.OnEvent("Click", (*) => handleMainGUI_checkbox_updateToBetaReleases())
                 }
             Default:
-                {
-                    GUIControlObject.OnEvent("Click", (*) => handleMainGUI_writeValuesToConfigFile())
-                }
+            {
+                GUIControlObject.OnEvent("Click", (*) => handleMainGUI_writeValuesToConfigFile())
+            }
         }
     }
 }
@@ -161,8 +154,6 @@ GUI SUPPORT FUNCTIONS
 mainGUI_onInit()
 {
     global iconFileLocation
-    ; Changes the tray icon and freezes it.
-    TraySetIcon(iconFileLocation, , true)
     createMainGUI()
     handleMainGUI_applyValuesFromConfigFile()
     If (!readConfigFile("LAUNCH_MINIMIZED"))

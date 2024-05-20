@@ -19,6 +19,7 @@ CoordMode "Mouse", "Window"
 #Include "MainGUI.ahk"
 #Include "NewCustomHotkeyGUI.ahk"
 #Include "Objects.ahk"
+#Include "Tutorial.ahk"
 
 onInit()
 
@@ -64,12 +65,15 @@ onInit()
         ; This is a fallback. If this version occurs, we know there was an error with the version file.
         global versionFullName := "v0.0.1"
     }
+    ; Changes the tray icon and freezes it.
+    TraySetIcon(iconFileLocation, , true)
     ; Runs all onInit() functions from included files.
     ; languages_onInit() is included in configFile_onInit().
     configFile_onInit()
     functions_onInit()
     objects_onInit()
     macroRecorder_onInit()
+    tutorial_oninit()
     mainGUI_onInit()
     customHotkeyOverviewGUI_onInit()
     newCustomHotkeyGUI_onInit()

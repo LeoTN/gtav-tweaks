@@ -179,7 +179,7 @@ createLanguageArrayMap(pLanguageCode)
             "Hotkey && Makros"
         ]
         mainGUIMenu_4 := [
-            "Info"
+            "Hilfe"
         ]
         ; Main GUI file menu
         ; ******************
@@ -222,21 +222,20 @@ createLanguageArrayMap(pLanguageCode)
         ]
         ; Main GUI info menu
         ; ******************
-        mainGUIInfoMenu_1 := [
-            "Version -",
-            ""
+        mainGUIHelpMenu_1 := [
+            "language_string_unused"
         ]
-        mainGUIInfoMenu_2 := [
+        mainGUIHelpMenu_2 := [
             "Dieses Repository (gtav-tweaks)"
         ]
-        mainGUIInfoMenu_3 := [
-            "Ein Problem melden oder eine Funktion vorschlagen"
+        mainGUIHelpMenu_3 := [
+            "language_string_unused"
         ]
-        mainGUIInfoMenu_4 := [
+        mainGUIHelpMenu_4 := [
             "README-Datei"
         ]
-        mainGUIInfoMenu_5 := [
-            "Integriertes Tutorial"
+        mainGUIHelpMenu_5 := [
+            "Hilfsdatenbank"
         ]
         ; Hotkey Overview GUI
         ; ###################
@@ -308,6 +307,47 @@ createLanguageArrayMap(pLanguageCode)
         ]
         newCustomHotkeyGUI_9 := [
             "Makro aufzeichnen"
+        ]
+        ; Info & Help GUI
+        ; ###############
+        infoAndHelpGUI_1 := [
+            "GTAV Tweaks - Info & Hilfe"
+        ]
+        infoAndHelpGUI_2 := [
+            "Suchleiste"
+        ]
+        infoAndHelpGUI_3 := [
+            "Skript Infos"
+        ]
+        ; We need to take this extra step because there would be a gap between href= and the url (href= "url_here"), which breaks the link.
+        ; The same goes for the space after the url ends.
+        infoAndHelpGUI_4 := [
+            'Version: <a href="replace_space_after',
+            "",
+            '">',
+            "",
+            'replace_space_before</a>'
+        ]
+        ; We need to take this extra step because there would be a gap between href= and the url (href= "url_here"), which breaks the link.
+        ; The same goes for the space after the url ends.
+        infoAndHelpGUI_5 := [
+            '<a href="replace_space_after',
+            "",
+            'replace_space_before">Feature vorschlagen</a> oder <a href="replace_space_after',
+            "",
+            'replace_space_before">Bugreport</a>'
+        ]
+        infoAndHelpGUI_6 := [
+            "Doppelt auf einen Eintrag klicken zum Öffnen."
+        ]
+        infoAndHelpGUIListView_1 := [
+            "Thema"
+        ]
+        infoAndHelpGUIListView_2 := [
+            "Typ"
+        ]
+        infoAndHelpGUIListView_3 := [
+            "Titel"
         ]
         ; Reload & Terminate GUI
         ; ######################
@@ -767,7 +807,7 @@ createLanguageArrayMap(pLanguageCode)
             "Hotkeys && Macros"
         ]
         mainGUIMenu_4 := [
-            "Info"
+            "Help"
         ]
         ; Main GUI file menu
         ; ******************
@@ -810,21 +850,20 @@ createLanguageArrayMap(pLanguageCode)
         ]
         ; Main GUI info menu
         ; ******************
-        mainGUIInfoMenu_1 := [
-            "Version -",
-            ""
+        mainGUIHelpMenu_1 := [
+            "language_string_unused"
         ]
-        mainGUIInfoMenu_2 := [
+        mainGUIHelpMenu_2 := [
             "This repository (gtav-tweaks)"
         ]
-        mainGUIInfoMenu_3 := [
-            "Open an issue or feature request"
+        mainGUIHelpMenu_3 := [
+            "language_string_unused"
         ]
-        mainGUIInfoMenu_4 := [
+        mainGUIHelpMenu_4 := [
             "README File"
         ]
-        mainGUIInfoMenu_5 := [
-            "Built-in Tutorial"
+        mainGUIHelpMenu_5 := [
+            "Help database"
         ]
         ; Hotkey Overview GUI
         ; ###################
@@ -896,6 +935,47 @@ createLanguageArrayMap(pLanguageCode)
         ]
         newCustomHotkeyGUI_9 := [
             "Record Macro"
+        ]
+        ; Info & Help GUI
+        ; ###############
+        infoAndHelpGUI_1 := [
+            "GTAV Tweaks -Info & Help"
+        ]
+        infoAndHelpGUI_2 := [
+            "Search Bar"
+        ]
+        infoAndHelpGUI_3 := [
+            "Script Info"
+        ]
+        ; We need to take this extra step because there would be a gap between href= and the url (href= "url_here"), which breaks the link.
+        ; The same goes for the space after the url ends.
+        infoAndHelpGUI_4 := [
+            'Version: <a href="replace_space_after',
+            "",
+            '">',
+            "",
+            'replace_space_before</a>'
+        ]
+        ; We need to take this extra step because there would be a gap between href= and the url (href= "url_here"), which breaks the link.
+        ; The same goes for the space after the url ends.
+        infoAndHelpGUI_5 := [
+            '<a href="replace_space_after',
+            "",
+            'replace_space_before">Feature Request</a> or <a href="replace_space_after',
+            "",
+            'replace_space_before">Bug Report</a>'
+        ]
+        infoAndHelpGUI_6 := [
+            "Double click an entry to access it's content."
+        ]
+        infoAndHelpGUIListView_1 := [
+            "Topic"
+        ]
+        infoAndHelpGUIListView_2 := [
+            "Type"
+        ]
+        infoAndHelpGUIListView_3 := [
+            "Title"
         ]
         ; Reload & Terminate GUI
         ; ######################
@@ -1333,11 +1413,11 @@ createLanguageArrayMap(pLanguageCode)
         "mainGUIOptionsMenu_2", mainGUIOptionsMenu_2,
         "mainGUIOptionsMenu_3", mainGUIOptionsMenu_3,
         "mainGUIOptionsMenu_4", mainGUIOptionsMenu_4,
-        "mainGUIInfoMenu_1", mainGUIInfoMenu_1,
-        "mainGUIInfoMenu_2", mainGUIInfoMenu_2,
-        "mainGUIInfoMenu_3", mainGUIInfoMenu_3,
-        "mainGUIInfoMenu_4", mainGUIInfoMenu_4,
-        "mainGUIInfoMenu_5", mainGUIInfoMenu_5,
+        "mainGUIHelpMenu_1", mainGUIHelpMenu_1,
+        "mainGUIHelpMenu_2", mainGUIHelpMenu_2,
+        "mainGUIHelpMenu_3", mainGUIHelpMenu_3,
+        "mainGUIHelpMenu_4", mainGUIHelpMenu_4,
+        "mainGUIHelpMenu_5", mainGUIHelpMenu_5,
         "hotkeyOverviewGUI_1", hotkeyOverviewGUI_1,
         "hotkeyOverviewGUI_2", hotkeyOverviewGUI_2,
         "hotkeyOverviewGUI_3", hotkeyOverviewGUI_3,
@@ -1360,6 +1440,15 @@ createLanguageArrayMap(pLanguageCode)
         "newCustomHotkeyGUI_7", newCustomHotkeyGUI_7,
         "newCustomHotkeyGUI_8", newCustomHotkeyGUI_8,
         "newCustomHotkeyGUI_9", newCustomHotkeyGUI_9,
+        "infoAndHelpGUI_1", infoAndHelpGUI_1,
+        "infoAndHelpGUI_2", infoAndHelpGUI_2,
+        "infoAndHelpGUI_3", infoAndHelpGUI_3,
+        "infoAndHelpGUI_4", infoAndHelpGUI_4,
+        "infoAndHelpGUI_5", infoAndHelpGUI_5,
+        "infoAndHelpGUI_6", infoAndHelpGUI_6,
+        "infoAndHelpGUIListView_1", infoAndHelpGUIListView_1,
+        "infoAndHelpGUIListView_2", infoAndHelpGUIListView_2,
+        "infoAndHelpGUIListView_3", infoAndHelpGUIListView_3,
         "reloadAndTerminateGUI_1", reloadAndTerminateGUI_1,
         "reloadAndTerminateGUI_2", reloadAndTerminateGUI_2,
         "reloadAndTerminateGUI_3", reloadAndTerminateGUI_3,
