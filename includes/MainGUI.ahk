@@ -78,16 +78,6 @@ createMainGUI()
     optionsMenu.Add(getLanguageArrayString("mainGUIOptionsMenu_2"), (*) => reloadScriptPrompt())
     optionsMenu.SetIcon(getLanguageArrayString("mainGUIOptionsMenu_2"), "shell32.dll", 207)
 
-    helpMenu := Menu()
-    ; REMOVE DO NOT FORGET TO IMPLEMENT EASTER EGG!
-    helpMenu.Add(getLanguageArrayString("mainGUIHelpMenu_2"),
-        (*) => Run("https://github.com/LeoTN/gtav-tweaks#readme"))
-    helpMenu.SetIcon(getLanguageArrayString("mainGUIHelpMenu_2"), "shell32.dll", 26)
-    helpMenu.Add(getLanguageArrayString("mainGUIHelpMenu_4"), (*) => openReadMeFile())
-    helpMenu.SetIcon(getLanguageArrayString("mainGUIHelpMenu_4"), "shell32.dll", 2)
-    helpMenu.Add(getLanguageArrayString("mainGUIHelpMenu_5"), (*) => tutorialGUI.Show())
-    helpMenu.SetIcon(getLanguageArrayString("mainGUIHelpMenu_5"), "shell32.dll", 24)
-
     allMenus := MenuBar()
     allMenus.Add("&" . getLanguageArrayString("mainGUIMenu_1"), fileMenu)
     allMenus.SetIcon("&" . getLanguageArrayString("mainGUIMenu_1"), "shell32.dll", 4)
@@ -95,7 +85,7 @@ createMainGUI()
     allMenus.SetIcon("&" . getLanguageArrayString("mainGUIMenu_2"), "shell32.dll", 317)
     allMenus.Add("&" . getLanguageArrayString("mainGUIMenu_3"), (*) => customHotkeyOverviewGUI.Show())
     allMenus.SetIcon("&" . getLanguageArrayString("mainGUIMenu_3"), "shell32.dll", 177)
-    allMenus.Add("&" . getLanguageArrayString("mainGUIMenu_4"), helpMenu)
+    allMenus.Add("&" . getLanguageArrayString("mainGUIMenu_4"), (*) => tutorialGUI.Show())
     allMenus.SetIcon("&" . getLanguageArrayString("mainGUIMenu_4"), "shell32.dll", 24)
 
     mainGUI := Gui(, "GTAV Tweaks")
@@ -229,18 +219,6 @@ handleMainGUI_handleElementConflicts()
     Else
     {
         updateToBetaReleasesCheckbox.Opt("-Disabled")
-    }
-}
-
-handleMainGUI_helpSectionEasterEgg()
-{
-    static i := 0
-
-    i++
-    If (i >= 3)
-    {
-        i := 0
-        MsgBox(getLanguageArrayString("mainGUIMsgBox1_1"), getLanguageArrayString("mainGUIMsgBox1_2"), "Iconi")
     }
 }
 

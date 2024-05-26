@@ -84,6 +84,8 @@ onInit()
         Sleep(1500)
         TrayTip()
     }
+    scriptTutorial() ; REMOVE
+    Return ; REMOVE
     If (readConfigFile("ASK_FOR_TUTORIAL"))
     {
         scriptTutorial()

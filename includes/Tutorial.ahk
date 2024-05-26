@@ -45,6 +45,8 @@ createTutorialGUI()
 
     tutorialGUIStatusBar := tutorialGUI.Add("StatusBar", , getLanguageArrayString("infoAndHelpGUI_6"))
     tutorialGUIStatusBar.SetIcon("shell32.dll", 278)
+    ; This is used for the easter egg.
+    tutorialGUIStatusBar.OnEvent("Click", (*) => handleTutorialGUI_helpSectionEasterEgg())
 
     tutorialGUIListViewContentCollectionArray := createListViewContentCollectionArray()
     For (contentEntry in tutorialGUIListViewContentCollectionArray)
@@ -55,6 +57,76 @@ createTutorialGUI()
     tutorialGUIListView.ModifyCol(3, "SortHdr")
 }
 
+; A small tour to show off the basic functions of this script.
+scriptTutorial()
+{
+    result := MsgBox(getLanguageArrayString("tutorialMsgBox1_1"),
+        getLanguageArrayString("tutorialMsgBox1_2"), "YN Iconi 262144")
+    If (result == "Yes")
+    {
+        minimizeAllGUIs()
+        ; Welcome message.
+        MsgBox(getLanguageArrayString("tutorialMsgBox3_1"), getLanguageArrayString("tutorialMsgBox3_2"), "O Iconi 262144")
+        ; Start of tutorial.
+        MsgBox(getLanguageArrayString("tutorialMsgBox4_1"), getLanguageArrayString("tutorialMsgBox4_2"), "O Iconi 262144")
+        If (!WinActive("ahk_id " . mainGUI.Hwnd))
+        {
+            mainGUI.Show()
+        }
+        MsgBox(getLanguageArrayString("tutorialMsgBox5_1"), getLanguageArrayString("tutorialMsgBox5_2"), "O Iconi 262144 T3")
+        If (WinWaitActive("ahk_id " . tutorialGUI.Hwnd, , 5) == 0)
+        {
+            tutorialGUI.Show()
+            MsgBox(getLanguageArrayString("tutorialMsgBox6_1"), getLanguageArrayString("tutorialMsgBox6_2"), "O Iconi 262144 T5")
+        }
+        highlightedSearchBarObject := highlightControl(tutorialGUISearchBarEdit)
+        MsgBox(getLanguageArrayString("tutorialMsgBox7_1"), getLanguageArrayString("tutorialMsgBox7_2"), "O Iconi 262144")
+        ; This array contains the letters "typed" into the search bar for demonstration purposes.
+        searchBarDemoLetterArray := stringToArray(getLanguageArrayString("tutorialSearchBarDemoArrayString"))
+        ; Demonstrates the search bar to the user.
+        For (letter in searchBarDemoLetterArray)
+        {
+            If (WinExist("ahk_id " . tutorialGUI.Hwnd))
+            {
+                WinActivate()
+            }
+            ControlSend(letter, tutorialGUISearchBarEdit, "ahk_id " . tutorialGUI.Hwnd)
+            Sleep(50)
+        }
+        highlightedSearchBarObject.destroy()
+    }
+    ; The dialog to disable the tutorial for the next time is only shown when the config file entry mentioned below is true.
+    If (readConfigFile("ASK_FOR_TUTORIAL"))
+    {
+        result := MsgBox(getLanguageArrayString("tutorialMsgBox2_1"),
+            getLanguageArrayString("tutorialMsgBox2_2"), "YN Iconi 262144")
+        If (result == "Yes")
+        {
+            editConfigFile("ASK_FOR_TUTORIAL", false)
+        }
+    }
+}
+
+minimizeAllGUIs()
+{
+    ; Minimizes all script windows to reduce diversion.
+    If (WinExist("ahk_id " . mainGUI.Hwnd))
+    {
+        WinMinimize()
+    }
+    If (WinExist("ahk_id " . customHotkeyOverviewGUI.Hwnd))
+    {
+        WinMinimize()
+    }
+    If (WinExist("ahk_id " . newCustomHotkeyGUI.Hwnd))
+    {
+        WinMinimize()
+    }
+    If (WinExist("ahk_id " . tutorialGUI.Hwnd))
+    {
+        WinMinimize()
+    }
+}
 
 /*
 Allows to search for elements in the list view element.
@@ -184,20 +256,21 @@ highlightControl(pControlElement, pColor := "red", pLineThickness := 2, pLineTra
 }
 
 /*
-Waits for a button in an AutoHotkey GUI to be clicked.
-@param pButtonElement [buttonControl] Should be a button control element created within an AutoHotkey GUI.
+Waits for a control element in an AutoHotkey GUI to be clicked.
+@param pControlElement [buttonControl] Should be a button, or really any other control element,
+that supports .OnEvent("Click") created within an AutoHotkey GUI.
 @param pCurrentClickEventFunction [function] If the button called the "doSomething()" function defined with it's
 OnEvent function [myButton.OnEvent("Click", (*) => doSomething())], we have to give this information to the waiting function.
 In our example the value of this parameter would be "(*) => doSomething()" without the quotation marks.
 @param pTimeoutMilliseconds [int] Waits for the specified time. Enter 0 to wait indefinetly.
-@returns [boolean] Returns true if the button was pressed before the timeout. False otherwise.
+@returns [boolean] Returns true if the element was pressed or clicked before the timeout. False otherwise.
 */
-waitForButtonToBePressed(pButtonElement, pCurrentClickEventFunction, pTimeoutMilliseconds := 0)
+waitForControlToBeClickedOrPressed(pControlElement, pCurrentClickEventFunction, pTimeoutMilliseconds := 0)
 {
     timeoutMilliseconds := pTimeoutMilliseconds
     booleanWait := true
     ; Replaces the current function with this temporary one.
-    pButtonElement.OnEvent("Click", (*) => booleanWait := false, -1)
+    pControlElement.OnEvent("Click", (*) => booleanWait := false, -1)
     While (booleanWait)
     {
         If (timeoutMilliseconds >= 0)
@@ -212,9 +285,151 @@ waitForButtonToBePressed(pButtonElement, pCurrentClickEventFunction, pTimeoutMil
         Sleep(50)
     }
     ; Resets the OnEvent function and calls it.
-    pButtonElement.OnEvent("Click", pCurrentClickEventFunction, -1)
+    pControlElement.OnEvent("Click", pCurrentClickEventFunction, -1)
     pCurrentClickEventFunction
     Return true
+}
+
+handleTutorialGUI_helpSectionEasterEgg()
+{
+    static i := 0
+
+    i++
+    If (i >= 5)
+    {
+        i := 0
+        MsgBox(getLanguageArrayString("mainGUIMsgBox1_1"), getLanguageArrayString("mainGUIMsgBox1_2"), "O Iconi 262144")
+    }
+}
+
+/*
+Can be used to create an interactive tutorial with a navigation window for the user.
+@param pTutorialTitle [String] The title of the navigation window.
+IMPORTANT: When adding text to a step, a height of 10 lines must not be exceeded!
+In other words: ([K]eep [I]t [S]hort and [S]imple => KISS).
+*/
+class InteractiveTutorial
+{
+    __New(pTutorialTitle)
+    {
+        this.tutorialTitle := pTutorialTitle
+        this.textArray := Array()
+        this.actionArray := Array()
+        this.currentStepIndex := 1
+        this.gui := Gui(, pTutorialTitle)
+        this.guiText := this.gui.Add("Text", "yp+10 w320 R10", "interactive_tutorial_text")
+        this.guiPreviousButton := this.gui.Add("Button", "yp+150 w100", "Previous")
+        this.guiPreviousButton.OnEvent("Click", (*) => this.previous())
+        this.guiExitButton := this.gui.Add("Button", "xp+110 w100", "Exit")
+        this.guiExitButton.OnEvent("Click", (*) => this.exit())
+        this.guiNextButton := this.gui.Add("Button", "xp+110 w100", "Next")
+        this.guiNextButton.OnEvent("Click", (*) => this.next())
+        this.guiStatusBar := this.gui.Add("StatusBar", , "interactive_tutorial_statusbar_text")
+        this.guiStatusBar.SetIcon("shell32.dll", 278)
+    }
+    ; You can provide optional coordinates for the GUI to show up.
+    start(pGuiX := unset, pGuiY := unset)
+    {
+        ; Both parameters are omitted.
+        If (!IsSet(pGuiX) && !IsSet(pGuiY))
+        {
+            this.gui.Show()
+        }
+        ; Only one parameter is given and the other one is missing.
+        Else If (!IsSet(pGuiX) || !IsSet(pGuiY))
+        {
+            MsgBox("[" . A_ThisFunc . "()] [WARNING] Make sure that either both (pGuiX and pGuiY) are given or omitted entirely.",
+                "GTAV Tweaks - [" . A_ThisFunc . "()]", "Icon! 262144")
+            this.gui.Show()
+        }
+        Else
+        {
+            this.gui.Show("x" . pGuiX . " y" . pGuiY)
+        }
+        ; Displays the first text and starts the first action.
+        this.playStep(1)
+    }
+    next()
+    {
+        this.currentStepIndex++
+        this.playStep(this.currentStepIndex)
+    }
+    previous()
+    {
+        this.currentStepIndex--
+        this.playStep(this.currentStepIndex)
+    }
+    exit()
+    {
+        this.gui.Destroy()
+    }
+    playStep(pStepIndex)
+    {
+        ; Updates the status bar.
+        this.guiStatusBar.SetText("Step " . this.currentStepIndex . " / " . this.textArray.Length)
+        ; Enables and disables the buttons accordingly to the current step index.
+        If (pStepIndex <= 1)
+        {
+            ; Disables the previous button because you cannot go any further back on the very first step.
+            this.guiPreviousButton.Opt("+Disabled")
+        }
+        Else
+        {
+            this.guiPreviousButton.Opt("-Disabled")
+        }
+        If (pStepIndex >= this.textArray.Length)
+        {
+            ; Disables the next button because you cannot go any further on the very last step.
+            this.guiNextButton.Opt("+Disabled")
+        }
+        Else
+        {
+            this.guiNextButton.Opt("-Disabled")
+        }
+
+        If (this.textArray.Has(pStepIndex))
+        {
+            this.guiText.Text := this.textArray.Get(pStepIndex)
+        }
+        Else
+        {
+            MsgBox("[" . A_ThisFunc . "()]`n`n[WARNING] Received an invalid text array index: [" . pStepIndex . "].",
+                "GTAV Tweaks - [" . A_ThisFunc . "()]", "Icon! 262144")
+        }
+        If (this.actionArray.Has(pStepIndex))
+        {
+            this.actionArray.Get(pStepIndex).Call()
+        }
+        Else
+        {
+            MsgBox("[" . A_ThisFunc . "()]`n`n[WARNING] Received an invalid action array index: [" . pStepIndex . "].",
+                "GTAV Tweaks - [" . A_ThisFunc . "()]", "Icon! 262144")
+        }
+    }
+    ; This method adds a text for the user to read. Will be played along with the actions in the actionArray.
+    addText(pText)
+    {
+        this.textArray.Push(pText)
+    }
+    /*
+    This method requires a function object. This should be a function from the code containing instructions for the interactive tutorial.
+    You can create these objects by passing the following parameter "(*) => doSomething()" without the quotation marks.
+    Our method in the code would be called "doSomething()" in this example.
+    */
+    addAction(pFuncObject)
+    {
+        ; Checks if the given data is a valid function object.
+        Try
+        {
+            pFuncObject.IsOptional()
+        }
+        Catch
+        {
+            MsgBox("[" . A_ThisFunc . "()]`n`n[WARNING] Received an invalid function object.", "GTAV Tweaks - [" . A_ThisFunc . "()]", "Icon! 262144")
+            Return
+        }
+        this.actionArray.Push(pFuncObject)
+    }
 }
 
 /*
