@@ -85,7 +85,7 @@ createMainGUI()
     allMenus.SetIcon("&" . getLanguageArrayString("mainGUIMenu_2"), "shell32.dll", 317)
     allMenus.Add("&" . getLanguageArrayString("mainGUIMenu_3"), (*) => customHotkeyOverviewGUI.Show())
     allMenus.SetIcon("&" . getLanguageArrayString("mainGUIMenu_3"), "shell32.dll", 177)
-    allMenus.Add("&" . getLanguageArrayString("mainGUIMenu_4"), (*) => tutorialGUI.Show())
+    allMenus.Add("&" . getLanguageArrayString("mainGUIMenu_4"), (*) => helpGUI.Show())
     allMenus.SetIcon("&" . getLanguageArrayString("mainGUIMenu_4"), "shell32.dll", 24)
 
     mainGUI := Gui(, "GTAV Tweaks")

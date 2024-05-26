@@ -311,10 +311,10 @@ checkConfigFileIntegrity(pBooleanResultOnly := false)
                         Return true
                     }
                 Default:
-                    {
-                        MsgBox(getLanguageArrayString("generalScriptMsgBox1_1"), getLanguageArrayString("generalScriptMsgBox1_2"), "O IconX T1.5")
-                        ExitApp()
-                    }
+                {
+                    MsgBox(getLanguageArrayString("generalScriptMsgBox1_1"), getLanguageArrayString("generalScriptMsgBox1_2"), "O IconX T1.5")
+                    ExitApp()
+                }
             }
         }
     }
@@ -375,10 +375,10 @@ validatePath(pPath, pBooleanAskForPathCreation := true, pBooleanCreatePathSilent
                             DirCreate(pPath)
                         }
                     Default:
-                        {
-                            MsgBox(getLanguageArrayString("generalScriptMsgBox1_1"), getLanguageArrayString("generalScriptMsgBox1_2"), "O IconX T1.5")
-                            ExitApp()
-                        }
+                    {
+                        MsgBox(getLanguageArrayString("generalScriptMsgBox1_1"), getLanguageArrayString("generalScriptMsgBox1_2"), "O IconX T1.5")
+                        ExitApp()
+                    }
                 }
             }
             Else If (pBooleanCreatePathSilent)
@@ -403,10 +403,10 @@ validatePath(pPath, pBooleanAskForPathCreation := true, pBooleanCreatePathSilent
                             DirCreate(outDir)
                         }
                     Default:
-                        {
-                            MsgBox(getLanguageArrayString("generalScriptMsgBox1_1"), getLanguageArrayString("generalScriptMsgBox1_2"), "O IconX T1.5")
-                            ExitApp()
-                        }
+                    {
+                        MsgBox(getLanguageArrayString("generalScriptMsgBox1_1"), getLanguageArrayString("generalScriptMsgBox1_2"), "O IconX T1.5")
+                        ExitApp()
+                    }
                 }
             }
             Else If (pBooleanCreatePathSilent)

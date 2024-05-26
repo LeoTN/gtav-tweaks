@@ -14,12 +14,13 @@ CoordMode "Mouse", "Window"
 #Include "ConfigFile.ahk"
 #Include "CustomHotkeyOverviewGUI.ahk"
 #Include "Functions.ahk"
+#Include "HelpGUI.ahk"
 #Include "Languages.ahk"
+#Include "MacroDatabase.ahk"
 #Include "MacroRecorder.ahk"
 #Include "MainGUI.ahk"
 #Include "NewCustomHotkeyGUI.ahk"
-#Include "Objects.ahk"
-#Include "Tutorial.ahk"
+#Include "Tutorials.ahk"
 
 onInit()
 
@@ -73,7 +74,8 @@ onInit()
     functions_onInit()
     objects_onInit()
     macroRecorder_onInit()
-    tutorial_oninit()
+    tutorials_onInit()
+    help_onInit()
     mainGUI_onInit()
     customHotkeyOverviewGUI_onInit()
     newCustomHotkeyGUI_onInit()
@@ -84,8 +86,6 @@ onInit()
         Sleep(1500)
         TrayTip()
     }
-    scriptTutorial() ; REMOVE
-    Return ; REMOVE
     If (readConfigFile("ASK_FOR_TUTORIAL"))
     {
         scriptTutorial()
