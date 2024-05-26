@@ -106,6 +106,11 @@ function evaluateUpdate() {
         Return 3
     }
     Else {
+        # Activats the tutorial after a successful update or version change.
+        $currentExecutableParentDirectory = Split-Path -Path $pCurrentExecutableLocation -Parent
+        $currentExecutableConfigFileLocation = Join-Path -Path $currentExecutableParentDirectory -ChildPath "GTAV_Tweaks\GTAV_Tweaks.ini"
+        Write-Host "[evaluateUpdate()] [INFO] Enabling tutorial in the config file again..."
+        changeINIFile -pFilePath $currentExecutableConfigFileLocation -pKey "ASK_FOR_TUTORIAL" -pValue 1
         Start-Process -FilePath $pCurrentExecutableLocation
         Write-Host "`n`n[evaluateUpdate()] [INFO] Successfully changed version from [$global:currentVersion] to [$availableUpdateVersion].`n`n" -ForegroundColor "Green"
         # Launch the new and updated script.
@@ -587,6 +592,40 @@ function readFromCSVFile() {
         # We are using $null because $false would cause an error.
         Return $null
     }
+}
+
+function changeINIFile {
+    param (
+        [Parameter(Mandatory = $true)]
+        [String]$pFilePath,
+        [Parameter(Mandatory = $true)]
+        [String]$pKey,
+        [Parameter(Mandatory = $true)]
+        [String]$pValue
+    )
+
+    If (-not (Test-Path -Path $pFilePath)) {
+        Write-Host "[changeINIFile()] [WARNING] Could not find .INI file at [$pFilePath]." -ForegroundColor "Yellow"
+        Return $false
+    }
+    $iniFileContent = Get-Content -Path $pFilePath
+    $booleanSuccess = $false
+    # Scans the file for the key.
+    For ($i = 0; $i -lt $iniFileContent.Length; $i++) {
+        If ($iniFileContent[$i] -match "^$pKey=") {
+            $iniFileContent[$i] = "$pKey=$pValue"
+            $booleanSuccess = $true
+            Break
+        }
+    }
+    # Writes the new content to the file.
+    If ($booleanSuccess) {
+        $iniFileContent | Set-Content -Path $pFilePath
+        Write-Host "[changeINIFile()] [INFO] Successfully changed [$pKey]'s value to [$pValue] in [$pFilePath]."
+        Return $true
+    }
+    Write-Host "[changeINIFile()] [WARNING] Could not find key [$pKey] in .INI file at [$pFilePath]." -ForegroundColor "Yellow"
+    Return $false
 }
 
 onInit
