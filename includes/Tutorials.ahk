@@ -7,56 +7,7 @@ tutorials_onInit()
 {
     ; Initializes all tutorials and info texts.
     tutorial_howToRecordMacros()
-}
-
-/*
-Creates an array, which contains list view entry objects. They contain the required data to be added into a list view element.
-@returns [Array] This array is filled with list view objects.
-*/
-createListViewContentCollectionArray()
-{
-    ; This array contains all list view entries.
-    helpGUIListViewContentArray := Array()
-    ; 1. Topic 2. Type 3. Title 4. Action
-    listViewEntry_1 := ListViewEntry(
-        getLanguageArrayString("tutorialHowToRecordMacros_1_2"), getLanguageArrayString("tutorialHowToRecordMacros_2_2"),
-        getLanguageArrayString("tutorialHowToRecordMacros_3_2"),
-        ; This will show the window at the current mouse cursor position.
-        (*) => calculateInteractiveTutorialGUICoordinates(&x, &y) howToRecordMacrosTutorial.start(x, y)
-    )
-
-    ; The number needes to be updated depending on how many list view entries there are.
-    Loop (1)
-    {
-        helpGUIListViewContentArray.InsertAt(A_Index, %"listViewEntry_" . A_Index%)
-    }
-    Return helpGUIListViewContentArray
-}
-
-/*
-Calculates the position for the interactive tutorial window to appear.
-The position will be selected relatively to the help GUI.
-@var coordinateX [int] The x coordinate for the window.
-@var coordinateY [int] The y coordinate for the window.
-*/
-calculateInteractiveTutorialGUICoordinates(&coordinateX, &coordinateY)
-{
-    coordinateX := 0
-    coordinateY := 0
-    If (!WinExist("ahk_id " . helpGUI.Hwnd))
-    {
-        MsgBox("[" . A_ThisFunc . "()] [WARNING] Could not find help GUI window.",
-            "GTAV Tweaks - [" . A_ThisFunc . "()]", "Icon! 262144")
-        Return
-    }
-    ; We receive the coordinates from the top left corner of the help GUI.
-    helpGUI.GetPos(&helpGUITopLeftCornerX, &helpGUITopLeftCornerY, &helpGUIWidth)
-    helpGUITopRightCornerX := helpGUITopLeftCornerX + helpGUIWidth
-    helpGUITopRightCornerY := helpGUITopLeftCornerY
-    ; We add an ofset for the x coordinate.
-    helpGUITopRightCornerX += 50
-    coordinateX := helpGUITopRightCornerX
-    coordinateY := helpGUITopRightCornerY
+    tutorial_howToFindHelpGUI()
 }
 
 tutorial_howToRecordMacros()
@@ -101,6 +52,117 @@ tutorial_howToRecordMacros()
     }
 }
 
+tutorial_howToFindHelpGUI()
+{
+    global howToUseHelpGUITutorial := InteractiveTutorial(getLanguageArrayString("tutorialHowToUseHelpGUI_3_2"))
+    currentlyHighlightedControlObject := ""
+
+    howToUseHelpGUITutorial.addText(getLanguageArrayString("tutorialHowToUseHelpGUI_1_1"))
+    howToUseHelpGUITutorial.addAction((*) => hideAllHighlightedElements())
+    howToUseHelpGUITutorial.addText(getLanguageArrayString("tutorialHowToUseHelpGUI_2_1"))
+    howToUseHelpGUITutorial.addAction((*) => showMainGUIAndHighlightMenu())
+    howToUseHelpGUITutorial.addText(getLanguageArrayString("tutorialHowToUseHelpGUI_3_1"))
+    howToUseHelpGUITutorial.addAction((*) => highlightSearchBar())
+    howToUseHelpGUITutorial.addText(getLanguageArrayString("tutorialHowToUseHelpGUI_4_1"))
+    howToUseHelpGUITutorial.addAction((*) => demonstrateSearchBar())
+    ; Makes sure the highlighted controls become normal again.
+    howToUseHelpGUITutorial.addExitAction((*) => hideAllHighlightedElements())
+
+    showMainGUIAndHighlightMenu()
+    {
+        hideAllHighlightedElements()
+        mainGUI.Show()
+        currentlyHighlightedControlObject := highlightMenuElement(mainGUI.Hwnd, 4)
+    }
+    highlightSearchBar()
+    {
+        hideAllHighlightedElements()
+        helpGUI.Show()
+        currentlyHighlightedControlObject := highlightControl(helpGUISearchBarEdit)
+    }
+    demonstrateSearchBar()
+    {
+        hideAllHighlightedElements()
+        helpGUISearchBarEdit.Focus()
+        ; This array contains the letters "typed" into the search bar for demonstration purposes.
+        searchBarDemoLetterArray := stringToArray(getLanguageArrayString("tutorialSearchBarDemoArrayString"))
+        ; Demonstrates the search bar to the user.
+        For (letter in searchBarDemoLetterArray)
+        {
+            If (WinExist("ahk_id " . helpGUI.Hwnd))
+            {
+                WinActivate()
+            }
+            ControlSend(letter, helpGUISearchBarEdit, "ahk_id " . helpGUI.Hwnd)
+            Sleep(20)
+        }
+    }
+    hideAllHighlightedElements()
+    {
+        If (IsObject(currentlyHighlightedControlObject))
+        {
+            ; Hides the highlighted control box.
+            currentlyHighlightedControlObject.destroy()
+        }
+    }
+}
+
+/*
+Creates an array, which contains list view entry objects. They contain the required data to be added into a list view element.
+@returns [Array] This array is filled with list view objects.
+*/
+createListViewContentCollectionArray()
+{
+    ; This array contains all list view entries.
+    helpGUIListViewContentArray := Array()
+    ; 1. Topic 2. Type 3. Title 4. Action
+    listViewEntry_1 := ListViewEntry(
+        getLanguageArrayString("tutorialHowToRecordMacros_1_2"), getLanguageArrayString("tutorialHowToRecordMacros_2_2"),
+        getLanguageArrayString("tutorialHowToRecordMacros_3_2"),
+        ; This will show the window relatively to the help GUI.
+        (*) => calculateInteractiveTutorialGUICoordinates(helpGUI.Hwnd, &x, &y) howToRecordMacrosTutorial.start(x, y)
+    )
+    listViewEntry_2 := ListViewEntry(
+        getLanguageArrayString("tutorialHowToUseHelpGUI_1_2"), getLanguageArrayString("tutorialHowToUseHelpGUI_2_2"),
+        getLanguageArrayString("tutorialHowToUseHelpGUI_3_2"),
+        ; This will show the window relatively to the main GUI.
+        (*) => calculateInteractiveTutorialGUICoordinates(mainGUI.Hwnd, &x, &y) howToUseHelpGUITutorial.start(x, y)
+    )
+
+    ; The number needes to be updated depending on how many list view entries there are.
+    Loop (2)
+    {
+        helpGUIListViewContentArray.InsertAt(A_Index, %"listViewEntry_" . A_Index%)
+    }
+    Return helpGUIListViewContentArray
+}
+
+; A small tutorial to show off the help GUI of this script.
+scriptTutorial()
+{
+    result_1 := MsgBox(getLanguageArrayString("tutorialMsgBox1_1"),
+        getLanguageArrayString("tutorialMsgBox1_2"), "YN Iconi 262144")
+    ; The dialog to disable the tutorial for the next time is only shown when the config file entry mentioned below is true.
+    If (readConfigFile("ASK_FOR_TUTORIAL"))
+    {
+        result_2 := MsgBox(getLanguageArrayString("tutorialMsgBox2_1"),
+            getLanguageArrayString("tutorialMsgBox2_2"), "YN Iconi 262144")
+        If (result_2 == "Yes")
+        {
+            editConfigFile("ASK_FOR_TUTORIAL", false)
+        }
+    }
+    If (result_1 == "Yes")
+    {
+        minimizeAllGUIs()
+        ; Welcome message.
+        MsgBox(getLanguageArrayString("tutorialMsgBox3_1"), getLanguageArrayString("tutorialMsgBox3_2"), "O Iconi 262144")
+        ; This will show the window relatively to the main GUI.
+        calculateInteractiveTutorialGUICoordinates(mainGUI.Hwnd, &x, &y)
+        howToUseHelpGUITutorial.start(x, y)
+    }
+}
+
 minimizeAllGUIs()
 {
     ; Minimizes all script windows to reduce diversion.
@@ -120,6 +182,33 @@ minimizeAllGUIs()
     {
         WinMinimize()
     }
+}
+
+/*
+Calculates the position for the interactive tutorial window to appear.
+The position will be selected relatively to the right of a given window.
+@var coordinateX [int] The x coordinate for the window.
+@var coordinateY [int] The y coordinate for the window.
+*/
+calculateInteractiveTutorialGUICoordinates(pWindowHWND, &coordinateX, &coordinateY)
+{
+    coordinateX := 0
+    coordinateY := 0
+    If (!WinExist("ahk_id " . pWindowHWND))
+    {
+        MsgBox("[" . A_ThisFunc . "()] [WARNING] Could not find window with HWND: [" . pWindowHWND . "].",
+            "GTAV Tweaks - [" . A_ThisFunc . "()]", "Icon! 262144")
+        Return
+    }
+    ; This is done to make WinGetPos() work reliably.
+    WinActivate("ahk_id " . pWindowHWND)
+    ; We receive the coordinates from the top left corner of the given window.
+    WinGetPos(&topLeftCornerX, &topLeftCornerY, &width, , "ahk_id " . pWindowHWND)
+    windowTopRightCornerX := topLeftCornerX + width
+    windowTopRightCornerY := topLeftCornerY
+    ; We add an ofset for the x coordinate.
+    coordinateX := windowTopRightCornerX + 50
+    coordinateY := windowTopRightCornerY
 }
 
 /*

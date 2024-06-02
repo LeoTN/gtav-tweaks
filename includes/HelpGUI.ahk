@@ -295,56 +295,6 @@ handleHelpGUI_helpSectionEasterEgg()
     }
 }
 
-; A small tutorial to show off the help GUI of this script.
-scriptTutorial()
-{
-    result := MsgBox(getLanguageArrayString("tutorialMsgBox1_1"),
-        getLanguageArrayString("tutorialMsgBox1_2"), "YN Iconi 262144")
-    If (result == "Yes")
-    {
-        minimizeAllGUIs()
-        ; Welcome message.
-        MsgBox(getLanguageArrayString("tutorialMsgBox3_1"), getLanguageArrayString("tutorialMsgBox3_2"), "O Iconi 262144")
-        ; Start of tutorial.
-        MsgBox(getLanguageArrayString("tutorialMsgBox4_1"), getLanguageArrayString("tutorialMsgBox4_2"), "O Iconi 262144")
-        If (!WinActive("ahk_id " . mainGUI.Hwnd))
-        {
-            mainGUI.Show()
-        }
-        MsgBox(getLanguageArrayString("tutorialMsgBox5_1"), getLanguageArrayString("tutorialMsgBox5_2"), "O Iconi 262144 T3")
-        If (WinWaitActive("ahk_id " . helpGUI.Hwnd, , 5) == 0)
-        {
-            helpGUI.Show()
-            MsgBox(getLanguageArrayString("tutorialMsgBox6_1"), getLanguageArrayString("tutorialMsgBox6_2"), "O Iconi 262144 T5")
-        }
-        highlightedSearchBarObject := highlightControl(helpGUISearchBarEdit)
-        MsgBox(getLanguageArrayString("tutorialMsgBox7_1"), getLanguageArrayString("tutorialMsgBox7_2"), "O Iconi 262144")
-        ; This array contains the letters "typed" into the search bar for demonstration purposes.
-        searchBarDemoLetterArray := stringToArray(getLanguageArrayString("tutorialSearchBarDemoArrayString"))
-        ; Demonstrates the search bar to the user.
-        For (letter in searchBarDemoLetterArray)
-        {
-            If (WinExist("ahk_id " . helpGUI.Hwnd))
-            {
-                WinActivate()
-            }
-            ControlSend(letter, helpGUISearchBarEdit, "ahk_id " . helpGUI.Hwnd)
-            Sleep(50)
-        }
-        highlightedSearchBarObject.destroy()
-    }
-    ; The dialog to disable the tutorial for the next time is only shown when the config file entry mentioned below is true.
-    If (readConfigFile("ASK_FOR_TUTORIAL"))
-    {
-        result := MsgBox(getLanguageArrayString("tutorialMsgBox2_1"),
-            getLanguageArrayString("tutorialMsgBox2_2"), "YN Iconi 262144")
-        If (result == "Yes")
-        {
-            editConfigFile("ASK_FOR_TUTORIAL", false)
-        }
-    }
-}
-
 /*
 Stores all data required to create an entry in a list view element.
 @param pTopic [String] The topic this entry is about (e.g. General, Macros, etc.).

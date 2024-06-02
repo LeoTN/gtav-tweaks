@@ -650,50 +650,52 @@ createLanguageArrayMap(pLanguageCode)
             "Möchtest du ein kurzes Tutorial darüber haben, wie du diese Software benutzt?"
         ]
         tutorialMsgBox1_2 := [
-            "GTAV Tweaks - Tutorial - Tutorial Starten"
+            "GTAV Tweaks - Tutorial Starten"
         ]
         tutorialMsgBox2_1 := [
             "Drücke [Ja], um das Tutorial",
-            "beim nächsten Mal, wenn du dieses Skript ausführst, zu deaktivieren."
+            "beim nächsten Mal, wenn du dieses Skript ausführst zu deaktivieren."
         ]
         tutorialMsgBox2_2 := [
-            "GTAV Tweaks - Tutorial - Deaktivieren für das Nächste Mal"
+            "GTAV Tweaks - Tutorial Deaktivieren für das Nächste Mal"
         ]
-        ; Actual tutorial MsgBoxes.
         tutorialMsgBox3_1 := [
             "Hey! Danke, dass du diese Software installiert hast!",
             "`n`nDamit kannst du deine eigenen Makros für GTA V mit deinen eigenen Hotkeys erstellen.",
-            "Es gibt noch ein paar andere Funktionen, aber fangen wir an.",
+            "`n`nEs gibt noch ein paar andere Funktionen, aber fangen wir an.",
             "`n`nDrücke [Okay] zum fortfahren."
         ]
         tutorialMsgBox3_2 := [
-            "GTAV Tweaks - Tutorial - Danke fürs Installieren"
+            "GTAV Tweaks - Danke fürs Installieren"
         ]
-        tutorialMsgBox4_1 := [
-            "Dieses Tutorial zeigt dir im Grunde nur, wie du an weitere Infos und Hilfe kommst.",
-            "`n`nDrücke [Okay] zum fortfahren."
+        ; This string (which is technically an array in this form) will be converted into an array later on.
+        tutorialSearchBarDemoArrayString :=
+            [
+                "E,r,s,t,e, ,S,c,h,r,i,t,t,e"
+            ]
+        ; How To Use Help GUI TUTORIAL
+        ; ############################
+        tutorialHowToUseHelpGUI_1_2 := [
+            "Allgemein"
         ]
-        tutorialMsgBox4_2 := [
-            "GTAV Tweaks - Hilfsdatenbank"
+        tutorialHowToUseHelpGUI_2_2 := [
+            "Tutorial"
         ]
-        tutorialMsgBox5_1 := [
-            "Bitte klicke auf das [Hilfe] Menü in der oberen rechten Ecke des Hauptfensters."
+        tutorialHowToUseHelpGUI_3_2 := [
+            "Wie man die Hilfsdatenbank nutzt"
         ]
-        tutorialMsgBox5_2 := [
-            "GTAV Tweaks - Hilfsdatenbank"]
-        tutorialMsgBox6_1 := [
-            "Die Hilfsdatenbank wurde automatisch geöffnet.`n`nDenke daran,",
-            "dass sie durch Drücken auf das [Hilfe] Menü im Hauptfenster aufgerufen werden kann."
+        tutorialHowToUseHelpGUI_1_1 := [
+            "Dieses Tutorial zeigt dir im Grunde nur, wie du an weitere Infos und Hilfe kommst."
         ]
-        tutorialMsgBox6_2 := [
-            "GTAV Tweaks - Hilfsdatenbank"]
-        tutorialMsgBox7_1 := [
-            "Du kannst diese Einträge mit Hilfe der Suchleiste durchsuchen (markiert durch einen roten Rahmen).",
-            "`n`nKlicke doppelt auf einen Eintrag, um ein interaktives Tutorial oder einen simplen Infotext zu starten.",
-            "`n`nDrücke [Okay] zum das Tutorial abzuschließen."
+        tutorialHowToUseHelpGUI_2_1 := [
+            "Zum Öffnen der Hilfsdatenbank musst du lediglich auf das [Hilfe] Menü klicken."
         ]
-        tutorialMsgBox7_2 := [
-            "GTAV Tweaks - Hilfsdatenbank"]
+        tutorialHowToUseHelpGUI_3_1 := [
+            "Du kannst diese Einträge mit Hilfe der Suchleiste durchsuchen (markiert durch einen roten Rahmen)."
+        ]
+        tutorialHowToUseHelpGUI_4_1 := [
+            "Klicke doppelt auf einen Eintrag, um ein interaktives Tutorial oder einen simplen Infotext zu starten."
+        ]
         ; This string (which is technically an array in this form) will be converted into an array later on.
         tutorialSearchBarDemoArrayString :=
             [
@@ -1255,51 +1257,46 @@ createLanguageArrayMap(pLanguageCode)
             "Would you like to have a short tutorial on how to use this software?"
         ]
         tutorialMsgBox1_2 := [
-            "GTAV Tweaks - Tutorial - Start Tutorial"
+            "GTAV Tweaks - Start Tutorial"
         ]
         tutorialMsgBox2_1 := [
             "Press [Yes] to disable the tutorial",
             "for the next time you run this script."
         ]
         tutorialMsgBox2_2 := [
-            "GTAV Tweaks - Tutorial - Disable for Next Time"
+            "GTAV Tweaks - Disable Tutorial for Next Time"
         ]
-        ; Actual tutorial MsgBoxes.
         tutorialMsgBox3_1 := [
             "Hey there! Thanks for installing this software!",
             "`n`nIt allows you to create your own macros for GTA V binded to your own keyboard shortcuts.",
-            "There are a few other functions additionally, but let's start the tutorial.",
+            "`n`nThere are a few other functions additionally, but let's start the tutorial.",
             "`n`nPress [Okay] to continue."
         ]
         tutorialMsgBox3_2 := [
-            "GTAV Tweaks - Tutorial - Thanks for Installing"
+            "GTAV Tweaks - Thanks for Installing"
         ]
-        tutorialMsgBox4_1 := [
-            "This tutorial will basically teach you how to find more tutorials and information.",
-            "`n`nPress [Okay] to continue."
+        ; How To Use Help GUI TUTORIAL
+        ; ############################
+        tutorialHowToUseHelpGUI_1_2 := [
+            "General"
         ]
-        tutorialMsgBox4_2 := [
-            "GTAV Tweaks - Help Database"
+        tutorialHowToUseHelpGUI_2_2 := [
+            "Tutorial"
         ]
-        tutorialMsgBox5_1 := [
-            "Please click on the [Help] menu on the top right corner of the main window."
+        tutorialHowToUseHelpGUI_3_2 := [
+            "How to use the help database"
         ]
-        tutorialMsgBox5_2 := [
-            "GTAV Tweaks - Help Database"
+        tutorialHowToUseHelpGUI_1_1 := [
+            "This tutorial will basically teach you how to find more tutorials and information."
         ]
-        tutorialMsgBox6_1 := [
-            "The help window was opened automatically.`n`nRemember, you can open it by pressing the [Help] menu in the main window."
+        tutorialHowToUseHelpGUI_2_1 := [
+            "At first, you need to click on the [Help] menu in the top right corner of the main window."
         ]
-        tutorialMsgBox6_2 := [
-            "GTAV Tweaks - Help Database"
+        tutorialHowToUseHelpGUI_3_1 := [
+            "You can search these entries with the search bar (highlighted with a red border)."
         ]
-        tutorialMsgBox7_1 := [
-            "You can search these entries with the search bar (highlighted with a red border).",
-            "`n`nDouble clicking them can start interactive tutorials or just a simple info text.",
-            "`n`nPress [Okay] to finish tutorial."
-        ]
-        tutorialMsgBox7_2 := [
-            "GTAV Tweaks - Help Database"
+        tutorialHowToUseHelpGUI_4_1 := [
+            "Double clicking them can start interactive tutorials or just a simple info text."
         ]
         ; This string (which is technically an array in this form) will be converted into an array later on.
         tutorialSearchBarDemoArrayString :=
@@ -1487,14 +1484,13 @@ createLanguageArrayMap(pLanguageCode)
         "tutorialMsgBox2_2", tutorialMsgBox2_2,
         "tutorialMsgBox3_1", tutorialMsgBox3_1,
         "tutorialMsgBox3_2", tutorialMsgBox3_2,
-        "tutorialMsgBox4_1", tutorialMsgBox4_1,
-        "tutorialMsgBox4_2", tutorialMsgBox4_2,
-        "tutorialMsgBox5_1", tutorialMsgBox5_1,
-        "tutorialMsgBox5_2", tutorialMsgBox5_2,
-        "tutorialMsgBox6_1", tutorialMsgBox6_1,
-        "tutorialMsgBox6_2", tutorialMsgBox6_2,
-        "tutorialMsgBox7_1", tutorialMsgBox7_1,
-        "tutorialMsgBox7_2", tutorialMsgBox7_2,
+        "tutorialHowToUseHelpGUI_1_2", tutorialHowToUseHelpGUI_1_2,
+        "tutorialHowToUseHelpGUI_2_2", tutorialHowToUseHelpGUI_2_2,
+        "tutorialHowToUseHelpGUI_3_2", tutorialHowToUseHelpGUI_3_2,
+        "tutorialHowToUseHelpGUI_1_1", tutorialHowToUseHelpGUI_1_1,
+        "tutorialHowToUseHelpGUI_2_1", tutorialHowToUseHelpGUI_2_1,
+        "tutorialHowToUseHelpGUI_3_1", tutorialHowToUseHelpGUI_3_1,
+        "tutorialHowToUseHelpGUI_4_1", tutorialHowToUseHelpGUI_4_1,
         "tutorialSearchBarDemoArrayString", tutorialSearchBarDemoArrayString,
         "tutorialHowToRecordMacros_1_1", tutorialHowToRecordMacros_1_1,
         "tutorialHowToRecordMacros_2_1", tutorialHowToRecordMacros_2_1,
