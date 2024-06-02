@@ -14,7 +14,7 @@ createHelpGUI()
     helpGUI := Gui(, getLanguageArrayString("infoAndHelpGUI_1"))
     helpGUISearchBarText := helpGUI.Add("Text", , getLanguageArrayString("infoAndHelpGUI_2"))
     helpGUISearchBarEdit := helpGUI.Add("Edit", "w150 -WantReturn")
-    helpGUISearchBarEdit.OnEvent("Change", (*) => searchInListView(helpGUISearchBarEdit.Text))
+    helpGUISearchBarEdit.OnEvent("Change", (*) => updateListViewAccordinglyToSearch(helpGUISearchBarEdit.Text))
     ; This selects the text inside the edit once the user clicks on it again after loosing focus.
     helpGUISearchBarEdit.OnEvent("Focus", (*) => ControlSend("^A", helpGUISearchBarEdit))
 
@@ -48,8 +48,8 @@ createHelpGUI()
     ; This is used for the easter egg.
     helpGUIStatusBar.OnEvent("Click", (*) => handleHelpGUI_helpSectionEasterEgg())
 
-    helpGUIListViewContentCollectionArray := createListViewContentCollectionArray()
-    For (contentEntry in helpGUIListViewContentCollectionArray)
+    helpGUIListViewContentArray := createListViewContentCollectionArray()
+    For (contentEntry in helpGUIListViewContentArray)
     {
         addLineToListView(contentEntry)
     }
@@ -57,7 +57,245 @@ createHelpGUI()
     helpGUIListView.ModifyCol(3, "SortHdr")
 }
 
-; A small tour to show off the basic functions of this script.
+updateListViewAccordinglyToSearch(pSearchString)
+{
+    global helpGUIListViewContentArray
+
+    helpGUIListView.Delete()
+    ; Shows all data when the search bar is empty.
+    If (pSearchString == "")
+    {
+        For (contentEntry in helpGUIListViewContentArray)
+        {
+            addLineToListView(contentEntry)
+        }
+        Return
+    }
+    ; Calls the search function to search in all entries.
+    resultArray := searchInListView(pSearchString)
+    For (resultEntry in resultArray)
+    {
+        addLineToListView(resultEntry)
+    }
+    Else
+    {
+        tmpListViewEntry := ListViewEntry("*****", "No results found.", "*****", (*) => 0)
+        addLineToListView(tmpListViewEntry)
+    }
+}
+
+/*
+Allows to search for elements in the list view element.
+@param pSearchString [String] A string to search for.
+@returns [Array] This array contains all ListView objects matching the search string.
+*/
+searchInListView(pSearchString)
+{
+    global helpGUIListViewContentArray
+
+    resultArrayCollection := Array()
+    ; Scans every string in the content array.
+    For (contentEntry in helpGUIListViewContentArray)
+    {
+        If (InStr(contentEntry.topic, pSearchString))
+        {
+            resultArrayCollection.Push(contentEntry)
+        }
+        Else If (InStr(contentEntry.type, pSearchString))
+        {
+            resultArrayCollection.Push(contentEntry)
+        }
+        Else If (InStr(contentEntry.title, pSearchString))
+        {
+            resultArrayCollection.Push(contentEntry)
+        }
+    }
+    Return resultArrayCollection
+}
+
+/*
+Adds the content of a list view entry object into the list view element.
+@param pListViewObject [ListViewEntry] An object containing relevant information to create an item in the list view.
+@param pBooleanAutoAdjust [boolean] If set to true, the column width will be adjusted accordingly to the content.
+*/
+addLineToListView(pListViewObject, pBooleanAutoAdjust := true)
+{
+    global helpGUIListViewArray
+
+    helpGUIListView.Add(, pListViewObject.topic, pListViewObject.type, pListViewObject.title)
+    If (pBooleanAutoAdjust)
+    {
+        ; Adjust the width accordingly to the content.
+        Loop (helpGUIListViewArray.Length)
+        {
+            helpGUIListView.ModifyCol(A_Index, "AutoHdr")
+        }
+    }
+}
+
+; Runs the bound action of the currently selected list view element.
+processDoubleClickedListViewItem()
+{
+    global helpGUIListViewContentArray
+    ; This map stores all visible list view entries together with their identifyer string.
+    identifyerMap := Map()
+    For (contentEntry in helpGUIListViewContentArray)
+    {
+        identifyerMap[contentEntry.identifyerString] := contentEntry
+    }
+    ; Finds out the currently selected entry's index.
+    focusedEntryColumnNumber := helpGUIListView.GetNext(, "Focused")
+    ; The identifyer string is created by merging the topic, the type and the title of the ListView object.
+    entryTopic := helpGUIListView.GetText(focusedEntryColumnNumber, 1)
+    entryType := helpGUIListView.GetText(focusedEntryColumnNumber, 2)
+    entryTitle := helpGUIListView.GetText(focusedEntryColumnNumber, 3)
+    focusedEntryIdentifyerString := entryTopic . entryType . entryTitle
+    ; Runs the action from the identified ListView object.
+    identifyerMap[focusedEntryIdentifyerString].runAction()
+}
+
+/*
+Highlights a control with a colored border.
+@param pControlElement [controlElement] Should be a control element (like a button or a checkbox) created within an AutoHotkey GUI.
+@param pColor [String] Determines the color of the border.
+@param pLineeThickness [int] Defines how thin the border is (in pixels).
+@param pLineTransparicy [int] Should be a value between 0 and 255. 0 makes the border invisible and 255 makes it entirely visible.
+@returns [RectangleHollowBox] This object can be used to control the border and it's properties.
+*/
+highlightControl(pControlElement, pColor := "red", pLineThickness := 2, pLineTransparicy := 200)
+{
+    Try
+    {
+        ; Retrieves the control's position relative to the computer screen.
+        WinGetClientPos(&screenControlX, &screenControlY, &controlWidth, &controlHeight, pControlElement)
+    }
+    Catch
+    {
+        MsgBox("[" . A_ThisFunc . "()] [WARNING] The control with the text [" . pControlElement.Text . "] does not exist.",
+            "GTAV Tweaks - [" . A_ThisFunc . "()]", "IconX 262144")
+    }
+    highlightBox := RectangleHollowBox(screenControlX, screenControlY, controlWidth, controlHeight, pColor, pLineThickness, pLineTransparicy)
+    highlightBox.draw()
+    Return highlightBox
+}
+
+/*
+@param pWindowHWND [int] The unique identifier from a standard windows window with a menu bar.
+@param pMenuElementIndex [int] The menu element to retrieve information about. The menu on the left will have an index of one,
+the menu next to it an index of 2 and so on. Enter 0 as a parameter to highlight the complete menu bar.
+@param pColor [String] Determines the color of the border.
+@param pLineeThickness [int] Defines how thin the border is (in pixels).
+@param pLineTransparicy [int] Should be a value between 0 and 255. 0 makes the border invisible and 255 makes it entirely visible.
+@returns [RectangleHollowBox] This object can be used to control the border and it's properties.
+*/
+highlightMenuElement(pWindowHWND, pMenuElementIndex, pColor := "red", pLineThickness := 2, pLineTransparicy := 200)
+{
+    menuBarInfo := getMenuBarInfo(pWindowHWND)
+    ; This means we are extracting information about the complete menu bar.
+    If (pMenuElementIndex == 0)
+    {
+        menuElementInfo := menuBarInfo.menuBarInfo
+    }
+    ; This means we are extracting information about a specific menu element in the menu bar.
+    Else
+    {
+        menuElementInfo := menuBarInfo.%"menuElementInfo_" . pMenuElementIndex%
+    }
+    highlightedMenuElement := RectangleHollowBox(menuElementInfo.topLeftCornerX, menuElementInfo.topLeftCornerY,
+        menuElementInfo.width, menuElementInfo.heigth, pColor, pLineThickness, pLineTransparicy)
+    highlightedMenuElement.draw()
+    Return highlightedMenuElement
+}
+
+/*
+Retrieves information about a menu bar and it's menu elements from a standard windows window (notepad for example).
+@param pWindowHWND [int] The unique identifier from a standard windows window with a menu bar.
+@returns [menuBarInfoObject] This object has the following properties:
+menuBarInfoObject.menuBarInfo (Contains information about the menu bar)
+menuBarInfoObject.menuElementInfo_n (n represents the index of each menu element)
+
+When there is a menu bar with a "File", "Option" and "Help" menu, there will be a
+menuBarInfoObject.menuElementInfo_1 (File), menuBarInfoObject.menuElementInfo_2 (Option) and menuBarInfoObject.menuElementInfo_3 (Help) property.
+
+Each property (menuBarInfoObject.menuElementInfo_n and menuBarInfoObject.menuBarInfo) has the following properties:
+menuBarInfoObject.menuElementInfo_n.topLeftCornerX (The x coordinate from the top left corner of the menu / menu bar)
+menuBarInfoObject.menuElementInfo_n.topLeftCornerY (The y coordinate from the top left corner of the menu / menu bar)
+menuBarInfoObject.menuElementInfo_n.width (The width of the menu / menu bar)
+menuBarInfoObject.menuElementInfo_n.heigth (The heigth of the menu / menu bar)
+*/
+getMenuBarInfo(pWindowHWND)
+{
+    ; Get the menu bar info object.
+    menuBarInfoDLL := DllCall("GetMenu", "Ptr", pWindowHWND, "Ptr")
+    If (!menuBarInfoDLL)
+    {
+        MsgBox("[" . A_ThisFunc . "()] [WARNING] Failed to get menu bar info from window with HWND [" . pWindowHWND . "]."
+            . "`n`nError description: [`n" . A_LastError . "`n]",
+            "GTAV Tweaks - [" . A_ThisFunc . "()]", "Icon! 262144")
+        Return
+    }
+    ; Finds out how many menu elements the menu bar has.
+    menuBarMenuAmount := DllCall("GetMenuItemCount", "Ptr", menuBarInfoDLL, "Int")
+    If (menuBarMenuAmount == -1)
+    {
+        MsgBox("[" . A_ThisFunc . "()] [WARNING] Failed to get menu bar info from window with HWND [" . pWindowHWND . "]."
+            . "`n`nError description: [`n" . A_LastError . "`n]",
+            "GTAV Tweaks - [" . A_ThisFunc . "()]", "Icon! 262144")
+        Return
+    }
+
+    ; Collect information about every menu element.
+    menuInfoObjectArray := Array()
+    Loop (menuBarMenuAmount) {
+        ; All menu info objects are stored into an array.
+        menuInfoObjectArray.Push(getMenuElementInfoObject(A_Index))
+    }
+    menuBarInfoObject := Object()
+    menuBarInfoObject.menuBarInfo := getMenuElementInfoObject(0)
+    ; Adds all menu element info objects into the menuBarInfoObject.
+    For (menuElementInfoObject in menuInfoObjectArray)
+    {
+        menuBarInfoObject.%"menuElementInfo_" . A_Index% := menuElementInfoObject
+    }
+    Return menuBarInfoObject
+    ; Passing the index 0 will return info about the menu bar.
+    getMenuElementInfoObject(menuElementIndex)
+    {
+        menuElementInfoBuffer := Buffer(48, 0)
+        NumPut("UInt", 48, menuElementInfoBuffer, 0)
+
+        result := DllCall("GetMenuBarInfo", "Ptr", pWindowHWND, "Int", 0xFFFFFFFD, "Int", menuElementIndex, "Ptr", menuElementInfoBuffer)
+        If (!result) {
+            MsgBox("[" . A_ThisFunc . "()] [WARNING] Failed to get menu element info from window with HWND [" . pWindowHWND . "]."
+                . "`n`nError description: [`n" . A_LastError . "`n]",
+                "GTAV Tweaks - [" . A_ThisFunc . "()]", "Icon! 262144")
+        }
+
+        menuElementInfo := Object()
+        menuElementInfo.topLeftCornerX := NumGet(menuElementInfoBuffer, 4, "int")
+        menuElementInfo.topLeftCornerY := NumGet(menuElementInfoBuffer, 8, "int")
+        ; Some values we need for calulating the width and height.
+        menuTmp1 := NumGet(menuElementInfoBuffer, 12, "int")
+        menuTmp2 := NumGet(menuElementInfoBuffer, 16, "int")
+        menuElementInfo.width := menuTmp1 - menuElementInfo.topLeftCornerX
+        menuElementInfo.heigth := menuTmp2 - menuElementInfo.topLeftCornerY
+        Return menuElementInfo
+    }
+}
+
+handleHelpGUI_helpSectionEasterEgg()
+{
+    static i := 0
+
+    i++
+    If (i >= 5)
+    {
+        i := 0
+        MsgBox(getLanguageArrayString("mainGUIMsgBox1_1"), getLanguageArrayString("mainGUIMsgBox1_2"), "O Iconi 262144")
+    }
+}
+
+; A small tutorial to show off the help GUI of this script.
 scriptTutorial()
 {
     result := MsgBox(getLanguageArrayString("tutorialMsgBox1_1"),
@@ -107,201 +345,6 @@ scriptTutorial()
     }
 }
 
-minimizeAllGUIs()
-{
-    ; Minimizes all script windows to reduce diversion.
-    If (WinExist("ahk_id " . mainGUI.Hwnd))
-    {
-        WinMinimize()
-    }
-    If (WinExist("ahk_id " . customHotkeyOverviewGUI.Hwnd))
-    {
-        WinMinimize()
-    }
-    If (WinExist("ahk_id " . newCustomHotkeyGUI.Hwnd))
-    {
-        WinMinimize()
-    }
-    If (WinExist("ahk_id " . helpGUI.Hwnd))
-    {
-        WinMinimize()
-    }
-}
-
-/*
-Allows to search for elements in the list view element.
-@param pSearchString [String] A string to search for.
-*/
-searchInListView(pSearchString)
-{
-    helpGUIListView.Delete()
-    ; Shows all data when the search bar is empty.
-    If (pSearchString == "")
-    {
-        For (contentEntry in helpGUIListViewContentCollectionArray)
-        {
-            addLineToListView(contentEntry)
-        }
-        Return
-    }
-    resultArrayCollection := Array()
-    ; Scans every string in the content array.
-    For (contentEntry in helpGUIListViewContentCollectionArray)
-    {
-        If (InStr(contentEntry.topic, pSearchString))
-        {
-            resultArrayCollection.Push(contentEntry)
-        }
-        Else If (InStr(contentEntry.type, pSearchString))
-        {
-            resultArrayCollection.Push(contentEntry)
-        }
-        Else If (InStr(contentEntry.title, pSearchString))
-        {
-            resultArrayCollection.Push(contentEntry)
-        }
-    }
-    For (resultEntry in resultArrayCollection)
-    {
-        addLineToListView(resultEntry)
-    }
-    Else
-    {
-        tmpListViewEntry := ListViewEntry("*****", "No results found.", "*****", (*) => 0, 0)
-        addLineToListView(tmpListViewEntry)
-        Return
-    }
-}
-
-/*
-Adds the content of a list view entry object into the list view element.
-@param pListViewObject [ListViewEntry] An object containing relevant information to create an item in the list view.
-@param pBooleanAutoAdjust [boolean] If set to true, the column width will be adjusted accordingly to the content.
-*/
-addLineToListView(pListViewObject, pBooleanAutoAdjust := true)
-{
-    helpGUIListView.Add(, pListViewObject.topic, pListViewObject.type, pListViewObject.title)
-    If (pBooleanAutoAdjust)
-    {
-        ; Adjust the width accordingly to the content.
-        Loop (helpGUIListViewArray.Length)
-        {
-            helpGUIListView.ModifyCol(A_Index, "AutoHdr")
-        }
-    }
-}
-
-/*
-Creates an array, which contains list view entry objects. They contain the required data to be added into a list view element.
-@returns [Array] This array is filled with list view objects.
-*/
-createListViewContentCollectionArray()
-{
-    ; This array contains all list view entries.
-    helpGUIListViewContentCollectionArray := Array()
-    ; 1. Topic 2. Type 3. Title 4. Action 5. Index
-    listViewEntry_1 := ListViewEntry("Test_Topic", "Test_Type", "This is a test entry", (*) => MsgBox("You triggered a test MsgBox."), 1)
-
-    ; The number needes to be updated depending on how many list view entries there are.
-    Loop (1)
-    {
-        helpGUIListViewContentCollectionArray.InsertAt(A_Index, %"listViewEntry_" . A_Index%)
-    }
-    Return helpGUIListViewContentCollectionArray
-}
-
-; Runs the bound action of the currently selected list view element.
-processDoubleClickedListViewItem()
-{
-    ; This map stores all list view entries together with their index.
-    static actionMap := Map()
-    If (!actionMap.Has(1))
-    {
-        For (contentEntry in helpGUIListViewContentCollectionArray)
-        {
-            actionMap[contentEntry.index] := contentEntry
-        }
-    }
-    ; Finds out the currently selected entries index number and calls the corresponding action.
-    focusedEntryIndex := helpGUIListView.GetNext(, "Focused")
-    If (actionMap.Has(focusedEntryIndex))
-    {
-        actionMap[focusedEntryIndex].runAction()
-    }
-}
-
-/*
-Highlights a control with a colored border.
-@param pControlElement [controlElement] Should be a control element (like a button or a checkbox) created within an AutoHotkey GUI.
-@param pColor [String] Determines the color of the border.
-@param pLineeThickness [int] Defines how thin the border is (in pixels).
-@param pLineTransparicy [int] Should be a value between 0 and 255. 0 makes the border invisible and 255 makes it entirely visible.
-@returns [RectangleHollowBox] This object can be used to control the border and it's properties.
-*/
-highlightControl(pControlElement, pColor := "red", pLineThickness := 2, pLineTransparicy := 200)
-{
-    Try
-    {
-        ; Retrieves the control's position relative to the computer screen.
-        WinGetClientPos(&screenControlX, &screenControlY, &controlWidth, &controlHeight, pControlElement)
-    }
-    Catch
-    {
-        MsgBox("[" . A_ThisFunc . "()] [WARNING] The control with the text [" . pControlElement.Text . "] does not exist.",
-            "GTAV Tweaks - [" . A_ThisFunc . "()]", "IconX 262144")
-    }
-    highlightBox := RectangleHollowBox(screenControlX, screenControlY, controlWidth, controlHeight, pColor, pLineThickness, pLineTransparicy)
-    highlightBox.draw()
-    Return highlightBox
-}
-
-/*
-Waits for a control element in an AutoHotkey GUI to be clicked.
-@param pControlElement [buttonControl] Should be a button, or really any other control element,
-that supports .OnEvent("Click") created within an AutoHotkey GUI.
-@param pCurrentClickEventFunction [function] If the button called the "doSomething()" function defined with it's
-OnEvent function [myButton.OnEvent("Click", (*) => doSomething())], we have to give this information to the waiting function.
-In our example the value of this parameter would be "(*) => doSomething()" without the quotation marks.
-@param pTimeoutMilliseconds [int] Waits for the specified time. Enter 0 to wait indefinetly.
-@returns [boolean] Returns true if the element was pressed or clicked before the timeout. False otherwise.
-*/
-waitForControlToBeClickedOrPressed(pControlElement, pCurrentClickEventFunction, pTimeoutMilliseconds := 0)
-{
-    timeoutMilliseconds := pTimeoutMilliseconds
-    booleanWait := true
-    ; Replaces the current function with this temporary one.
-    pControlElement.OnEvent("Click", (*) => booleanWait := false, -1)
-    While (booleanWait)
-    {
-        If (timeoutMilliseconds >= 0)
-        {
-            timeoutMilliseconds -= 50
-        }
-        ; If pTimeoutMilliseconds is 0, the function will wait indefinetly.
-        If (timeoutMilliseconds < 0 && pTimeoutMilliseconds != 0)
-        {
-            Return false
-        }
-        Sleep(50)
-    }
-    ; Resets the OnEvent function and calls it.
-    pControlElement.OnEvent("Click", pCurrentClickEventFunction, -1)
-    pCurrentClickEventFunction
-    Return true
-}
-
-handleHelpGUI_helpSectionEasterEgg()
-{
-    static i := 0
-
-    i++
-    If (i >= 5)
-    {
-        i := 0
-        MsgBox(getLanguageArrayString("mainGUIMsgBox1_1"), getLanguageArrayString("mainGUIMsgBox1_2"), "O Iconi 262144")
-    }
-}
-
 /*
 Stores all data required to create an entry in a list view element.
 @param pTopic [String] The topic this entry is about (e.g. General, Macros, etc.).
@@ -312,13 +355,14 @@ Stores all data required to create an entry in a list view element.
 */
 class ListViewEntry
 {
-    __New(pTopic, pType, pTitle, pAction, pEntryIndex)
+    __New(pTopic, pType, pTitle, pAction)
     {
         this.topic := pTopic
         this.type := pType
         this.title := pTitle
         this.action := pAction
-        this.index := pEntryIndex
+        ; This string will be used to identify the entry.
+        this.identifyerString := this.topic . this.type . this.title
     }
     runAction()
     {

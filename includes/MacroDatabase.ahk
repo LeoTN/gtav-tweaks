@@ -339,12 +339,12 @@ class CustomMacro
 {
     __New()
     {
-        this.name := "new custom macro"
-        this.description := "new custom macro description"
-        this.hotkey := "new custom macro hotkey"
-        this.macroFileLocation := "new custom macro file location"
-        this.macroConfigFileLocation := "new custom macro config file location"
-        this.ahkBaseFileLocation := "new custom macro ahk base file location"
+        this.name := "new_custom_macro"
+        this.description := "new_custom_macro_description"
+        this.hotkey := "new_custom_macro_hotkey"
+        this.macroFileLocation := "new_custom_macro_file_location"
+        this.macroConfigFileLocation := "new_custom_macro_config_file_location"
+        this.ahkBaseFileLocation := "new_custom_macro_ahk_base_file_location"
         this.isEnabled := true
     }
     saveMacroToFile()

@@ -74,11 +74,11 @@ onInit()
     functions_onInit()
     objects_onInit()
     macroRecorder_onInit()
-    tutorials_onInit()
-    help_onInit()
     mainGUI_onInit()
     customHotkeyOverviewGUI_onInit()
     newCustomHotkeyGUI_onInit()
+    help_onInit()
+    tutorials_onInit()
 
     If (readConfigFile("DISPLAY_LAUNCH_NOTIFICATION"))
     {

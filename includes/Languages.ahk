@@ -349,6 +349,23 @@ createLanguageArrayMap(pLanguageCode)
         infoAndHelpGUIListView_3 := [
             "Titel"
         ]
+        ; Interactive Tutorial GUI
+        ; ########################
+        tutorialGUI_1 := [
+            "Zurück"
+        ]
+        tutorialGUI_2 := [
+            "Beenden"
+        ]
+        tutorialGUI_3 := [
+            "Weiter"
+        ]
+        tutorialGUI_4 := [
+            "Schritt",
+            "",
+            "/",
+            ""
+        ]
         ; Reload & Terminate GUI
         ; ######################
         reloadAndTerminateGUI_1 := [
@@ -682,6 +699,27 @@ createLanguageArrayMap(pLanguageCode)
             [
                 "E,r,s,t,e, ,S,c,h,r,i,t,t,e"
             ]
+        ; How To Record Macros TUTORIAL
+        ; #############################
+        tutorialHowToRecordMacros_1_2 := [
+            "Makros"
+        ]
+        tutorialHowToRecordMacros_2_2 := [
+            "Tutorial"
+        ]
+        tutorialHowToRecordMacros_3_2 := [
+            "Wie man Makros aufnimmt"
+        ]
+        tutorialHowToRecordMacros_1_1 := [
+            "Zuerst muss das [Hotkey Übersicht] Fenster geöffnet werden.`n`n",
+            "Du kannst dazu das [Hotkey && Makros] Menü im Hauptfenster anklicken."
+        ]
+        tutorialHowToRecordMacros_2_1 := [
+            "Dort angekommen, musst du auf den [Hotkey erstellen] Knopf drücken."
+        ]
+        tutorialHowToRecordMacros_3_1 := [
+            "Um den Aufnahmeprozess zu starten, musst du lediglich den [Makro aufzeichnen] Knopf drücken."
+        ]
         ; Built-in Hotkey Description
         ; #########################
         builtInHotkeyDescription_1 := [
@@ -879,7 +917,7 @@ createLanguageArrayMap(pLanguageCode)
         ; Info & Help GUI
         ; ###############
         infoAndHelpGUI_1 := [
-            "GTAV Tweaks -Info & Help"
+            "GTAV Tweaks - Info & Help"
         ]
         infoAndHelpGUI_2 := [
             "Search Bar"
@@ -916,6 +954,23 @@ createLanguageArrayMap(pLanguageCode)
         ]
         infoAndHelpGUIListView_3 := [
             "Title"
+        ]
+        ; Interactive Tutorial GUI
+        ; ########################
+        tutorialGUI_1 := [
+            "Previous"
+        ]
+        tutorialGUI_2 := [
+            "Exit"
+        ]
+        tutorialGUI_3 := [
+            "Next"
+        ]
+        tutorialGUI_4 := [
+            "Step",
+            "",
+            "/",
+            ""
         ]
         ; Reload & Terminate GUI
         ; ######################
@@ -1251,6 +1306,27 @@ createLanguageArrayMap(pLanguageCode)
             [
                 "G,e,t,t,i,n,g, ,s,t,a,r,t,e,d"
             ]
+        ; How To Record Macros TUTORIAL
+        ; #############################
+        tutorialHowToRecordMacros_1_2 := [
+            "Macros"
+        ]
+        tutorialHowToRecordMacros_2_2 := [
+            "Tutorial"
+        ]
+        tutorialHowToRecordMacros_3_2 := [
+            "How to record macros"
+        ]
+        tutorialHowToRecordMacros_1_1 := [
+            "First, the [Hotkey Overview] window must be opened",
+            "by clicking on the [Hotkeys && Macros] menu in the main window."
+        ]
+        tutorialHowToRecordMacros_2_1 := [
+            "Next you have to press the [Create Hotkey] button."
+        ]
+        tutorialHowToRecordMacros_3_1 := [
+            "To start the recording process, simply press the [Record Macro] button."
+        ]
         ; Built-in Hotkey Description
         ; #########################
         builtInHotkeyDescription_1 := [
@@ -1331,6 +1407,10 @@ createLanguageArrayMap(pLanguageCode)
         "infoAndHelpGUIListView_1", infoAndHelpGUIListView_1,
         "infoAndHelpGUIListView_2", infoAndHelpGUIListView_2,
         "infoAndHelpGUIListView_3", infoAndHelpGUIListView_3,
+        "tutorialGUI_1", tutorialGUI_1,
+        "tutorialGUI_2", tutorialGUI_2,
+        "tutorialGUI_3", tutorialGUI_3,
+        "tutorialGUI_4", tutorialGUI_4,
         "reloadAndTerminateGUI_1", reloadAndTerminateGUI_1,
         "reloadAndTerminateGUI_2", reloadAndTerminateGUI_2,
         "reloadAndTerminateGUI_3", reloadAndTerminateGUI_3,
@@ -1416,6 +1496,12 @@ createLanguageArrayMap(pLanguageCode)
         "tutorialMsgBox7_1", tutorialMsgBox7_1,
         "tutorialMsgBox7_2", tutorialMsgBox7_2,
         "tutorialSearchBarDemoArrayString", tutorialSearchBarDemoArrayString,
+        "tutorialHowToRecordMacros_1_1", tutorialHowToRecordMacros_1_1,
+        "tutorialHowToRecordMacros_2_1", tutorialHowToRecordMacros_2_1,
+        "tutorialHowToRecordMacros_3_1", tutorialHowToRecordMacros_3_1,
+        "tutorialHowToRecordMacros_1_2", tutorialHowToRecordMacros_1_2,
+        "tutorialHowToRecordMacros_2_2", tutorialHowToRecordMacros_2_2,
+        "tutorialHowToRecordMacros_3_2", tutorialHowToRecordMacros_3_2,
         "builtInHotkeyDescription_1", builtInHotkeyDescription_1,
         "builtInHotkeyDescription_2", builtInHotkeyDescription_2
     )
