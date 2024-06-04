@@ -63,8 +63,10 @@ function onInit() {
     If (Test-Path -Path $supportFilesFolderUpdateFolder) {
         Copy-Item -Path $logFilePath -Destination (Join-Path -Path $supportFilesFolderUpdateFolder -ChildPath $logFileName) -Force
     }
-    
-    Start-Sleep -Seconds 3
+    # Speeds up the script when it's ran without the user seeing it.
+    If (checkIfScriptWindowIsHidden) {
+        Start-Sleep -Seconds 3
+    }
     Exit $exitCode
 }
 
@@ -626,6 +628,29 @@ function changeINIFile {
     }
     Write-Host "[changeINIFile()] [WARNING] Could not find key [$pKey] in .INI file at [$pFilePath]." -ForegroundColor "Yellow"
     Return $false
+}
+
+function checkIfScriptWindowIsHidden() {
+    # Define the necessary Windows API functions
+    Add-Type @"
+using System;
+using System.Runtime.InteropServices;
+
+public class User32 {
+    [DllImport("user32.dll")]
+    [return: MarshalAs(UnmanagedType.Bool)]
+    public static extern bool IsWindowVisible(IntPtr hWnd);
+
+    [DllImport("user32.dll", SetLastError = true)]
+    public static extern IntPtr GetForegroundWindow();
+
+    [DllImport("user32.dll")]
+    public static extern int GetWindowText(IntPtr hWnd, System.Text.StringBuilder text, int count);
+}
+"@
+    $consoleHandle = [System.Diagnostics.Process]::GetCurrentProcess().MainWindowHandle
+    [boolean]$isVisible = [User32]::IsWindowVisible($consoleHandle)
+    Return $isVisible
 }
 
 onInit
