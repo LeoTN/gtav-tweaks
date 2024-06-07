@@ -20,7 +20,7 @@ createMainGUI()
     fileSelectionMenuOpen.SetIcon(getLanguageArrayString("mainGUIFileSubMenu1_4") . "`t4", "shell32.dll", 279)
 
     fileSelectionMenuReset := Menu()
-    fileSelectionMenuReset.Add(getLanguageArrayString("mainGUIFileSubMenu2_1") . "`tShift+1", (*) => createDefaultConfigFile(, true))
+    fileSelectionMenuReset.Add(getLanguageArrayString("mainGUIFileSubMenu2_1") . "`tShift+1", (*) => createDefaultConfigFile(, true, true))
     fileSelectionMenuReset.SetIcon(getLanguageArrayString("mainGUIFileSubMenu2_1") . "`tShift+1", "shell32.dll", 70)
 
     fileMenu := Menu()

@@ -115,8 +115,9 @@ Creates, reads and manages the script's config file.
 Does what the name implies.
 @param pBooleanCreateBackup [boolean] If set to true, the old config file will be saved.
 @param pBooleanShowPrompt [boolean] Show a prompt to create the config file or do it silent.
+@param pBooleanReloadScript [boolean] Reloads the script, when set to true.
 */
-createDefaultConfigFile(pBooleanCreateBackup := true, pBooleanShowPrompt := false)
+createDefaultConfigFile(pBooleanCreateBackup := true, pBooleanShowPrompt := false, pBooleanReloadScript := false)
 {
     If (pBooleanShowPrompt)
     {
@@ -163,6 +164,10 @@ createDefaultConfigFile(pBooleanCreateBackup := true, pBooleanShowPrompt := fals
         {
             MsgBox(getLanguageArrayString("configFileMsgBox2_1"), getLanguageArrayString("configFileMsgBox2_2"), "O Iconi T3")
         }
+    }
+    If (pBooleanReloadScript)
+    {
+        Reload()
     }
 }
 

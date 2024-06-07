@@ -8,6 +8,7 @@ tutorials_onInit()
     ; Initializes all tutorials and info texts.
     tutorial_howToRecordMacros()
     tutorial_howToFindHelpGUI()
+    tutorial_gettingStarted()
 }
 
 tutorial_howToRecordMacros()
@@ -107,6 +108,57 @@ tutorial_howToFindHelpGUI()
     }
 }
 
+tutorial_gettingStarted()
+{
+    global gettingStartedTutorial := InteractiveTutorial(getLanguageArrayString("tutorialHowToUseHelpGUI_3_2"))
+    currentlyHighlightedControlObject := ""
+
+    gettingStartedTutorial.addText(getLanguageArrayString("tutorialGettingStarted_1_1"))
+    gettingStartedTutorial.addAction((*) => showAndFlashMainGUI())
+    gettingStartedTutorial.addText(getLanguageArrayString("tutorialGettingStarted_2_1"))
+    gettingStartedTutorial.addAction((*) => highlightOptionsMenu())
+    gettingStartedTutorial.addText(getLanguageArrayString("tutorialGettingStarted_3_1"))
+    gettingStartedTutorial.addAction((*) => highlightFileMenu())
+    gettingStartedTutorial.addText(getLanguageArrayString("tutorialGettingStarted_4_1"))
+    gettingStartedTutorial.addAction(() => highlightHelpMenu())
+    ; Makes sure the highlighted controls become normal again.
+    gettingStartedTutorial.addExitAction((*) => hideAllHighlightedElements())
+
+    showAndFlashMainGUI()
+    {
+        hideAllHighlightedElements()
+        mainGUI.Show()
+        currentlyHighlightedControlObject := highlightControl(mainGUI)
+        mainGUI.Flash()
+    }
+    highlightOptionsMenu()
+    {
+        hideAllHighlightedElements()
+        mainGUI.Show()
+        currentlyHighlightedControlObject := highlightMenuElement(mainGUI.Hwnd, 2)
+    }
+    highlightFileMenu()
+    {
+        hideAllHighlightedElements()
+        mainGUI.Show()
+        currentlyHighlightedControlObject := highlightMenuElement(mainGUI.Hwnd, 1)
+    }
+    highlightHelpMenu()
+    {
+        hideAllHighlightedElements()
+        mainGUI.Show()
+        currentlyHighlightedControlObject := highlightMenuElement(mainGUI.Hwnd, 4)
+    }
+    hideAllHighlightedElements()
+    {
+        If (IsObject(currentlyHighlightedControlObject))
+        {
+            ; Hides the highlighted control box.
+            currentlyHighlightedControlObject.destroy()
+        }
+    }
+}
+
 /*
 Creates an array, which contains list view entry objects. They contain the required data to be added into a list view element.
 @returns [Array] This array is filled with list view objects.
@@ -128,9 +180,14 @@ createListViewContentCollectionArray()
         ; This will show the window relatively to the main GUI.
         (*) => calculateInteractiveTutorialGUICoordinates(mainGUI.Hwnd, &x, &y) howToUseHelpGUITutorial.start(x, y)
     )
+    listViewEntry_3 := ListViewEntry(getLanguageArrayString("tutorialGettingStarted_1_2"), getLanguageArrayString("tutorialGettingStarted_2_2"),
+        getLanguageArrayString("tutorialGettingStarted_3_2"),
+        ; This will show the window relatively to the help GUI.
+        (*) => calculateInteractiveTutorialGUICoordinates(helpGUI.Hwnd, &x, &y) gettingStartedTutorial.start(x, y)
+    )
 
     ; The number needes to be updated depending on how many list view entries there are.
-    Loop (2)
+    Loop (3)
     {
         helpGUIListViewContentArray.InsertAt(A_Index, %"listViewEntry_" . A_Index%)
     }

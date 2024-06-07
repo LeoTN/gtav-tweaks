@@ -253,7 +253,7 @@ createLanguageArrayMap(pLanguageCode)
             "Beschreibung"
         ]
         hotkeyOverviewGUI_5 := [
-            "Wählen Sie unten ein Hotkey aus."
+            "Wähle unten ein Hotkey aus."
         ]
         hotkeyOverviewGUI_6 := [
             "Hotkey aktiviert"
@@ -630,7 +630,7 @@ createLanguageArrayMap(pLanguageCode)
             "GTAV Tweaks - Doppelter Hotkey Name"
         ]
         objectsMsgBox3_1 := [
-            "Dieses Tastaturkürzel wird bereits von einem anderen Hotkey verwendet: [",
+            "Dieser Tastaturkürzel wird bereits von einem anderen Hotkey verwendet: [",
             "",
             "]."
         ]
@@ -721,6 +721,29 @@ createLanguageArrayMap(pLanguageCode)
         ]
         tutorialHowToRecordMacros_3_1 := [
             "Um den Aufnahmeprozess zu starten, musst du lediglich den [Makro aufzeichnen] Knopf drücken."
+        ]
+        ; Getting Started TUTORIAL
+        ; #############################
+        tutorialGettingStarted_1_2 := [
+            "Allgemein"
+        ]
+        tutorialGettingStarted_2_2 := [
+            "Tutorial"
+        ]
+        tutorialGettingStarted_3_2 := [
+            "Erste Schritte"
+        ]
+        tutorialGettingStarted_1_1 := [
+            "Sieh dir bei Gelegenheit mal die Optionen im Hauptfenster an."
+        ]
+        tutorialGettingStarted_2_1 := [
+            "Das [Optionen] Menü stellt eine Reihe von Funktionen bereit.`n`nDu kannst dort zum Beispiel die Skriptsprache ändern."
+        ]
+        tutorialGettingStarted_3_1 := [
+            "Nutze das [Datei] Menü, um die Skript-Konfigurationsdatei und weitere Dinge zu öffnen."
+        ]
+        tutorialGettingStarted_4_1 := [
+            "Weitere Information zum Thema Hotkeys und Makros kannst du in der Hilfsdatenbank finden."
         ]
         ; Built-in Hotkey Description
         ; #########################
@@ -1324,6 +1347,30 @@ createLanguageArrayMap(pLanguageCode)
         tutorialHowToRecordMacros_3_1 := [
             "To start the recording process, simply press the [Record Macro] button."
         ]
+        ; Getting Started TUTORIAL
+        ; #############################
+        tutorialGettingStarted_1_2 := [
+            "General"
+        ]
+        tutorialGettingStarted_2_2 := [
+            "Tutorial"
+        ]
+        tutorialGettingStarted_3_2 := [
+            "Getting started"
+        ]
+        tutorialGettingStarted_1_1 := [
+            "You might want to take a look at the options in the main window."
+        ]
+        tutorialGettingStarted_2_1 := [
+            "You can perform a few actions by opening the [Options] menu.",
+            "`n`nThis includes changing the script language."
+        ]
+        tutorialGettingStarted_3_1 := [
+            "Use the [File] menu access the script's config file and many other things."
+        ]
+        tutorialGettingStarted_4_1 := [
+            "Additional information about macros and hotkeys can be found in the help database."
+        ]
         ; Built-in Hotkey Description
         ; #########################
         builtInHotkeyDescription_1 := [
@@ -1498,6 +1545,13 @@ createLanguageArrayMap(pLanguageCode)
         "tutorialHowToRecordMacros_1_2", tutorialHowToRecordMacros_1_2,
         "tutorialHowToRecordMacros_2_2", tutorialHowToRecordMacros_2_2,
         "tutorialHowToRecordMacros_3_2", tutorialHowToRecordMacros_3_2,
+        "tutorialGettingStarted_1_2", tutorialGettingStarted_1_2,
+        "tutorialGettingStarted_2_2", tutorialGettingStarted_2_2,
+        "tutorialGettingStarted_3_2", tutorialGettingStarted_3_2,
+        "tutorialGettingStarted_1_1", tutorialGettingStarted_1_1,
+        "tutorialGettingStarted_2_1", tutorialGettingStarted_2_1,
+        "tutorialGettingStarted_3_1", tutorialGettingStarted_3_1,
+        "tutorialGettingStarted_4_1", tutorialGettingStarted_4_1,
         "builtInHotkeyDescription_1", builtInHotkeyDescription_1,
         "builtInHotkeyDescription_2", builtInHotkeyDescription_2
     )
