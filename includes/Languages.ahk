@@ -179,7 +179,7 @@ createLanguageArrayMap(pLanguageCode)
             "Hotkey && Makros"
         ]
         mainGUIMenu_4 := [
-            "Info"
+            "Hilfe"
         ]
         ; Main GUI file menu
         ; ******************
@@ -222,21 +222,20 @@ createLanguageArrayMap(pLanguageCode)
         ]
         ; Main GUI info menu
         ; ******************
-        mainGUIInfoMenu_1 := [
-            "Version -",
-            ""
+        mainGUIHelpMenu_1 := [
+            "language_string_unused"
         ]
-        mainGUIInfoMenu_2 := [
+        mainGUIHelpMenu_2 := [
             "Dieses Repository (gtav-tweaks)"
         ]
-        mainGUIInfoMenu_3 := [
-            "Ein Problem melden oder eine Funktion vorschlagen"
+        mainGUIHelpMenu_3 := [
+            "language_string_unused"
         ]
-        mainGUIInfoMenu_4 := [
+        mainGUIHelpMenu_4 := [
             "README-Datei"
         ]
-        mainGUIInfoMenu_5 := [
-            "Integriertes Tutorial"
+        mainGUIHelpMenu_5 := [
+            "Hilfsdatenbank"
         ]
         ; Hotkey Overview GUI
         ; ###################
@@ -254,7 +253,7 @@ createLanguageArrayMap(pLanguageCode)
             "Beschreibung"
         ]
         hotkeyOverviewGUI_5 := [
-            "Wählen Sie unten ein Hotkey aus."
+            "Wähle unten ein Hotkey aus."
         ]
         hotkeyOverviewGUI_6 := [
             "Hotkey aktiviert"
@@ -308,6 +307,67 @@ createLanguageArrayMap(pLanguageCode)
         ]
         newCustomHotkeyGUI_9 := [
             "Makro aufzeichnen"
+        ]
+        ; Info & Help GUI
+        ; ###############
+        infoAndHelpGUI_1 := [
+            "GTAV Tweaks - Info & Hilfe"
+        ]
+        infoAndHelpGUI_2 := [
+            "Suchleiste"
+        ]
+        infoAndHelpGUI_3 := [
+            "Skript Infos"
+        ]
+        ; We need to take this extra step because there would be a gap between href= and the url (href= "url_here"), which breaks the link.
+        ; The same goes for the space after the url ends.
+        infoAndHelpGUI_4 := [
+            'Version: <a href="replace_space_after',
+            "",
+            '">',
+            "",
+            'replace_space_before</a>'
+        ]
+        ; We need to take this extra step because there would be a gap between href= and the url (href= "url_here"), which breaks the link.
+        ; The same goes for the space after the url ends.
+        infoAndHelpGUI_5 := [
+            '<a href="replace_space_after',
+            "",
+            'replace_space_before">Feature vorschlagen</a> oder <a href="replace_space_after',
+            "",
+            'replace_space_before">Bugreport</a>'
+        ]
+        infoAndHelpGUI_6 := [
+            "Doppelt auf einen Eintrag klicken zum Öffnen."
+        ]
+        infoAndHelpGUIListView_1 := [
+            "Thema"
+        ]
+        infoAndHelpGUIListView_2 := [
+            "Typ"
+        ]
+        infoAndHelpGUIListView_3 := [
+            "Titel"
+        ]
+        infoAndHelpGUIListView_4 := [
+            "Keine Ergebnisse gefunden."
+        ]
+        ; Interactive Tutorial GUI
+        ; ########################
+        tutorialGUI_1 := [
+            "Zurück"
+        ]
+        tutorialGUI_2 := [
+            "Beenden"
+        ]
+        tutorialGUI_3 := [
+            "Weiter"
+        ]
+        tutorialGUI_4 := [
+            "Schritt",
+            "",
+            "/",
+            ""
         ]
         ; Reload & Terminate GUI
         ; ######################
@@ -468,8 +528,8 @@ createLanguageArrayMap(pLanguageCode)
         ; Main GUI MsgBoxes
         ; #################
         mainGUIMsgBox1_1 := [
-            "Sieht aus, als hätte jemand ein Easter Egg gefunden!`n`nEs scheint, als magst du das Testen, genau wie mein Freund,",
-            "der mir sehr hilft, indem er dieses Skript für mich so oft testet.`n`nDanke Elias!"
+            "Sieht aus, als hätte jemand ein Easter Egg gefunden!`n`nEs scheint, als magst du das Testen genau wie mein Freund,",
+            "der mir sehr hilft indem er dieses Skript für mich testet.`n`nDanke Elias!"
         ]
         mainGUIMsgBox1_2 := [
             "Was ist das?"
@@ -573,7 +633,7 @@ createLanguageArrayMap(pLanguageCode)
             "GTAV Tweaks - Doppelter Hotkey Name"
         ]
         objectsMsgBox3_1 := [
-            "Dieses Tastaturkürzel wird bereits von einem anderen Hotkey verwendet: [",
+            "Dieser Tastaturkürzel wird bereits von einem anderen Hotkey verwendet: [",
             "",
             "]."
         ]
@@ -593,114 +653,100 @@ createLanguageArrayMap(pLanguageCode)
             "Möchtest du ein kurzes Tutorial darüber haben, wie du diese Software benutzt?"
         ]
         tutorialMsgBox1_2 := [
-            "GTAV Tweaks - Tutorial - Tutorial Starten"
+            "GTAV Tweaks - Tutorial Starten"
         ]
         tutorialMsgBox2_1 := [
             "Drücke [Ja], um das Tutorial",
-            "beim nächsten Mal, wenn du dieses Skript ausführst, zu deaktivieren."
+            "beim nächsten Mal, wenn du dieses Skript ausführst zu deaktivieren."
         ]
         tutorialMsgBox2_2 := [
-            "GTAV Tweaks - Tutorial - Deaktivieren für das Nächste Mal"
+            "GTAV Tweaks - Tutorial Deaktivieren für das Nächste Mal"
         ]
-        ; Actual tutorial MsgBoxes.
         tutorialMsgBox3_1 := [
             "Hey! Danke, dass du diese Software installiert hast!",
             "`n`nDamit kannst du deine eigenen Makros für GTA V mit deinen eigenen Hotkeys erstellen.",
-            "Es gibt noch ein paar andere Funktionen, aber fangen wir an.",
+            "`n`nEs gibt noch ein paar andere Funktionen, aber fangen wir an.",
             "`n`nDrücke [Okay] zum fortfahren."
         ]
         tutorialMsgBox3_2 := [
-            "GTAV Tweaks - Tutorial - Danke fürs Installieren"
+            "GTAV Tweaks - Danke fürs Installieren"
         ]
-        tutorialMsgBox4_1 := [
-            "Das ist das Hauptfenster.",
-            "`nVon hier aus kannst du alle Funktionen aufrufen.",
-            "`n`nDrücke [Okay] zum fortfahren."
+        ; This string (which is technically an array in this form) will be converted into an array later on.
+        tutorialSearchBarDemoArrayString :=
+            [
+                "E,r,s,t,e, ,S,c,h,r,i,t,t,e"
+            ]
+        ; How To Use Help GUI TUTORIAL
+        ; ############################
+        tutorialHowToUseHelpGUI_1_2 := [
+            "Allgemein"
         ]
-        tutorialMsgBox4_2 := [
-            "GTAV Tweaks - Tutorial - Hauptfenster"
+        tutorialHowToUseHelpGUI_2_2 := [
+            "Tutorial"
         ]
-        tutorialMsgBox5_1 := [
-            "Bitte schau dir das [Optionen] Menü an.",
-            "`nHier kannst du die Sprache ändern.",
-            "`n`nDrücke [Okay] zum fortfahren."
+        tutorialHowToUseHelpGUI_3_2 := [
+            "Wie man die Hilfsdatenbank nutzt"
         ]
-        tutorialMsgBox5_2 := [
-            "GTAV Tweaks - Tutorial - Hauptfenster"
+        tutorialHowToUseHelpGUI_1_1 := [
+            "Dieses Tutorial zeigt dir im Grunde nur, wie du an weitere Infos und Hilfe kommst."
         ]
-        tutorialMsgBox6_1 := [
-            "Bitte klicke auf das [Hotkeys & Makros] Menü.",
-            "`nEs öffnet das Hotkey Übersichtsfenster.",
-            "`n`nDrücke [Okay] zum fortfahren."
+        tutorialHowToUseHelpGUI_2_1 := [
+            "Zum Öffnen der Hilfsdatenbank musst du lediglich auf das [Hilfe] Menü klicken."
         ]
-        tutorialMsgBox6_2 := [
-            "GTAV Tweaks - Tutorial - Hauptfenster"
+        tutorialHowToUseHelpGUI_3_1 := [
+            "Du kannst diese Einträge mit Hilfe der Suchleiste durchsuchen (markiert durch einen roten Rahmen)."
         ]
-        tutorialMsgBox7_1 := [
-            "Das Skript hat das Hotkey Übersichtsfenster für dich geöffnet.",
-            "`n`nKeine Sorge, du wirst schnell damit klarkommen :)"
+        tutorialHowToUseHelpGUI_4_1 := [
+            "Klicke doppelt auf einen Eintrag, um ein interaktives Tutorial oder einen simplen Infotext zu starten."
         ]
-        tutorialMsgBox7_2 := [
-            "GTAV Tweaks - Tutorial - Hotkey Übersichtsfenster"
+        ; This string (which is technically an array in this form) will be converted into an array later on.
+        tutorialSearchBarDemoArrayString :=
+            [
+                "E,r,s,t,e, ,S,c,h,r,i,t,t,e"
+            ]
+        ; How To Record Macros TUTORIAL
+        ; #############################
+        tutorialHowToRecordMacros_1_2 := [
+            "Makros"
         ]
-        tutorialMsgBox8_1 := [
-            "Das ist das Hotkey Übersichtsfenster.",
-            "`nHier kannst du deine Hotkeys verwalten.",
-            "`n`nDrücke [Okay] zum fortfahren."
+        tutorialHowToRecordMacros_2_2 := [
+            "Tutorial"
         ]
-        tutorialMsgBox8_2 := [
-            "GTAV Tweaks - Tutorial - Hotkey Übersichtsfenster"
+        tutorialHowToRecordMacros_3_2 := [
+            "Wie man Makros aufnimmt"
         ]
-        tutorialMsgBox9_1 := [
-            "Beachte die Dropdown-Liste.",
-            "`nSie enthält bereits einige vorinstallierte Hotkeys.",
-            "`n`nDu kannst einen Hotkey auswählen, und das Fenster zeigt seine Eigenschaften an.",
-            "`n`nNachdem ein Hotkey ausgewählt wurde, kannst du ihn aktivieren, deaktivieren, bearbeiten oder löschen.",
-            "`n`nDrücke [Okay] zum fortfahren."
+        tutorialHowToRecordMacros_1_1 := [
+            "Zuerst muss das [Hotkey Übersicht] Fenster geöffnet werden.`n`n",
+            "Du kannst dazu das [Hotkey && Makros] Menü im Hauptfenster anklicken."
         ]
-        tutorialMsgBox9_2 := [
-            "GTAV Tweaks - Tutorial - Hotkey Übersichtsfenster"
+        tutorialHowToRecordMacros_2_1 := [
+            "Dort angekommen, musst du auf den [Hotkey erstellen] Knopf drücken."
         ]
-        tutorialMsgBox10_1 := [
-            "Bitte klicke auf die Schaltfläche [Hotkey erstellen].",
-            "`nDadurch wird das Hotkey Erstellungsfenster geöffnet.",
-            "`n`nDrücke [Okay] zum fortfahren."
+        tutorialHowToRecordMacros_3_1 := [
+            "Um den Aufnahmeprozess zu starten, musst du lediglich den [Makro aufzeichnen] Knopf drücken."
         ]
-        tutorialMsgBox10_2 := [
-            "GTAV Tweaks - Tutorial - Hotkey Übersichtsfenster"
+        ; Getting Started TUTORIAL
+        ; #############################
+        tutorialGettingStarted_1_2 := [
+            "Allgemein"
         ]
-        tutorialMsgBox11_1 := [
-            "Das Skript hat das Hotkey Erstellungsfenster für dich geöffnet.",
-            "`n`nKeine Sorge, du wirst schnell damit klarkommen :)"
+        tutorialGettingStarted_2_2 := [
+            "Tutorial"
         ]
-        tutorialMsgBox11_2 := [
-            "GTAV Tweaks - Tutorial - Hotkey Erstellungsfenster"
+        tutorialGettingStarted_3_2 := [
+            "Erste Schritte"
         ]
-        tutorialMsgBox12_1 := [
-            "Dieses Fenster sieht ähnlich aus wie das Hotkey Übersichtsfenster oder?",
-            "`n`nDiesmal darfst du die Werte darin bearbeiten.",
-            "`nDas Erstellen eines Hotkeys ist ziemlich einfach und ich bin sicher, du wirst es hinbekommen.",
-            "`n`nDrücke [Okay] zum fortfahren."
+        tutorialGettingStarted_1_1 := [
+            "Sieh dir bei Gelegenheit mal die Optionen im Hauptfenster an."
         ]
-        tutorialMsgBox12_2 := [
-            "GTAV Tweaks - Tutorial - Hotkey Übersichtsfenster"
+        tutorialGettingStarted_2_1 := [
+            "Das [Optionen] Menü stellt eine Reihe von Funktionen bereit.`n`nDu kannst dort zum Beispiel die Skriptsprache ändern."
         ]
-        tutorialMsgBox13_1 := [
-            "Beachte: Hotkeys sind NUR verfügbar, wenn GTA V im Vordergrund ist.",
-            "`nDas soll versehentliche Aktivierungen von Hotkeys verhindern.",
-            "`n`nDrücke [Okay] zum fortfahren."
+        tutorialGettingStarted_3_1 := [
+            "Nutze das [Datei] Menü, um die Skript-Konfigurationsdatei und weitere Dinge zu öffnen."
         ]
-        tutorialMsgBox13_2 := [
-            "GTAV Tweaks - Tutorial - Gut zu wissen"
-        ]
-        tutorialMsgBox14_1 := [
-            "Merke: Alle Funktionen können über das Hauptfenster aufgerufen werden (das standardmäßig geöffnet wird).",
-            "`n`nDas ist das Ende des Tutorials.",
-            "`n`nIch bin sicher, du hast die meisten Dinge bereits vergessen, aber der beste Weg zu lernen, ist sowieso auszuprobieren und Fehler zu machen.",
-            "`n`nDrücke [Okay] zum fortfahren."
-        ]
-        tutorialMsgBox14_2 := [
-            "GTAV Tweaks - Tutorial - Gut zu wissen"
+        tutorialGettingStarted_4_1 := [
+            "Weitere Information zum Thema Hotkeys und Makros kannst du in der Hilfsdatenbank finden."
         ]
         ; Built-in Hotkey Description
         ; #########################
@@ -767,7 +813,7 @@ createLanguageArrayMap(pLanguageCode)
             "Hotkeys && Macros"
         ]
         mainGUIMenu_4 := [
-            "Info"
+            "Help"
         ]
         ; Main GUI file menu
         ; ******************
@@ -810,21 +856,20 @@ createLanguageArrayMap(pLanguageCode)
         ]
         ; Main GUI info menu
         ; ******************
-        mainGUIInfoMenu_1 := [
-            "Version -",
-            ""
+        mainGUIHelpMenu_1 := [
+            "language_string_unused"
         ]
-        mainGUIInfoMenu_2 := [
+        mainGUIHelpMenu_2 := [
             "This repository (gtav-tweaks)"
         ]
-        mainGUIInfoMenu_3 := [
-            "Open an issue or feature request"
+        mainGUIHelpMenu_3 := [
+            "language_string_unused"
         ]
-        mainGUIInfoMenu_4 := [
+        mainGUIHelpMenu_4 := [
             "README File"
         ]
-        mainGUIInfoMenu_5 := [
-            "Built-in Tutorial"
+        mainGUIHelpMenu_5 := [
+            "Help database"
         ]
         ; Hotkey Overview GUI
         ; ###################
@@ -897,13 +942,74 @@ createLanguageArrayMap(pLanguageCode)
         newCustomHotkeyGUI_9 := [
             "Record Macro"
         ]
+        ; Info & Help GUI
+        ; ###############
+        infoAndHelpGUI_1 := [
+            "GTAV Tweaks - Info & Help"
+        ]
+        infoAndHelpGUI_2 := [
+            "Search Bar"
+        ]
+        infoAndHelpGUI_3 := [
+            "Script Info"
+        ]
+        ; We need to take this extra step because there would be a gap between href= and the url (href= "url_here"), which breaks the link.
+        ; The same goes for the space after the url ends.
+        infoAndHelpGUI_4 := [
+            'Version: <a href="replace_space_after',
+            "",
+            '">',
+            "",
+            'replace_space_before</a>'
+        ]
+        ; We need to take this extra step because there would be a gap between href= and the url (href= "url_here"), which breaks the link.
+        ; The same goes for the space after the url ends.
+        infoAndHelpGUI_5 := [
+            '<a href="replace_space_after',
+            "",
+            'replace_space_before">Feature Request</a> or <a href="replace_space_after',
+            "",
+            'replace_space_before">Bug Report</a>'
+        ]
+        infoAndHelpGUI_6 := [
+            "Double click an entry to access it's content."
+        ]
+        infoAndHelpGUIListView_1 := [
+            "Topic"
+        ]
+        infoAndHelpGUIListView_2 := [
+            "Type"
+        ]
+        infoAndHelpGUIListView_3 := [
+            "Title"
+        ]
+        infoAndHelpGUIListView_4 := [
+            "No results found."
+        ]
+        ; Interactive Tutorial GUI
+        ; ########################
+        tutorialGUI_1 := [
+            "Previous"
+        ]
+        tutorialGUI_2 := [
+            "Exit"
+        ]
+        tutorialGUI_3 := [
+            "Next"
+        ]
+        tutorialGUI_4 := [
+            "Step",
+            "",
+            "/",
+            ""
+        ]
         ; Reload & Terminate GUI
         ; ######################
         reloadAndTerminateGUI_1 := [
             "GTAV Tweaks - Reloading Script"
         ]
         reloadAndTerminateGUI_2 := [
-            "The script will be`nreloaded in ", ; REMOVE THIS IS JUST A BAD FIX!
+            "The script will be`nreloaded in",
             "",
             "second(s)."
         ]
@@ -914,7 +1020,7 @@ createLanguageArrayMap(pLanguageCode)
             "GTAV Tweaks - Terminating Script"
         ]
         reloadAndTerminateGUI_5 := [
-            "The script will be`nterminated in ",  ; REMOVE THIS IS JUST A BAD FIX!
+            "The script will be`nterminated in",
             "",
             "second(s)."
         ]
@@ -1056,7 +1162,7 @@ createLanguageArrayMap(pLanguageCode)
         ; Main GUI MsgBoxes
         ; #################
         mainGUIMsgBox1_1 := [
-            "Looks like some found an easter egg!`n`nIt seems you like testing, just like my friend,",
+            "Looks like some found an easter egg!`n`nIt seems you like testing, just like my friend",
             "who helps me a lot by testing this script for me.`n`nThank you Elias!"
         ]
         mainGUIMsgBox1_2 := [
@@ -1180,114 +1286,96 @@ createLanguageArrayMap(pLanguageCode)
             "Would you like to have a short tutorial on how to use this software?"
         ]
         tutorialMsgBox1_2 := [
-            "GTAV Tweaks - Tutorial - Start Tutorial"
+            "GTAV Tweaks - Start Tutorial"
         ]
         tutorialMsgBox2_1 := [
             "Press [Yes] to disable the tutorial",
             "for the next time you run this script."
         ]
         tutorialMsgBox2_2 := [
-            "GTAV Tweaks - Tutorial - Disable For Next Time"
+            "GTAV Tweaks - Disable Tutorial for Next Time"
         ]
-        ; Actual tutorial MsgBoxes.
         tutorialMsgBox3_1 := [
             "Hey there! Thanks for installing this software!",
             "`n`nIt allows you to create your own macros for GTA V binded to your own keyboard shortcuts.",
-            "There are a few other functions additionally, but let's start the tutorial.",
+            "`n`nThere are a few other functions additionally, but let's start the tutorial.",
             "`n`nPress [Okay] to continue."
         ]
         tutorialMsgBox3_2 := [
-            "GTAV Tweaks - Tutorial - Thanks for Installing"
+            "GTAV Tweaks - Thanks for Installing"
         ]
-        tutorialMsgBox4_1 := [
-            "This is the main window.",
-            "`nYou can navigate all functions from here.",
-            "`n`nPress [Okay] to continue."
+        ; How To Use Help GUI TUTORIAL
+        ; ############################
+        tutorialHowToUseHelpGUI_1_2 := [
+            "General"
         ]
-        tutorialMsgBox4_2 := [
-            "GTAV Tweaks - Tutorial - Main Window"
+        tutorialHowToUseHelpGUI_2_2 := [
+            "Tutorial"
         ]
-        tutorialMsgBox5_1 := [
-            "Please take a look at the [Options] menu.",
-            "`nYou can change the language here.",
-            "`n`nPress [Okay] to continue."
+        tutorialHowToUseHelpGUI_3_2 := [
+            "How to use the help database"
         ]
-        tutorialMsgBox5_2 := [
-            "GTAV Tweaks - Tutorial - Main Window"
+        tutorialHowToUseHelpGUI_1_1 := [
+            "This tutorial will basically teach you how to find more tutorials and information."
         ]
-        tutorialMsgBox6_1 := [
-            "Please click on the [Hotkeys & Macros] menu.",
-            "`nThis will open the hotkey overview window.",
-            "`n`nPress [Okay] to continue."
+        tutorialHowToUseHelpGUI_2_1 := [
+            "At first, you need to click on the [Help] menu in the top right corner of the main window."
         ]
-        tutorialMsgBox6_2 := [
-            "GTAV Tweaks - Tutorial - Main Window"
+        tutorialHowToUseHelpGUI_3_1 := [
+            "You can search these entries with the search bar (highlighted with a red border)."
         ]
-        tutorialMsgBox7_1 := [
-            "The script opened the hotkey overview window for you.",
-            "`n`nNo worries, you will get the hang of it soon :)"
+        tutorialHowToUseHelpGUI_4_1 := [
+            "Double clicking them can start interactive tutorials or just a simple info text."
         ]
-        tutorialMsgBox7_2 := [
-            "GTAV Tweaks - Tutorial - Hotkey Overview Window"
+        ; This string (which is technically an array in this form) will be converted into an array later on.
+        tutorialSearchBarDemoArrayString :=
+            [
+                "G,e,t,t,i,n,g, ,s,t,a,r,t,e,d"
+            ]
+        ; How To Record Macros TUTORIAL
+        ; #############################
+        tutorialHowToRecordMacros_1_2 := [
+            "Macros"
         ]
-        tutorialMsgBox8_1 := [
-            "This is the hotkey overview window.",
-            "`nYou can manage your hotkeys here.",
-            "`n`nPress [Okay] to continue."
+        tutorialHowToRecordMacros_2_2 := [
+            "Tutorial"
         ]
-        tutorialMsgBox8_2 := [
-            "GTAV Tweaks - Tutorial - Hotkey Overview Window"
+        tutorialHowToRecordMacros_3_2 := [
+            "How to record macros"
         ]
-        tutorialMsgBox9_1 := [
-            "Notice the drop down list.",
-            "`nIt already contains a few built-in hotkeys.",
-            "`n`nYou can select a hotkey and the window will show its properties.",
-            "`n`nOnce a hotkey is selected, you can activate, deactivate, edit or delete it.",
-            "`n`nPress [Okay] to continue."
+        tutorialHowToRecordMacros_1_1 := [
+            "First, the [Hotkey Overview] window must be opened",
+            "by clicking on the [Hotkeys && Macros] menu in the main window."
         ]
-        tutorialMsgBox9_2 := [
-            "GTAV Tweaks - Tutorial - Hotkey Overview Window"
+        tutorialHowToRecordMacros_2_1 := [
+            "Next you have to press the [Create Hotkey] button."
         ]
-        tutorialMsgBox10_1 := [
-            "Please click on the [Create Hotkey] button.",
-            "`nThis will open the hotkey creation window.",
-            "`n`nPress [Okay] to continue."
+        tutorialHowToRecordMacros_3_1 := [
+            "To start the recording process, simply press the [Record Macro] button."
         ]
-        tutorialMsgBox10_2 := [
-            "GTAV Tweaks - Tutorial - Hotkey Overview Window"
+        ; Getting Started TUTORIAL
+        ; #############################
+        tutorialGettingStarted_1_2 := [
+            "General"
         ]
-        tutorialMsgBox11_1 := [
-            "The script opened the hotkey creation window for you.",
-            "`n`nNo worries, you will get the hang of it soon :)"
+        tutorialGettingStarted_2_2 := [
+            "Tutorial"
         ]
-        tutorialMsgBox11_2 := [
-            "GTAV Tweaks - Tutorial - Hotkey Creation Window"
+        tutorialGettingStarted_3_2 := [
+            "Getting started"
         ]
-        tutorialMsgBox12_1 := [
-            "This window looks similar to the hotkey overview window, doesn't it?",
-            "`n`nThis time you are allowed to edit the values inside.",
-            "`nCreating a hotkey is pretty straightforward and I'm sure you can figure it out.",
-            "`n`nPress [Okay] to continue."
+        tutorialGettingStarted_1_1 := [
+            "You might want to take a look at the options in the main window."
         ]
-        tutorialMsgBox12_2 := [
-            "GTAV Tweaks - Tutorial - Hotkey Overview Window"
+        tutorialGettingStarted_2_1 := [
+            "You can perform a few actions by opening the [Options] menu.",
+            "`n`nThis includes changing the script language."
         ]
-        tutorialMsgBox13_1 := [
-            "Please note that hotkeys are ONLY available while GTA V is in the foreground.",
-            "`nThis should prevent accidental hotkey activations.",
-            "`n`nPress [Okay] to continue."
+        tutorialGettingStarted_3_1 := [
+            "Use the [File] menu access the script's config file and many other things."
         ]
-        tutorialMsgBox13_2 := [
-            "GTAV Tweaks - Tutorial - Good to Know"
-        ]
-        tutorialMsgBox14_1 := [
-            "Remember: All functions can be accessed via the main window (which opens by default).",
-            "`n`nThis is the end of the tutorial.",
-            "`n`nI'm sure you've forgotten most of it by now, but the best way to learn is to try and error anyway.",
-            "`n`nPress [Okay] to continue."
-        ]
-        tutorialMsgBox14_2 := [
-            "GTAV Tweaks - Tutorial - Good to Know"
+        tutorialGettingStarted_4_1 := [
+            "Additional information about macros and hotkeys can be found in the help database."
         ]
         ; Built-in Hotkey Description
         ; #########################
@@ -1333,11 +1421,11 @@ createLanguageArrayMap(pLanguageCode)
         "mainGUIOptionsMenu_2", mainGUIOptionsMenu_2,
         "mainGUIOptionsMenu_3", mainGUIOptionsMenu_3,
         "mainGUIOptionsMenu_4", mainGUIOptionsMenu_4,
-        "mainGUIInfoMenu_1", mainGUIInfoMenu_1,
-        "mainGUIInfoMenu_2", mainGUIInfoMenu_2,
-        "mainGUIInfoMenu_3", mainGUIInfoMenu_3,
-        "mainGUIInfoMenu_4", mainGUIInfoMenu_4,
-        "mainGUIInfoMenu_5", mainGUIInfoMenu_5,
+        "mainGUIHelpMenu_1", mainGUIHelpMenu_1,
+        "mainGUIHelpMenu_2", mainGUIHelpMenu_2,
+        "mainGUIHelpMenu_3", mainGUIHelpMenu_3,
+        "mainGUIHelpMenu_4", mainGUIHelpMenu_4,
+        "mainGUIHelpMenu_5", mainGUIHelpMenu_5,
         "hotkeyOverviewGUI_1", hotkeyOverviewGUI_1,
         "hotkeyOverviewGUI_2", hotkeyOverviewGUI_2,
         "hotkeyOverviewGUI_3", hotkeyOverviewGUI_3,
@@ -1360,6 +1448,20 @@ createLanguageArrayMap(pLanguageCode)
         "newCustomHotkeyGUI_7", newCustomHotkeyGUI_7,
         "newCustomHotkeyGUI_8", newCustomHotkeyGUI_8,
         "newCustomHotkeyGUI_9", newCustomHotkeyGUI_9,
+        "infoAndHelpGUI_1", infoAndHelpGUI_1,
+        "infoAndHelpGUI_2", infoAndHelpGUI_2,
+        "infoAndHelpGUI_3", infoAndHelpGUI_3,
+        "infoAndHelpGUI_4", infoAndHelpGUI_4,
+        "infoAndHelpGUI_5", infoAndHelpGUI_5,
+        "infoAndHelpGUI_6", infoAndHelpGUI_6,
+        "infoAndHelpGUIListView_1", infoAndHelpGUIListView_1,
+        "infoAndHelpGUIListView_2", infoAndHelpGUIListView_2,
+        "infoAndHelpGUIListView_3", infoAndHelpGUIListView_3,
+        "infoAndHelpGUIListView_4", infoAndHelpGUIListView_4,
+        "tutorialGUI_1", tutorialGUI_1,
+        "tutorialGUI_2", tutorialGUI_2,
+        "tutorialGUI_3", tutorialGUI_3,
+        "tutorialGUI_4", tutorialGUI_4,
         "reloadAndTerminateGUI_1", reloadAndTerminateGUI_1,
         "reloadAndTerminateGUI_2", reloadAndTerminateGUI_2,
         "reloadAndTerminateGUI_3", reloadAndTerminateGUI_3,
@@ -1436,28 +1538,27 @@ createLanguageArrayMap(pLanguageCode)
         "tutorialMsgBox2_2", tutorialMsgBox2_2,
         "tutorialMsgBox3_1", tutorialMsgBox3_1,
         "tutorialMsgBox3_2", tutorialMsgBox3_2,
-        "tutorialMsgBox4_1", tutorialMsgBox4_1,
-        "tutorialMsgBox4_2", tutorialMsgBox4_2,
-        "tutorialMsgBox5_1", tutorialMsgBox5_1,
-        "tutorialMsgBox5_2", tutorialMsgBox5_2,
-        "tutorialMsgBox6_1", tutorialMsgBox6_1,
-        "tutorialMsgBox6_2", tutorialMsgBox6_2,
-        "tutorialMsgBox7_1", tutorialMsgBox7_1,
-        "tutorialMsgBox7_2", tutorialMsgBox7_2,
-        "tutorialMsgBox8_1", tutorialMsgBox8_1,
-        "tutorialMsgBox8_2", tutorialMsgBox8_2,
-        "tutorialMsgBox9_1", tutorialMsgBox9_1,
-        "tutorialMsgBox9_2", tutorialMsgBox9_2,
-        "tutorialMsgBox10_1", tutorialMsgBox10_1,
-        "tutorialMsgBox10_2", tutorialMsgBox10_2,
-        "tutorialMsgBox11_1", tutorialMsgBox11_1,
-        "tutorialMsgBox11_2", tutorialMsgBox11_2,
-        "tutorialMsgBox12_1", tutorialMsgBox12_1,
-        "tutorialMsgBox12_2", tutorialMsgBox12_2,
-        "tutorialMsgBox13_1", tutorialMsgBox13_1,
-        "tutorialMsgBox13_2", tutorialMsgBox13_2,
-        "tutorialMsgBox14_1", tutorialMsgBox14_1,
-        "tutorialMsgBox14_2", tutorialMsgBox14_2,
+        "tutorialHowToUseHelpGUI_1_2", tutorialHowToUseHelpGUI_1_2,
+        "tutorialHowToUseHelpGUI_2_2", tutorialHowToUseHelpGUI_2_2,
+        "tutorialHowToUseHelpGUI_3_2", tutorialHowToUseHelpGUI_3_2,
+        "tutorialHowToUseHelpGUI_1_1", tutorialHowToUseHelpGUI_1_1,
+        "tutorialHowToUseHelpGUI_2_1", tutorialHowToUseHelpGUI_2_1,
+        "tutorialHowToUseHelpGUI_3_1", tutorialHowToUseHelpGUI_3_1,
+        "tutorialHowToUseHelpGUI_4_1", tutorialHowToUseHelpGUI_4_1,
+        "tutorialSearchBarDemoArrayString", tutorialSearchBarDemoArrayString,
+        "tutorialHowToRecordMacros_1_1", tutorialHowToRecordMacros_1_1,
+        "tutorialHowToRecordMacros_2_1", tutorialHowToRecordMacros_2_1,
+        "tutorialHowToRecordMacros_3_1", tutorialHowToRecordMacros_3_1,
+        "tutorialHowToRecordMacros_1_2", tutorialHowToRecordMacros_1_2,
+        "tutorialHowToRecordMacros_2_2", tutorialHowToRecordMacros_2_2,
+        "tutorialHowToRecordMacros_3_2", tutorialHowToRecordMacros_3_2,
+        "tutorialGettingStarted_1_2", tutorialGettingStarted_1_2,
+        "tutorialGettingStarted_2_2", tutorialGettingStarted_2_2,
+        "tutorialGettingStarted_3_2", tutorialGettingStarted_3_2,
+        "tutorialGettingStarted_1_1", tutorialGettingStarted_1_1,
+        "tutorialGettingStarted_2_1", tutorialGettingStarted_2_1,
+        "tutorialGettingStarted_3_1", tutorialGettingStarted_3_1,
+        "tutorialGettingStarted_4_1", tutorialGettingStarted_4_1,
         "builtInHotkeyDescription_1", builtInHotkeyDescription_1,
         "builtInHotkeyDescription_2", builtInHotkeyDescription_2
     )

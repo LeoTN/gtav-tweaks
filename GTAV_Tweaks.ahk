@@ -14,11 +14,13 @@ CoordMode "Mouse", "Window"
 #Include "ConfigFile.ahk"
 #Include "CustomHotkeyOverviewGUI.ahk"
 #Include "Functions.ahk"
+#Include "HelpGUI.ahk"
 #Include "Languages.ahk"
+#Include "MacroDatabase.ahk"
 #Include "MacroRecorder.ahk"
 #Include "MainGUI.ahk"
 #Include "NewCustomHotkeyGUI.ahk"
-#Include "Objects.ahk"
+#Include "Tutorials.ahk"
 
 onInit()
 
@@ -64,6 +66,8 @@ onInit()
         ; This is a fallback. If this version occurs, we know there was an error with the version file.
         global versionFullName := "v0.0.1"
     }
+    ; Changes the tray icon and freezes it.
+    TraySetIcon(iconFileLocation, , true)
     ; Runs all onInit() functions from included files.
     ; languages_onInit() is included in configFile_onInit().
     configFile_onInit()
@@ -73,6 +77,8 @@ onInit()
     mainGUI_onInit()
     customHotkeyOverviewGUI_onInit()
     newCustomHotkeyGUI_onInit()
+    help_onInit()
+    tutorials_onInit()
 
     If (readConfigFile("DISPLAY_LAUNCH_NOTIFICATION"))
     {

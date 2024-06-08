@@ -20,7 +20,7 @@ createMainGUI()
     fileSelectionMenuOpen.SetIcon(getLanguageArrayString("mainGUIFileSubMenu1_4") . "`t4", "shell32.dll", 279)
 
     fileSelectionMenuReset := Menu()
-    fileSelectionMenuReset.Add(getLanguageArrayString("mainGUIFileSubMenu2_1") . "`tShift+1", (*) => createDefaultConfigFile(, true))
+    fileSelectionMenuReset.Add(getLanguageArrayString("mainGUIFileSubMenu2_1") . "`tShift+1", (*) => createDefaultConfigFile(, true, true))
     fileSelectionMenuReset.SetIcon(getLanguageArrayString("mainGUIFileSubMenu2_1") . "`tShift+1", "shell32.dll", 70)
 
     fileMenu := Menu()
@@ -78,23 +78,6 @@ createMainGUI()
     optionsMenu.Add(getLanguageArrayString("mainGUIOptionsMenu_2"), (*) => reloadScriptPrompt())
     optionsMenu.SetIcon(getLanguageArrayString("mainGUIOptionsMenu_2"), "shell32.dll", 207)
 
-    helpMenu := Menu()
-    If (versionFullName != "")
-    {
-        helpMenu.Add(getLanguageArrayString("mainGUIInfoMenu_1", versionFullName), (*) => handleMainGUI_helpSectionEasterEgg())
-        helpMenu.SetIcon(getLanguageArrayString("mainGUIInfoMenu_1", versionFullName), "shell32.dll", 79)
-    }
-    helpMenu.Add(getLanguageArrayString("mainGUIInfoMenu_2"),
-        (*) => Run("https://github.com/LeoTN/gtav-tweaks#readme"))
-    helpMenu.SetIcon(getLanguageArrayString("mainGUIInfoMenu_2"), "shell32.dll", 26)
-    helpMenu.Add(getLanguageArrayString("mainGUIInfoMenu_3"),
-        (*) => Run("https://github.com/LeoTN/gtav-tweaks/issues/new/choose"))
-    helpMenu.SetIcon(getLanguageArrayString("mainGUIInfoMenu_3"), "shell32.dll", 81)
-    helpMenu.Add(getLanguageArrayString("mainGUIInfoMenu_4"), (*) => openReadMeFile())
-    helpMenu.SetIcon(getLanguageArrayString("mainGUIInfoMenu_4"), "shell32.dll", 2)
-    helpMenu.Add(getLanguageArrayString("mainGUIInfoMenu_5"), (*) => scriptTutorial())
-    helpMenu.SetIcon(getLanguageArrayString("mainGUIInfoMenu_5"), "shell32.dll", 24)
-
     allMenus := MenuBar()
     allMenus.Add("&" . getLanguageArrayString("mainGUIMenu_1"), fileMenu)
     allMenus.SetIcon("&" . getLanguageArrayString("mainGUIMenu_1"), "shell32.dll", 4)
@@ -102,7 +85,7 @@ createMainGUI()
     allMenus.SetIcon("&" . getLanguageArrayString("mainGUIMenu_2"), "shell32.dll", 317)
     allMenus.Add("&" . getLanguageArrayString("mainGUIMenu_3"), (*) => customHotkeyOverviewGUI.Show())
     allMenus.SetIcon("&" . getLanguageArrayString("mainGUIMenu_3"), "shell32.dll", 177)
-    allMenus.Add("&" . getLanguageArrayString("mainGUIMenu_4"), helpMenu)
+    allMenus.Add("&" . getLanguageArrayString("mainGUIMenu_4"), (*) => helpGUI.Show())
     allMenus.SetIcon("&" . getLanguageArrayString("mainGUIMenu_4"), "shell32.dll", 24)
 
     mainGUI := Gui(, "GTAV Tweaks")
@@ -145,9 +128,9 @@ createMainGUI()
                     GUIControlObject.OnEvent("Click", (*) => handleMainGUI_checkbox_updateToBetaReleases())
                 }
             Default:
-                {
-                    GUIControlObject.OnEvent("Click", (*) => handleMainGUI_writeValuesToConfigFile())
-                }
+            {
+                GUIControlObject.OnEvent("Click", (*) => handleMainGUI_writeValuesToConfigFile())
+            }
         }
     }
 }
@@ -161,8 +144,6 @@ GUI SUPPORT FUNCTIONS
 mainGUI_onInit()
 {
     global iconFileLocation
-    ; Changes the tray icon and freezes it.
-    TraySetIcon(iconFileLocation, , true)
     createMainGUI()
     handleMainGUI_applyValuesFromConfigFile()
     If (!readConfigFile("LAUNCH_MINIMIZED"))
@@ -238,18 +219,6 @@ handleMainGUI_handleElementConflicts()
     Else
     {
         updateToBetaReleasesCheckbox.Opt("-Disabled")
-    }
-}
-
-handleMainGUI_helpSectionEasterEgg()
-{
-    static i := 0
-
-    i++
-    If (i >= 3)
-    {
-        i := 0
-        MsgBox(getLanguageArrayString("mainGUIMsgBox1_1"), getLanguageArrayString("mainGUIMsgBox1_2"), "Iconi")
     }
 }
 
