@@ -349,6 +349,9 @@ createLanguageArrayMap(pLanguageCode)
         infoAndHelpGUIListView_3 := [
             "Titel"
         ]
+        infoAndHelpGUIListView_4 := [
+            "Keine Ergebnisse gefunden."
+        ]
         ; Interactive Tutorial GUI
         ; ########################
         tutorialGUI_1 := [
@@ -525,8 +528,8 @@ createLanguageArrayMap(pLanguageCode)
         ; Main GUI MsgBoxes
         ; #################
         mainGUIMsgBox1_1 := [
-            "Sieht aus, als hätte jemand ein Easter Egg gefunden!`n`nEs scheint, als magst du das Testen, genau wie mein Freund,",
-            "der mir sehr hilft, indem er dieses Skript für mich so oft testet.`n`nDanke Elias!"
+            "Sieht aus, als hätte jemand ein Easter Egg gefunden!`n`nEs scheint, als magst du das Testen genau wie mein Freund,",
+            "der mir sehr hilft indem er dieses Skript für mich testet.`n`nDanke Elias!"
         ]
         mainGUIMsgBox1_2 := [
             "Was ist das?"
@@ -980,6 +983,9 @@ createLanguageArrayMap(pLanguageCode)
         infoAndHelpGUIListView_3 := [
             "Title"
         ]
+        infoAndHelpGUIListView_4 := [
+            "No results found."
+        ]
         ; Interactive Tutorial GUI
         ; ########################
         tutorialGUI_1 := [
@@ -1156,7 +1162,7 @@ createLanguageArrayMap(pLanguageCode)
         ; Main GUI MsgBoxes
         ; #################
         mainGUIMsgBox1_1 := [
-            "Looks like some found an easter egg!`n`nIt seems you like testing, just like my friend,",
+            "Looks like some found an easter egg!`n`nIt seems you like testing, just like my friend",
             "who helps me a lot by testing this script for me.`n`nThank you Elias!"
         ]
         mainGUIMsgBox1_2 := [
@@ -1451,6 +1457,7 @@ createLanguageArrayMap(pLanguageCode)
         "infoAndHelpGUIListView_1", infoAndHelpGUIListView_1,
         "infoAndHelpGUIListView_2", infoAndHelpGUIListView_2,
         "infoAndHelpGUIListView_3", infoAndHelpGUIListView_3,
+        "infoAndHelpGUIListView_4", infoAndHelpGUIListView_4,
         "tutorialGUI_1", tutorialGUI_1,
         "tutorialGUI_2", tutorialGUI_2,
         "tutorialGUI_3", tutorialGUI_3,

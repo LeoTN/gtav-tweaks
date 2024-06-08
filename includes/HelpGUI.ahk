@@ -79,7 +79,7 @@ updateListViewAccordinglyToSearch(pSearchString)
     }
     Else
     {
-        tmpListViewEntry := ListViewEntry("*****", "No results found.", "*****", (*) => 0)
+        tmpListViewEntry := ListViewEntry("*****", getLanguageArrayString("infoAndHelpGUIListView_4"), "*****", (*) => 0)
         addLineToListView(tmpListViewEntry)
     }
 }
