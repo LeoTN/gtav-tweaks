@@ -6,7 +6,36 @@ CoordMode "Mouse", "Window"
 
 functions_onInit()
 {
+    /*
+    This causes the script to react upon the user moving his mouse and show
+    a tooltip if possible for the GUI element under the cursor.
+    */
+    OnMessage(0x0200, handleAllGUI_toolTips)
+}
 
+; This function determines the current control under the mouse cursor and if it has a tooltip, displays it.
+handleAllGUI_toolTips(not_used_1, not_used_2, not_used_3, pWindowHWND)
+{
+    static oldHWND := 0
+    if (pWindowHWND != oldHWND)
+    {
+        ; Closes all existing tooltips.
+        toolTipText := "", ToolTip()
+        currentControlElement := GuiCtrlFromHwnd(pWindowHWND)
+        If (currentControlElement)
+        {
+            If (!currentControlElement.HasProp("ToolTip"))
+            {
+                ; There is no tooltip for this control element.
+                Return
+            }
+            toolTipText := currentControlElement.ToolTip
+            ; Displays the tooltip after the user hovers for 1.5 seconds over a control element.
+            SetTimer () => ToolTip(toolTipText), -1500
+            SetTimer () => ToolTip(), -10000
+        }
+        oldHWND := pWindowHWND
+    }
 }
 
 /*

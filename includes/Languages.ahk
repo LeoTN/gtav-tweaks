@@ -237,6 +237,37 @@ createLanguageArrayMap(pLanguageCode)
         mainGUIHelpMenu_5 := [
             "Hilfsdatenbank"
         ]
+        ; Main GUI tooltips
+        ; #################
+        mainGUIToolTip_1 := [
+            "Erstellt eine Verknüpfung dieses Skripts im Autostart Ordner.",
+            "Diese Funktion wird sich möglicherweise in Zukunft verändern."
+        ]
+        mainGUIToolTip_2 := [
+            "Startet das Skript ohne das Hauptfenster zu öffnen.",
+            "Klicke doppelt auf das Tray Icon um es trotzdem zu öffnen."
+        ]
+        mainGUIToolTip_3 := [
+            "Zeigt mit Hilfe einer Nachricht an, dass das Skript gestartet wurde."
+        ]
+        mainGUIToolTip_4 := [
+            "Versucht beim Start neue Updates zu finden."
+        ]
+        mainGUIToolTip_5 := [
+            "Hiermit kann das Skript auf die aktuellste Beta Version updaten.",
+            "Um auf die neuste Vollversion (zurück) zu kommen,",
+            "deaktiviere diese Option und führe ein erzwungenes Update durch."
+        ]
+        mainGUIToolTip_6 := [
+            "Schaltet das Spiel im Ladebildschirm stumm.",
+            "Sobald du das Spielen beginnst, wird der Ton wieder aktiviert."
+        ]
+        mainGUIToolTip_7 := [
+            "Im Moment nicht implementiert [WIP]."
+        ]
+        mainGUIToolTip_8 := [
+            "Zeigt mit Hilfe einer Nachricht an, dass GTA V gestartet wurde."
+        ]
         ; Hotkey Overview GUI
         ; ###################
         hotkeyOverviewGUI_1 := [
@@ -278,6 +309,11 @@ createLanguageArrayMap(pLanguageCode)
         ]
         hotkeyOverviewGUI_13 := [
             "Löschen"
+        ]
+        ; Hotkey Overview GUI Tooltips
+        ; ############################
+        hotkeyOverviewGUITooltip_1 := [
+            "Aktiviert oder deaktiviert den ausgewählten Hotkey."
         ]
         ; New Custom Hotkey GUI
         ; #####################
@@ -737,7 +773,8 @@ createLanguageArrayMap(pLanguageCode)
             "Erste Schritte"
         ]
         tutorialGettingStarted_1_1 := [
-            "Sieh dir bei Gelegenheit mal die Optionen im Hauptfenster an."
+            "Sieh dir bei Gelegenheit mal die Optionen im Hauptfenster an.",
+            "`n`nHovere mit dem Mauszeiger über eine Option, um weiter Informationen zu erhalten."
         ]
         tutorialGettingStarted_2_1 := [
             "Das [Optionen] Menü stellt eine Reihe von Funktionen bereit.`n`nDu kannst dort zum Beispiel die Skriptsprache ändern."
@@ -871,6 +908,35 @@ createLanguageArrayMap(pLanguageCode)
         mainGUIHelpMenu_5 := [
             "Help database"
         ]
+        ; Main GUI tooltips
+        ; #################
+        mainGUIToolTip_1 := [
+            "Puts a shortcut which leads to this script into the autostart folder.",
+            "This feature might change in the future."
+        ]
+        mainGUIToolTip_2 := [
+            "Launches the script without showing the main window.",
+            "You can still access it by double-clicking the tray icon."
+        ]
+        mainGUIToolTip_3 := [
+            "Displays a little message which indicates that the script has been launched."
+        ]
+        mainGUIToolTip_4 := [
+            "Tries to find new updates when launching the script."
+        ]
+        mainGUIToolTip_5 := [
+            "This allows the script to receive the latest beta version updates.",
+            "Disable this checkbox and force update the script to return to the latest full version."
+        ]
+        mainGUIToolTip_6 := [
+            "Mutes the game while it's in the loading screen. Once you start playing it will unmute."
+        ]
+        mainGUIToolTip_7 := [
+            "Currently not implemented [WIP]."
+        ]
+        mainGUIToolTip_8 := [
+            "Displays a little message which indicates that GTA V has been launched."
+        ]
         ; Hotkey Overview GUI
         ; ###################
         hotkeyOverviewGUI_1 := [
@@ -912,6 +978,11 @@ createLanguageArrayMap(pLanguageCode)
         ]
         hotkeyOverviewGUI_13 := [
             "Delete"
+        ]
+        ; Hotkey Overview GUI Tooltips
+        ; ############################
+        hotkeyOverviewGUITooltip_1 := [
+            "Enables or disables the selected hotkey."
         ]
         ; New Custom Hotkey GUI
         ; #####################
@@ -1365,7 +1436,8 @@ createLanguageArrayMap(pLanguageCode)
             "Getting started"
         ]
         tutorialGettingStarted_1_1 := [
-            "You might want to take a look at the options in the main window."
+            "You might want to take a look at the options in the main window.",
+            "`n`nSimply hover over an option with the cursor to get more information."
         ]
         tutorialGettingStarted_2_1 := [
             "You can perform a few actions by opening the [Options] menu.",
@@ -1426,6 +1498,14 @@ createLanguageArrayMap(pLanguageCode)
         "mainGUIHelpMenu_3", mainGUIHelpMenu_3,
         "mainGUIHelpMenu_4", mainGUIHelpMenu_4,
         "mainGUIHelpMenu_5", mainGUIHelpMenu_5,
+        "mainGUIToolTip_1", mainGUIToolTip_1,
+        "mainGUIToolTip_2", mainGUIToolTip_2,
+        "mainGUIToolTip_3", mainGUIToolTip_3,
+        "mainGUIToolTip_4", mainGUIToolTip_4,
+        "mainGUIToolTip_5", mainGUIToolTip_5,
+        "mainGUIToolTip_6", mainGUIToolTip_6,
+        "mainGUIToolTip_7", mainGUIToolTip_7,
+        "mainGUIToolTip_8", mainGUIToolTip_8,
         "hotkeyOverviewGUI_1", hotkeyOverviewGUI_1,
         "hotkeyOverviewGUI_2", hotkeyOverviewGUI_2,
         "hotkeyOverviewGUI_3", hotkeyOverviewGUI_3,
@@ -1439,6 +1519,7 @@ createLanguageArrayMap(pLanguageCode)
         "hotkeyOverviewGUI_11", hotkeyOverviewGUI_11,
         "hotkeyOverviewGUI_12", hotkeyOverviewGUI_12,
         "hotkeyOverviewGUI_13", hotkeyOverviewGUI_13,
+        "hotkeyOverviewGUITooltip_1", hotkeyOverviewGUITooltip_1,
         "newCustomHotkeyGUI_1", newCustomHotkeyGUI_1,
         "newCustomHotkeyGUI_2", newCustomHotkeyGUI_2,
         "newCustomHotkeyGUI_3", newCustomHotkeyGUI_3,

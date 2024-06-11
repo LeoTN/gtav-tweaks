@@ -133,6 +133,16 @@ createMainGUI()
             }
         }
     }
+
+    ; Adds a tooltip to some GUI elements.
+    launchWithWindowsCheckbox.ToolTip := getLanguageArrayString("mainGUIToolTip_1")
+    launchMinimizedToTrayCheckbox.ToolTip := getLanguageArrayString("mainGUIToolTip_2")
+    showLaunchMessageCheckbox.ToolTip := getLanguageArrayString("mainGUIToolTip_3")
+    checkForUpdateAtLaunchCheckbox.ToolTip := getLanguageArrayString("mainGUIToolTip_4")
+    updateToBetaReleasesCheckbox.ToolTip := getLanguageArrayString("mainGUIToolTip_5")
+    muteGameWhileLaunchCheckbox.ToolTip := getLanguageArrayString("mainGUIToolTip_6")
+    setGameProcessPriorityHighCheckbox.ToolTip := getLanguageArrayString("mainGUIToolTip_7")
+    showGTALaunchMessageCheckbox.ToolTip := getLanguageArrayString("mainGUIToolTip_8")
 }
 
 /*
