@@ -336,41 +336,28 @@ openReadMeFile()
 }
 
 /*
-Adds / removes the script from the autostart folder.
+Enables / disables the abillity of the script to start simultaniously with GTA V.
 @param pBooleanEnableAutostart [boolean] If set to true, will put a shortcut to this script into the autostart folder.
 */
-setAutostart(pBooleanEnableAutostart)
+setAutostartWithGTAV(pBooleanEnableAutostart)
 {
+    global psManageAutoStartTaskFileLocation
+    global silentAutoStartScriptLauncherExecutableLocation
+
     ; Creating an autostart for the .AHK file doesn't make sense in this case.
     If (!A_IsCompiled)
     {
         Return
     }
-    SplitPath(A_ScriptName, , , , &outNameNoExt)
-    If (pBooleanEnableAutostart)
+    parameterString_1 := 'powershell.exe -ExecutionPolicy Bypass -WindowStyle Hidden -File "' . psManageAutoStartTaskFileLocation . '"'
+    parameterString_2 := parameterString_1 . ' -pLaunchWithGTAScriptLauncherLocation "' . silentAutoStartScriptLauncherExecutableLocation . '"'
+    parameterString_3 := parameterString_2 . ' -pGTAVTweaksExecutableLocation "' . A_ScriptFullPath . '"'
+    ; Disables the task.
+    If (!pBooleanEnableAutostart)
     {
-        If (FileExist(A_Startup . "\" . outNameNoExt . ".lnk"))
-        {
-            FileGetShortcut(A_Startup . "\" . outNameNoExt . ".lnk", &outTarget)
-            If (outTarget != A_ScriptFullPath)
-            {
-                result := MsgBox(getLanguageArrayString("functionsMsgBox3_1"),
-                    getLanguageArrayString("functionsMsgBox3_2"), "YN Icon? 262144")
-                If (result != "Yes")
-                {
-                    Return
-                }
-            }
-        }
-        FileCreateShortcut(A_ScriptFullPath, A_Startup . "\" . outNameNoExt . ".lnk")
+        parameterString_3 .= " -pSwitchDisableTask"
     }
-    Else
-    {
-        If (FileExist(A_Startup . "\" . outNameNoExt . ".lnk"))
-        {
-            FileDelete(A_Startup . "\" . outNameNoExt . ".lnk")
-        }
-    }
+    Run(parameterString_3, , "Hide")
 }
 
 /*

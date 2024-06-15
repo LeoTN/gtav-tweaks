@@ -164,7 +164,7 @@ mainGUI_onInit()
     A_TrayMenu.Insert("1&", "Open Main Window", (*) => mainGUI.Show())
     ; When clicking on the tray icon twice, this will make sure, that the main GUI is shown to the user.
     A_TrayMenu.Default := "Open Main Window"
-    setAutostart(readConfigFile("LAUNCH_WITH_WINDOWS"))
+    setAutostartWithGTAV(readConfigFile("LAUNCH_WITH_WINDOWS"))
 }
 
 handleMainGUI_writeValuesToConfigFile()
@@ -179,7 +179,7 @@ handleMainGUI_writeValuesToConfigFile()
         editConfigFile("MUTE_GAME_WHILE_LAUNCH", muteGameWhileLaunchCheckbox.Value)
         editConfigFile("INCREASE_GAME_PRIORITY", setGameProcessPriorityHighCheckbox.Value)
         editConfigFile("DISPLAY_GTA_LAUNCH_NOTIFICATION", showGTALaunchMessageCheckbox.Value)
-        setAutostart(readConfigFile("LAUNCH_WITH_WINDOWS"))
+        setAutostartWithGTAV(readConfigFile("LAUNCH_WITH_WINDOWS"))
         handleMainGUI_handleElementConflicts()
     }
     Catch As error

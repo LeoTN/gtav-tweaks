@@ -37,6 +37,11 @@ onInit()
     global assetDirectory := scriptMainDirectory . "\assets"
     global iconFileLocation := assetDirectory . "\gtav_tweaks_icon.ico"
 
+    global autostartDirectory := scriptMainDirectory . "\autostart"
+    global psLaunchWithGTAVFileLocation := autostartDirectory . "\launchWithGTAV.ps1"
+    global silentAutoStartScriptLauncherExecutableLocation := autostartDirectory . "\launchWithGTAV_PowerShell_launcher.exe"
+    global psManageAutoStartTaskFileLocation := autostartDirectory . "\manageAutostartScheduledTask.ps1"
+
     global updateDirectory := scriptMainDirectory . "\update"
     global psUpdateScriptLocation := updateDirectory . "\checkForUpdates.ps1"
     global currentVersionFileLocation := updateDirectory . "\currentVersion.csv"
@@ -131,6 +136,10 @@ onInit_unpackSupportFiles()
     {
         DirCreate(assetDirectory)
     }
+    If (!DirExist(autostartDirectory))
+    {
+        DirCreate(autostartDirectory)
+    }
     If (!DirExist(macroFilesStorageDirectory))
     {
         DirCreate(macroFilesStorageDirectory)
@@ -164,6 +173,19 @@ onInit_unpackSupportFiles()
     If (!FileExist(iconFileLocation))
     {
         FileInstall("library\assets\gtav_tweaks_icon.ico", iconFileLocation, true)
+    }
+
+    If (!FileExist(psLaunchWithGTAVFileLocation))
+    {
+        FileInstall("library\build\launchWithGTAV.ps1", psLaunchWithGTAVFileLocation, true)
+    }
+    If (!FileExist(silentAutoStartScriptLauncherExecutableLocation))
+    {
+        FileInstall("library\build\launchWithGTAV_PowerShell_launcher.exe", silentAutoStartScriptLauncherExecutableLocation, true)
+    }
+    If (!FileExist(psManageAutoStartTaskFileLocation))
+    {
+        FileInstall("library\build\manageAutostartScheduledTask.ps1", psManageAutoStartTaskFileLocation, true)
     }
 
     If (!FileExist(psUpdateScriptLocation))

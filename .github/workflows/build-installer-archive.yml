@@ -129,6 +129,16 @@ jobs:
         Expand-Archive -Path "${{ github.workspace }}\compiler\ahk.zip" -DestinationPath $ahkFolder
         Expand-Archive -Path "${{ github.workspace }}\compiler\ahk-v2.zip" -DestinationPath $ahkV2Folder
 
+    - name: Compile Autohotkey PowerShell Launcher Script
+      run: |
+        # Set the paths to execute more easily.
+        $scriptPathIn = "${{ github.workspace }}\library\build\launchWithGTAV_PowerShell_launcher.ahk"
+        $scriptPathOut = "${{ github.workspace }}\library\build\launchWithGTAV_PowerShell_launcher.exe"
+
+        # Compile the script.
+        Start-Process -FilePath ".\ahk\Compiler\Ahk2Exe.exe" -ArgumentList "/in $scriptPathIn /out $scriptPathOut /base "".\ahk-v2\AutoHotkey64.exe"" /silent verbose" -Wait
+        Write-Host "The executable will be saved to [$scriptPathOut]."
+
     - name: Compile Autohotkey Main Script
       run: |
         # Set the paths to execute more easily.
@@ -137,7 +147,7 @@ jobs:
 
         # Compile the script.
         Start-Process -FilePath ".\ahk\Compiler\Ahk2Exe.exe" -ArgumentList "/in $scriptPathIn /out $scriptPathOut /base "".\ahk-v2\AutoHotkey64.exe"" /silent verbose" -Wait
-        echo "The executable will be saved to $scriptPathOut"
+        Write-Host "The executable will be saved to [$scriptPathOut]."
 
     - name: Upload Main Executable as Artifact
       uses: actions/upload-artifact@v2
@@ -198,11 +208,14 @@ jobs:
         EOF
 
         sed -i "s/REPLACE_HERE/This installer archive contains version $releaseName of GTAV_Tweaks./g" "${{ github.workspace }}/library/build/version.txt"
-        rm "${{ github.workspace }}/library/build/soundvolumeview-x64.zip"
         rm "${{ github.workspace }}/library/build/AutoHotkey32.zip"
         rm "${{ github.workspace }}/library/build/checkForUpdates.ps1"
         rm "${{ github.workspace }}/library/build/currentVersion.csv"
         rm "${{ github.workspace }}/library/build/macroRecorderTemplate.txt"
+        rm "${{ github.workspace }}/library/build/soundvolumeview-x64.zip"
+        rm "${{ github.workspace }}/library/build/launchWithGTAV.ps1"
+        rm "${{ github.workspace }}/library/build/launchWithGTAV_PowerShell_launcher.ahk"
+        rm "${{ github.workspace }}/library/build/manageAutostartScheduledTask.ps1"
 
         cp "${{ github.workspace }}/library/setup/GTAV_Tweaks_Setup.exe" "${{ github.workspace }}/library/build/"
 

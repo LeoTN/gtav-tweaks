@@ -141,7 +141,7 @@ createLanguageArrayMap(pLanguageCode)
             "Startverhalten"
         ]
         mainGUI_3 := [
-            "Mit Windows starten"
+            "Mit GTA starten"
         ]
         mainGUI_4 := [
             "Minimiert im Infobereich starten"
@@ -240,8 +240,7 @@ createLanguageArrayMap(pLanguageCode)
         ; Main GUI tooltips
         ; #################
         mainGUIToolTip_1 := [
-            "Erstellt eine Verknüpfung dieses Skripts im Autostart Ordner.",
-            "Diese Funktion wird sich möglicherweise in Zukunft verändern."
+            "Startet das Skript zusammen mit GTA."
         ]
         mainGUIToolTip_2 := [
             "Startet das Skript ohne das Hauptfenster zu öffnen.",
@@ -812,7 +811,7 @@ createLanguageArrayMap(pLanguageCode)
             "Startup Behavior"
         ]
         mainGUI_3 := [
-            "Start with windows"
+            "Start with GTA"
         ]
         mainGUI_4 := [
             "Launch minimized to tray"
@@ -911,8 +910,7 @@ createLanguageArrayMap(pLanguageCode)
         ; Main GUI tooltips
         ; #################
         mainGUIToolTip_1 := [
-            "Puts a shortcut which leads to this script into the autostart folder.",
-            "This feature might change in the future."
+            "Launches the script together with GTA."
         ]
         mainGUIToolTip_2 := [
             "Launches the script without showing the main window.",
