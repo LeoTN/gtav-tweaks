@@ -24,7 +24,9 @@ function onInit() {
     deleteTask
   }
   Else {
+    deleteTask
     createTask
+    triggerTask
   }
   Exit
 }
@@ -52,7 +54,7 @@ function deleteTask() {
     Return $false
   }
   Try {
-    Unregister-ScheduledTask -TaskName $global:scheduledTaskName -Confirm $false | Out-Null
+    Unregister-ScheduledTask -TaskName $global:scheduledTaskName -Confirm:$false | Out-Null
     Write-Host "[deleteTask()] [INFO] Deleted task [$global:scheduledTaskName]."
     Return $true
   }
@@ -64,43 +66,24 @@ function deleteTask() {
   }
 }
 
-function enableTask() {
+function triggerTask() {
   If (-not (checkIfTaskExists)) {
-    Write-Host "[enableTask()] [INFO] Could not find existing task. Creating new scheduled task..."
+    Write-Host "[triggerTask()] [INFO] Could not find existing task. Creating new scheduled task..."
     If (-not (createTask)) {
-      Write-Host "[enableTask()] [WARNING] Could not create task."
+      Write-Host "[triggerTask()] [WARNING] Could not create task."
       Return $false
     }
-    Write-Host "[enableTask()] [WARNING] Successfully created task."
-    Return $true
+    Write-Host "[triggerTask()] [WARNING] Successfully created task."
   }
   Try {
     Enable-ScheduledTask -TaskName $global:scheduledTaskName | Out-Null
-    Write-Host "[disableTask()] [INFO] Enabled task [$global:scheduledTaskName]."
+    Write-Host "[triggerTask()] [INFO] Enabled task [$global:scheduledTaskName]."
     Start-ScheduledTask -TaskName $global:scheduledTaskName | Out-Null
-    Write-Host "[disableTask()] [INFO] Started task [$global:scheduledTaskName]."
+    Write-Host "[triggerTask()] [INFO] Started task [$global:scheduledTaskName]."
     Return $true
   }
   Catch {
-    Write-Host "[enableTask()] [ERROR] Failed to enable scheduled task! Detailed error description below.`n" -ForegroundColor "Red"
-    Write-Host "***START***[`n$Error`n]***END***" -ForegroundColor "Red"
-    # DO NOT REMOVE THIS COMMENT! Removing this space cause the function to return parts of the error object.
-    Return $false
-  }
-}
-
-function disableTask() {
-  If (-not (checkIfTaskExists)) {
-    Write-Host "[enableTask()] [INFO] Could not find existing task."
-    Return $true
-  }
-  Try {
-    Disable-ScheduledTask -TaskName $global:scheduledTaskName | Out-Null
-    Write-Host "[disableTask()] [INFO] Disabled task [$global:scheduledTaskName]."
-    Return $true
-  }
-  Catch {
-    Write-Host "[disableTask()] [ERROR] Failed to disable scheduled task! Detailed error description below.`n" -ForegroundColor "Red"
+    Write-Host "[triggerTask()] [ERROR] Failed to trigger scheduled task! Detailed error description below.`n" -ForegroundColor "Red"
     Write-Host "***START***[`n$Error`n]***END***" -ForegroundColor "Red"
     # DO NOT REMOVE THIS COMMENT! Removing this space cause the function to return parts of the error object.
     Return $false

@@ -24,12 +24,18 @@ function onInit() {
         Write-Host "[onInit()] Could not find the GTA V process."
         Exit
     }
-    If (-not (Get-Process -Name "GTAV Tweaks" -ErrorAction SilentlyContinue)) {
+    # Checks if there is already a running GTAV Tweaks instance.
+    If (-not (Get-Process -Name "GTAV_Tweaks")) {
         Write-Host "[onInit()] Launching [$pGTAVTweaksExecutableLocation]..."
         Start-Process -FilePath $pGTAVTweaksExecutableLocation
     }
     Else {
         Write-Host "[onInit()] There is an already running instance of GTAV Tweaks."
+        # Waits for the process to close and refreshes the scheduled task after that.
+        Wait-Process -Name "GTAV_Tweaks"
+        $taskName = "GTAV Tweaks Start With GTA V"
+        Start-ScheduledTask -TaskName $taskName  | Out-Null
+        Write-Host "[onInit()] [INFO] Started task [$taskName]."
     }
     Exit
 }
