@@ -24,7 +24,13 @@ function onInit() {
         Write-Host "[onInit()] Could not find the GTA V process."
         Exit
     }
-    Start-Process -FilePath $pGTAVTweaksExecutableLocation
+    If (-not (Get-Process -Name "GTAV Tweaks" -ErrorAction SilentlyContinue)) {
+        Write-Host "[onInit()] Launching [$pGTAVTweaksExecutableLocation]..."
+        Start-Process -FilePath $pGTAVTweaksExecutableLocation
+    }
+    Else {
+        Write-Host "[onInit()] There is an already running instance of GTAV Tweaks."
+    }
     Exit
 }
 

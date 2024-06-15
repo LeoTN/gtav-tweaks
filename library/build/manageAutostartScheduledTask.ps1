@@ -5,7 +5,7 @@ Param (
   [Parameter(Mandatory = $true)]
   [String]$pGTAVTweaksExecutableLocation,
   [Parameter(Mandatory = $false)]
-  [switch]$pSwitchDisableTask
+  [switch]$pSwitchDeleteTask
 )
 
 $Host.UI.RawUI.BackgroundColor = "Black"
@@ -19,12 +19,12 @@ Write-Host "Terminal ready..."
 
 function onInit() {
   $global:scheduledTaskName = "GTAV Tweaks Start With GTA V"
-  Write-Host "[onInit()] [INFO] pSwitchDisableTask = $pSwitchDisableTask"
-  If ($pSwitchDisableTask) {
-    disableTask
+  Write-Host "[onInit()] [INFO] pSwitchDeleteTask = $pSwitchDeleteTask"
+  If ($pSwitchDeleteTask) {
+    deleteTask
   }
   Else {
-    enableTask
+    createTask
   }
   Exit
 }
@@ -46,6 +46,24 @@ function createTask() {
   }
 }
 
+function deleteTask() {
+  If (-not (checkIfTaskExists)) {
+    Write-Host "[deleteTask()] [INFO] Could not find existing task."
+    Return $false
+  }
+  Try {
+    Unregister-ScheduledTask -TaskName $global:scheduledTaskName -Confirm $false | Out-Null
+    Write-Host "[deleteTask()] [INFO] Deleted task [$global:scheduledTaskName]."
+    Return $true
+  }
+  Catch {
+    Write-Host "[deleteTask()] [ERROR] Failed to delete scheduled task! Detailed error description below.`n" -ForegroundColor "Red"
+    Write-Host "***START***[`n$Error`n]***END***" -ForegroundColor "Red"
+    # DO NOT REMOVE THIS COMMENT! Removing this space cause the function to return parts of the error object.
+    Return $false
+  }
+}
+
 function enableTask() {
   If (-not (checkIfTaskExists)) {
     Write-Host "[enableTask()] [INFO] Could not find existing task. Creating new scheduled task..."
@@ -59,6 +77,8 @@ function enableTask() {
   Try {
     Enable-ScheduledTask -TaskName $global:scheduledTaskName | Out-Null
     Write-Host "[disableTask()] [INFO] Enabled task [$global:scheduledTaskName]."
+    Start-ScheduledTask -TaskName $global:scheduledTaskName | Out-Null
+    Write-Host "[disableTask()] [INFO] Started task [$global:scheduledTaskName]."
     Return $true
   }
   Catch {

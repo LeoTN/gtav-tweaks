@@ -85,15 +85,10 @@ waitForUserInputInGTA()
     Return waitForUserInputInGTA()
 }
 
-; Checks if GTA still exists and reloads the script if it doesn't, to prepare for the next GTA launch.
 checkForExistingGTA()
 {
-    If (!WinExist("ahk_exe GTA5.exe"))
-    {
-        Reload()
-    }
     ; Enables the hotkeys if GTA is the active window.
-    Else If (WinActive("ahk_exe GTA5.exe"))
+    If (WinActive("ahk_exe GTA5.exe"))
     {
         Suspend(false)
     }
@@ -355,7 +350,7 @@ setAutostartWithGTAV(pBooleanEnableAutostart)
     ; Disables the task.
     If (!pBooleanEnableAutostart)
     {
-        parameterString_3 .= " -pSwitchDisableTask"
+        parameterString_3 .= " -pSwitchDeleteTask"
     }
     Run(parameterString_3, , "Hide")
 }
