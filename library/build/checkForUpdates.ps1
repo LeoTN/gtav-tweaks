@@ -428,7 +428,7 @@ function backupOldVersionFiles() {
         Move-Item -Path $pCurrentExecutableLocation -Destination $global:targetBackupFolder -Force
         Copy-Item -Path $global:targetBackupFolder -Destination $global:targetBackupFolderTemp -Recurse
         Write-Host "[backupOldVersionFiles()] [INFO] The files from the old version have been saved to [$global:targetBackupFolder] and [$global:targetBackupFolderTemp]."
-        Write-Host "[backupOldVersionFiles()] [INFO] Moved a total of [$($files.Count) file(s).]"
+        Write-Host "[backupOldVersionFiles()] [INFO] Moved a total of [$($files.Count)] file(s)."
         Return $true
     }
     Catch {

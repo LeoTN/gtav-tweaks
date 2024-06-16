@@ -24,11 +24,36 @@ function onInit() {
     deleteTask
   }
   Else {
-    deleteTask
-    createTask
+    If (checkIfTaskNeedsToBeReplaced) {
+      deleteTask
+      createTask
+    }
     triggerTask
   }
   Exit
+}
+
+function checkIfTaskNeedsToBeReplaced() {
+  If (-not (checkIfTaskExists)) {
+    Write-Host "[checkIfTaskNeedsToBeReplaced()] [INFO] Could not find existing task."
+    Return $true
+  }
+  $task = Get-ScheduledTask -TaskName $global:scheduledTaskName
+  $taskExecute = $task.Actions.Execute
+  $taskArguments = $task.Actions.Arguments
+
+  # This means the task won't execute the correct PowerShell launcher executable.
+  If ($taskExecute -ne $pLaunchWithGTAScriptLauncherLocation) {
+    Write-Host "[checkIfTaskNeedsToBeReplaced()] [INFO] Invalid PowerShell launcher executable location found: [$taskExecute]. Task needs to be replaced."
+    Return $true
+  }
+  # This means that the GTAV Tweaks executable path of the task is incorrect.
+  If ($taskArguments -ne """$pGTAVTweaksExecutableLocation""") {
+    Write-Host "[checkIfTaskNeedsToBeReplaced()] [INFO] Invalid GTAV Tweaks executable location found: [$taskArguments]. Task needs to be replaced."
+    Return $true
+  }
+  Write-Host "[checkIfTaskNeedsToBeReplaced()] [INFO] The current task doesn't need to be replaced."
+  Return $false
 }
 
 function createTask() {
@@ -54,6 +79,7 @@ function deleteTask() {
     Return $false
   }
   Try {
+    stopTask
     Unregister-ScheduledTask -TaskName $global:scheduledTaskName -Confirm:$false | Out-Null
     Write-Host "[deleteTask()] [INFO] Deleted task [$global:scheduledTaskName]."
     Return $true
@@ -84,6 +110,24 @@ function triggerTask() {
   }
   Catch {
     Write-Host "[triggerTask()] [ERROR] Failed to trigger scheduled task! Detailed error description below.`n" -ForegroundColor "Red"
+    Write-Host "***START***[`n$Error`n]***END***" -ForegroundColor "Red"
+    # DO NOT REMOVE THIS COMMENT! Removing this space cause the function to return parts of the error object.
+    Return $false
+  }
+}
+
+function stopTask() {
+  If (-not (checkIfTaskExists)) {
+    Write-Host "[stopTask()] [INFO] Could not find existing task."
+    Return $false
+  }
+  Try {
+    Stop-ScheduledTask -TaskName $global:scheduledTaskName | Out-Null
+    Write-Host "[stopTask()] [INFO] Stopped task [$global:scheduledTaskName]."
+    Return $true
+  }
+  Catch {
+    Write-Host "[stopTask()] [ERROR] Failed to stop scheduled task! Detailed error description below.`n" -ForegroundColor "Red"
     Write-Host "***START***[`n$Error`n]***END***" -ForegroundColor "Red"
     # DO NOT REMOVE THIS COMMENT! Removing this space cause the function to return parts of the error object.
     Return $false

@@ -11,7 +11,11 @@ onInit()
     scriptName := "launchWithGTAV.ps1"
     scriptLocation := A_ScriptDir . "\" . scriptName
     GTATweaksExecutableLocation := A_Args[1]
-    runCommand := 'powershell.exe -WindowStyle Hidden -ExecutionPolicy Bypass -File "' . scriptLocation . '"'
+    runCommand := 'powershell.exe -NoProfile -WindowStyle Hidden -ExecutionPolicy Bypass -File "' . scriptLocation . '"'
     runParameters := '-pGTAVTweaksExecutableLocation "' . GTATweaksExecutableLocation . '"'
-    Run(runCommand . " " . runParameters, , "Hide")
+    Run(runCommand . " " . runParameters, , "Hide", &processPID)
+    If (ProcessExist(processPID))
+    {
+        ProcessSetPriority("Low", processPID)
+    }
 }
