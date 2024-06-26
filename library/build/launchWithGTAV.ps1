@@ -15,7 +15,8 @@ Clear-Host
 Write-Host "Terminal ready..."
 
 function onInit() {
-    If (checkIfOtherInstanceIsAlreadyRunning) {
+    endAllOtherScriptInstances
+    If (checkIfOtherInstanceOfThisScriptIsAlreadyRunning) {
         Write-Host "[onInit()] [INFO] There is an existing instance of this script. Exiting this script..."
         Exit
     }
@@ -78,8 +79,8 @@ function waitForProcess() {
     Return $false
 }
 
-function checkIfOtherInstanceIsAlreadyRunning() {
-    $allPowershellProcesses = Get-Process -name "powershell"
+function checkIfOtherInstanceOfThisScriptIsAlreadyRunning() {
+    $allPowershellProcesses = Get-Process -Name "powershell"
     ForEach ($processPID in $allPowershellProcesses.Id) {
         # We don't want to include this instance of this script.
         If ($processPID -eq $pid) {
@@ -87,12 +88,35 @@ function checkIfOtherInstanceIsAlreadyRunning() {
         }
         $process = Get-WmiObject "Win32_Process" -Filter "ProcessId = $processPID"
         If ($process.CommandLine -like "*-pGTAVTweaksExecutableLocation ""$pGTAVTweaksExecutableLocation""*") {
-            Write-Host "[checkIfOtherInstanceIsAlreadyRunning()] [INFO] The PowerShell process with the pid [$processPID] is already running."
+            Write-Host "[checkIfOtherInstanceOfThisScriptIsAlreadyRunning()] [INFO] The GTAV Tweaks autostart PowerShell process with the pid [$processPID] is already running."
             Return $true
         }
     }
-    Write-Host "[checkIfOtherInstanceIsAlreadyRunning()] [INFO] Could not find existing instance."
+    Write-Host "[checkIfOtherInstanceOfThisScriptIsAlreadyRunning()] [INFO] Could not find existing instance."
     Return $false
+}
+
+# Ends all script instances which are not originating from the current instance of GTAV Tweaks that launched this script.
+function endAllOtherScriptInstances() {
+    Write-Host "[endAllOtherScriptInstances()] [INFO] Searching for other instances of this script which originate from other instances of GTAV Tweaks..."
+    $endCounter = 0
+    $allPowershellProcesses = Get-Process -Name "powershell"
+    ForEach ($processPID in $allPowershellProcesses.Id) {
+        # We don't want to include this instance of this script.
+        If ($processPID -eq $pid) {
+            Continue
+        }
+        $process = Get-WmiObject "Win32_Process" -Filter "ProcessId = $processPID"
+        # We do not whant to end an already running instance of this script.
+        If (($process.CommandLine -notlike "*-pGTAVTweaksExecutableLocation*") -or 
+            ($process.CommandLine -like "*-pGTAVTweaksExecutableLocation ""$pGTAVTweaksExecutableLocation""*")) {
+            Continue
+        }
+        Stop-Process -Id $processPID -Force
+        Write-Host "[endAllOtherScriptInstances()] [INFO] Ended process with PID [$processPID]."
+        $endCounter++
+    }
+    Write-Host "[endAllOtherScriptInstances] [INFO] Ended [$endCounter] process(es)."
 }
 
 onInit

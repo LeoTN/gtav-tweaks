@@ -332,6 +332,16 @@ function executeUpdate() {
     $newExecutableLocation = join-path -Path $updateArchiveLocation -ChildPath "GTAV_Tweaks.exe"
 
     Write-Host "[executeUpdate()] [INFO] Starting update process..."
+    # We need to end all autostart script instances because they would cause a file copy error while they are still running.
+    Write-Host "[executeUpdate()] [INFO] Ending all running autostart script instances..."
+    $allPowershellProcesses = Get-Process -Name "powershell"
+    ForEach ($processPID in $allPowershellProcesses.Id) {
+        $process = Get-WmiObject "Win32_Process" -Filter "ProcessId = $processPID"
+        If ($process.CommandLine -like "*-pGTAVTweaksExecutableLocation*") {
+            Stop-Process -Id $processPID -Force
+            Write-Host "[executeUpdate()] [INFO] The GTAV Tweaks autostart PowerShell process with the pid [$processPID] has been ended."
+        }
+    }
     If (-not (Test-Path -Path $updateZipArchiveLocation)) {
         Write-Host "[executeUpdate()] [ERROR] Could not find installer archive at [$pOutputDirectory\GTAV_Tweaks.zip]." -ForegroundColor "Red"
         Return $false
