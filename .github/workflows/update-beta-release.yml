@@ -6,8 +6,9 @@ on:
             - development
         paths-ignore:
             - ".github/ISSUE_TEMPLATE/**"
+            - ".github/workflows/**"
             - "compiler/**"
-            - "library/assets/gtav_tweaks_repository_icon.png"
+            - "library/assets/**"
             - ".gitattributes"
             - ".gitignore"
             - "LICENSE"
