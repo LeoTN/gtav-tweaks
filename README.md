@@ -36,7 +36,7 @@ This program adds **hotkeys** in combination with **macros** for GTA V Online. Y
 
 ## Installation
 
-<a href="[#installation](https://github.com/LeoTN/gtav-tweaks/releases/latest/download/GTAV_Tweaks.zip)" style="text-decoration: none;"><img src="https://img.shields.io/github/v/release/LeoTN/gtav-tweaks?sort=semver& display_name=release&style=for-the-badge&logo=DocuSign&logoColor=green&label=Download&color=green"></a>
+<a href="https://github.com/LeoTN/gtav-tweaks/releases/latest/download/GTAV_Tweaks.zip" style="text-decoration: none;"><img src="https://img.shields.io/github/v/release/LeoTN/gtav-tweaks?sort=semver& display_name=release&style=for-the-badge&logo=DocuSign&logoColor=green&label=Download&color=green"></a>
 <br>
 <img src="https://img.shields.io/badge/Extract-the%20zip%20file-w?style=for-the-badge&logo=dropbox&logoColor=orange&color=orange">
 <br>
