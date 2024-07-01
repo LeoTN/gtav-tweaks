@@ -6,7 +6,36 @@ CoordMode "Mouse", "Window"
 
 functions_onInit()
 {
+    /*
+    This causes the script to react upon the user moving his mouse and show
+    a tooltip if possible for the GUI element under the cursor.
+    */
+    OnMessage(0x0200, handleAllGUI_toolTips)
+}
 
+; This function determines the current control under the mouse cursor and if it has a tooltip, displays it.
+handleAllGUI_toolTips(not_used_1, not_used_2, not_used_3, pWindowHWND)
+{
+    static oldHWND := 0
+    if (pWindowHWND != oldHWND)
+    {
+        ; Closes all existing tooltips.
+        toolTipText := "", ToolTip()
+        currentControlElement := GuiCtrlFromHwnd(pWindowHWND)
+        If (currentControlElement)
+        {
+            If (!currentControlElement.HasProp("ToolTip"))
+            {
+                ; There is no tooltip for this control element.
+                Return
+            }
+            toolTipText := currentControlElement.ToolTip
+            ; Displays the tooltip after the user hovers for 1.5 seconds over a control element.
+            SetTimer () => ToolTip(toolTipText), -1500
+            SetTimer () => ToolTip(), -10000
+        }
+        oldHWND := pWindowHWND
+    }
 }
 
 /*
@@ -56,15 +85,10 @@ waitForUserInputInGTA()
     Return waitForUserInputInGTA()
 }
 
-; Checks if GTA still exists and reloads the script if it doesn't, to prepare for the next GTA launch.
 checkForExistingGTA()
 {
-    If (!WinExist("ahk_exe GTA5.exe"))
-    {
-        Reload()
-    }
     ; Enables the hotkeys if GTA is the active window.
-    Else If (WinActive("ahk_exe GTA5.exe"))
+    If (WinActive("ahk_exe GTA5.exe"))
     {
         Suspend(false)
     }
@@ -221,80 +245,6 @@ checkInternetConnection()
     Return false
 }
 
-; A small tour to show off the basic functions of this script.
-scriptTutorial()
-{
-    result := MsgBox(getLanguageArrayString("tutorialMsgBox1_1"),
-        getLanguageArrayString("tutorialMsgBox1_2"), "YN Iconi 262144")
-    If (result == "Yes")
-    {
-        minimizeAllGUIs()
-        MsgBox(getLanguageArrayString("tutorialMsgBox3_1"), getLanguageArrayString("tutorialMsgBox3_2"), "O Iconi 262144")
-        If (!WinExist("ahk_id " . mainGUI.Hwnd))
-        {
-            mainGUI.Show()
-        }
-        ; Main GUI.
-        WinActivate("ahk_id " . mainGUI.Hwnd)
-        MsgBox(getLanguageArrayString("tutorialMsgBox4_1"), getLanguageArrayString("tutorialMsgBox4_2"), "O Iconi 262144")
-        ; Options menu.
-        MsgBox(getLanguageArrayString("tutorialMsgBox5_1"), getLanguageArrayString("tutorialMsgBox5_2"), "O Iconi 262144")
-        ; Hotkeys & Macros menu.
-        MsgBox(getLanguageArrayString("tutorialMsgBox6_1"), getLanguageArrayString("tutorialMsgBox6_2"), "O Iconi 262144")
-        ; Hotkey Overview GUI.
-        If (WinWaitActive("ahk_id " . customHotkeyOverviewGUI.Hwnd, , 5) == 0)
-        {
-            customHotkeyOverviewGUI.Show()
-            MsgBox(getLanguageArrayString("tutorialMsgBox7_1"), getLanguageArrayString("tutorialMsgBox7_2"), "O Iconi 262144 T3")
-        }
-        minimizeAllGUIs()
-        WinActivate("ahk_id " . customHotkeyOverviewGUI.Hwnd)
-        MsgBox(getLanguageArrayString("tutorialMsgBox8_1"), getLanguageArrayString("tutorialMsgBox8_2"), "O Iconi 262144")
-        ; Drop Down List.
-        ControlFocus(customHotkeyOverviewGUIHotkeyDropDownList.Hwnd, "ahk_id " . customHotkeyOverviewGUI.Hwnd) ; REMOVE
-        MsgBox(getLanguageArrayString("tutorialMsgBox9_1"), getLanguageArrayString("tutorialMsgBox9_2"), "O Iconi 262144")
-        MsgBox(getLanguageArrayString("tutorialMsgBox10_1"), getLanguageArrayString("tutorialMsgBox10_2"), "O Iconi 262144")
-        ; Hotkey Creation GUI.
-        If (WinWaitActive("ahk_id " . newCustomHotkeyGUI.Hwnd, , 5) == 0)
-        {
-            newCustomHotkeyGUI.Show()
-            MsgBox(getLanguageArrayString("tutorialMsgBox11_1"), getLanguageArrayString("tutorialMsgBox11_2"), "O Iconi 262144 T3")
-        }
-        minimizeAllGUIs()
-        WinActivate("ahk_id " . newCustomHotkeyGUI.Hwnd)
-        MsgBox(getLanguageArrayString("tutorialMsgBox12_1"), getLanguageArrayString("tutorialMsgBox12_2"), "O Iconi 262144")
-        ; Final infos.
-        MsgBox(getLanguageArrayString("tutorialMsgBox13_1"), getLanguageArrayString("tutorialMsgBox13_2"), "O Iconi 262144")
-        MsgBox(getLanguageArrayString("tutorialMsgBox14_1"), getLanguageArrayString("tutorialMsgBox14_2"), "O Iconi 262144")
-    }
-    ; The dialog to disable the tutorial for the next time is only shown when the config file entry mentioned below is true.
-    If (readConfigFile("ASK_FOR_TUTORIAL"))
-    {
-        result := MsgBox(getLanguageArrayString("tutorialMsgBox2_1"),
-            getLanguageArrayString("tutorialMsgBox2_2"), "YN Iconi 262144")
-        If (result == "Yes")
-        {
-            editConfigFile("ASK_FOR_TUTORIAL", false)
-        }
-    }
-    minimizeAllGUIs()
-    {
-        ; Minimizes all script windows to reduce diversion.
-        If (WinExist("ahk_id " . mainGUI.Hwnd))
-        {
-            WinMinimize()
-        }
-        If (WinExist("ahk_id " . customHotkeyOverviewGUI.Hwnd))
-        {
-            WinMinimize()
-        }
-        If (WinExist("ahk_id " . newCustomHotkeyGUI.Hwnd))
-        {
-            WinMinimize()
-        }
-    }
-}
-
 /*
 Opens the config file.
 @returns [boolean] Depeding on the function's success.
@@ -381,141 +331,28 @@ openReadMeFile()
 }
 
 /*
-Function to easily record a simple macro.
-This version does not support multiple keys such as Shift + ß, which would be ? as a result.
-It is only capable of saving one key at a time, but in this case it is enough.
-@param pOutputFileLocation [String] Should be a valid path such as "C:\Users\User\macro.ahk".
-*/
-recordMacro(pOutputFileLocation)
-{
-    global booleanMacroIsRecording := true
-    global macroRecordHotkey
-
-    ; This adds a short delay before the recorded macro executes.
-    idleTime := 500
-    macroStorage := "; This macro was created on " . FormatTime(A_Now, "dd.MM.yyyy_HH-mm-ss") . ".`n`n"
-    macroStorage .= '#SingleInstance Force`n#Requires AutoHotkey >=v2.0`nSendMode "Input"`nCoordMode "Mouse", "Window"`n`n'
-        . '; More information can be found in the README.txt contained in the installer archive file (downloaded from GitHub) '
-        . 'or in the GTAV_Tweaks folder. Make sure to read it before changing this file!`n`n'
-
-    While (booleanMacroIsRecording)
-    {
-        macroStorage .= 'Sleep(' . idleTime . ')`n'
-        macroStorage .= waitForAnyKey("V")
-    }
-    ; As a safety measure to ensure the new file is clean.
-    If (FileExist(pOutputFileLocation))
-    {
-        FileDelete(pOutputFileLocation)
-    }
-    FileAppend(macroStorage, pOutputFileLocation)
-
-    waitForAnyKey(options := "")
-    {
-        idleTime := 0
-        ih := InputHook(options)
-        If (!InStr(options, "V"))
-        {
-            ih.VisibleNonText := false
-        }
-        ; Waits for any key to be pressed (except for mouse keys for what every reason).
-        ih.KeyOpt("{All}", "E")
-        ih.Start()
-        mouseKey := unset
-        While (ih.InProgress)
-        {
-            ; Left click.
-            If (GetKeyState("LButton", "P"))
-            {
-                MouseGetPos(&posX, &posY)
-                ; Creates a click with a 50 millisecond delay between pressing and releasing the button for the game to register the mouse click.
-                mouseKey .= 'MouseMove(' . posX . ',' . posY . ')`nSleep(50) '
-                mouseKey .= '; DO NOT MODIFY`nClick(' . posX . ', ' . posY . ', "L", "D")`nSleep(50) '
-                mouseKey .= '; DO NOT MODIFY`nClick(' . posX . ', ' . posY . ', "L", "U")`n'
-                ih.Stop()
-                ; Waits until the buttons is released to avoid multiple click orders for the same click.
-                KeyWait("LButton", "L")
-            }
-            ; Right click.
-            Else If (GetKeyState("RButton", "P"))
-            {
-                MouseGetPos(&posX, &posY)
-                mouseKey .= 'MouseMove(' . posX . ',' . posY . ')`nSleep(50) '
-                mouseKey .= '; DO NOT MODIFY`nClick(' . posX . ', ' . posY . ', "R", "D")`nSleep(50) '
-                mouseKey .= '; DO NOT MODIFY`nClick(' . posX . ', ' . posY . ', "R", "U")`n'
-                ih.Stop()
-                KeyWait("RButton", "L")
-            }
-            ; Mouse wheel cick.
-            Else If (GetKeyState("MButton", "P"))
-            {
-                MouseGetPos(&posX, &posY)
-                mouseKey .= 'MouseMove(' . posX . ',' . posY . ')`nSleep(50) '
-                mouseKey .= '; DO NOT MODIFY`nClick(' . posX . ', ' . posY . ', "M", "D")`nSleep(50) '
-                mouseKey .= '; DO NOT MODIFY`nClick(' . posX . ', ' . posY . ', "M", "U")`n'
-                ih.Stop()
-                KeyWait("MButton", "L")
-            }
-            idleTime += 10
-            Sleep(10)
-        }
-        If (IsSet(mouseKey))
-        {
-            Return mouseKey
-        }
-        ; We don't want the macro record hotkey to be included into the file.
-        If (ih.EndKey == macroRecordHotkey)
-        {
-            Return
-        }
-        ; This is a safety feature to make sure the game has enough time to process the inputs. Otherwise the macros might be broken.
-        If (idleTime < 800)
-        {
-            idleTime := 800
-        }
-        ; I had to split this string because the DO NOT MODIFY comment made problems in a single string.
-        tmpString := 'Send("{' . ih.EndKey . ' down}")`nSleep(100) '
-        tmpString .= '; DO NOT MODIFY`nSend("{' . ih.EndKey . ' up}")`n'
-        Return tmpString
-    }
-}
-
-/*
-Adds / removes the script from the autostart folder.
+Enables / disables the abillity of the script to start simultaniously with GTA V.
 @param pBooleanEnableAutostart [boolean] If set to true, will put a shortcut to this script into the autostart folder.
 */
-setAutostart(pBooleanEnableAutostart)
+setAutostartWithGTAV(pBooleanEnableAutostart)
 {
+    global psManageAutoStartTaskFileLocation
+    global silentAutoStartScriptLauncherExecutableLocation
+
     ; Creating an autostart for the .AHK file doesn't make sense in this case.
     If (!A_IsCompiled)
     {
         Return
     }
-    SplitPath(A_ScriptName, , , , &outNameNoExt)
-    If (pBooleanEnableAutostart)
+    parameterString_1 := 'powershell.exe -ExecutionPolicy Bypass -WindowStyle Hidden -File "' . psManageAutoStartTaskFileLocation . '"'
+    parameterString_2 := parameterString_1 . ' -pLaunchWithGTAScriptLauncherLocation "' . silentAutoStartScriptLauncherExecutableLocation . '"'
+    parameterString_3 := parameterString_2 . ' -pGTAVTweaksExecutableLocation "' . A_ScriptFullPath . '"'
+    ; Disables the task.
+    If (!pBooleanEnableAutostart)
     {
-        If (FileExist(A_Startup . "\" . outNameNoExt . ".lnk"))
-        {
-            FileGetShortcut(A_Startup . "\" . outNameNoExt . ".lnk", &outTarget)
-            If (outTarget != A_ScriptFullPath)
-            {
-                result := MsgBox(getLanguageArrayString("functionsMsgBox3_1"),
-                    getLanguageArrayString("functionsMsgBox3_2"), "YN Icon? 262144")
-                If (result != "Yes")
-                {
-                    Return
-                }
-            }
-        }
-        FileCreateShortcut(A_ScriptFullPath, A_Startup . "\" . outNameNoExt . ".lnk")
+        parameterString_3 .= " -pSwitchDeleteTask"
     }
-    Else
-    {
-        If (FileExist(A_Startup . "\" . outNameNoExt . ".lnk"))
-        {
-            FileDelete(A_Startup . "\" . outNameNoExt . ".lnk")
-        }
-    }
+    Run(parameterString_3, , "Hide")
 }
 
 /*
@@ -679,13 +516,13 @@ terminateScriptPrompt()
 }
 
 /*
-Outputs an MsgBox containing information about the error. Allows to be copied to the clipboard.
+Outputs a little GUI containing information about the error. Allows to be copied to the clipboard.
 @param pErrorObject [Error Object] Usually created when catching an error via Try / Catch.
 @param pAdditionalErrorMessage [String] An optional error message to show.
-@param pBooleanTerminatingError [boolean] If set to true, will force the script to terminate once message disappears.
-@param pMessageTimeout [double] Optional message timeout. Closes the message after a delay of time.
+@param pBooleanTerminatingError [boolean] If set to true, will force the script to terminate once the message disappears.
+@param pMessageTimeoutMilliseconds [double] Optional message timeout. Closes the message after a delay of time.
 */
-displayErrorMessage(pErrorObject := unset, pAdditionalErrorMessage := unset, pBooleanTerminatingError := false, pMessageTimeout := unset)
+displayErrorMessage(pErrorObject := unset, pAdditionalErrorMessage := unset, pBooleanTerminatingError := false, pMessageTimeoutMilliseconds := unset)
 {
     If (IsSet(pErrorObject))
     {
@@ -705,27 +542,60 @@ displayErrorMessage(pErrorObject := unset, pAdditionalErrorMessage := unset, pBo
     {
         errorMessageBlock .= "`n`nScript has to exit!"
     }
-    If (IsSet(pMessageTimeout))
+    If (IsSet(pMessageTimeoutMilliseconds))
     {
-        If (pMessageTimeout > 0)
-        {
-            result := MsgBox(errorMessageBlock . "`n`nPress [Yes] to copy error to clipboard.", "GTAV Tweaks - Error Details", "YN IconX T" . pMessageTimeout)
-        }
-        Else
-        {
-            result := MsgBox(errorMessageBlock . "`n`nPress [Yes] to copy error to clipboard.", "GTAV Tweaks - Error Details", "YN IconX")
-        }
+        ; Hides the GUI and therefore
+        SetTimer((*) => errorGUI.Destroy(), "-" . pMessageTimeoutMilliseconds)
+    }
+
+    funnyErrorMessageArray := Array(
+        "This shouldn't have happened :(",
+        "Well, this is akward...",
+        "Why did we stop?!",
+        "Looks like we're lost in the code jungle...",
+        "That's not supposed to happen!",
+        "Whoopsie daisy, looks like an error!",
+        "Error 404: Sense of humor not found",
+        "Looks like a glitch in the Matrix...",
+        "Houston, we have a problem...",
+        "Unexpected error: Please blame the developer",
+        "Error: Keyboard not responding, press any key to continue... oh wait",
+    )
+    ; Selects a "random" funny error message to be displayed.
+    funnyErrorMessage := funnyErrorMessageArray.Get(Random(1, funnyErrorMessageArray.Length))
+
+    errorGUI := Gui(, "GTAV Tweaks - Error")
+
+    errorGUIfunnyErrorMessageText := errorGUI.Add("Text", "yp+10 r4 w300", funnyErrorMessage)
+    errorGUIfunnyErrorMessageText.SetFont("italic S10")
+    errorGUIerrorMessageBlockText := errorGUI.Add("Text", "yp+50", errorMessageBlock)
+
+    errorGUIbuttonGroupBox := errorGUI.Add("GroupBox", "r2.1 w340")
+    errorGUIgitHubIssuePageButton := errorGUI.Add("Button", "xp+10 yp+15 w100 R2 Default", "Report this issue on GitHub")
+    errorGUIgitHubIssuePageButton.OnEvent("Click", (*) => Run("https://github.com/LeoTN/gtav-tweaks/issues/new/choose"))
+    errorGUIcopyErrorToClipboardButton := errorGUI.Add("Button", "xp+110 w100 R2", "Copy error to clipboard")
+    errorGUIcopyErrorToClipboardButton.OnEvent("Click", (*) => A_Clipboard := errorMessageBlock)
+
+    If (pBooleanTerminatingError)
+    {
+        errorGUIActionButton := errorGUI.Add("Button", "xp+110 w100 R2", "Exit Script")
     }
     Else
     {
-        result := MsgBox(errorMessageBlock . "`n`nPress [Yes] to copy error to clipboard.", "GTAV Tweaks - Error Details", "YN IconX")
+        errorGUIActionButton := errorGUI.Add("Button", "xp+110 w100 R2", "Continue Script")
     }
-    Switch (result) {
-        Case "Yes":
-            {
-                A_Clipboard := errorMessageBlock
-            }
+    errorGUIActionButton.OnEvent("Click", (*) => errorGUI.Destroy())
+    errorGUI.Show()
+    errorGUI.Flash()
+    ; There might be an error with the while condition, once the GUI is destroyed.
+    Try
+    {
+        While (WinExist("ahk_id " . errorGUI.Hwnd))
+        {
+            Sleep(500)
+        }
     }
+
     If (pBooleanTerminatingError)
     {
         ExitApp()
@@ -762,9 +632,7 @@ A simple method to convert a string (in array form) into an array.
 */
 stringToArray(pString)
 {
-    pString := SubStr(pString, 2, StrLen(pString) - 2)
     array := StrSplit(pString, ",")
-
     Return array
 }
 

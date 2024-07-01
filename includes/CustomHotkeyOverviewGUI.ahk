@@ -43,6 +43,9 @@ createCustomHotkeyOverviewGUI()
     customHotkeyOverviewGUIEditHotkeyButton.OnEvent("Click", (*) => handleCustomHotkeyOverviewGUI_editHotkey())
     ; Deletes a hotkey.
     customHotkeyOverviewGUIDeleteHotkeyButton.OnEvent("Click", (*) => handleCustomHotkeyOverviewGUI_deleteHotkey())
+
+    ; Adds a tooltip to some GUI elements.
+    customHotkeyOverviewGUIToggleHotkeyButton.ToolTip := getLanguageArrayString("hotkeyOverviewGUITooltip_1")
 }
 
 /*

@@ -1,7 +1,7 @@
 ---
 body:
   - attributes:
-      description: Please search to see, if this bug is already reported.
+      description: Please search to see, if this feature is already requested.
       label: Duplicate Request?
       options:
         - label: This request is unique.
@@ -28,7 +28,7 @@ body:
     type: textarea
     validations:
       required: false
-description: Request a new / change (to) a feature
+description: Request a new / change (to a) feature
 labels: ["enhancement"]
 name: Feature Request
 title: Feature Request

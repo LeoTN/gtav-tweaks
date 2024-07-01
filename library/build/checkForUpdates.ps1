@@ -53,7 +53,9 @@ function onInit() {
     $supportFilesFolderUpdateFolder = Join-Path -Path $supportFilesFolder -ChildPath "update"
     $logFileNameUpdate = "executedUpdate.log"
     # Copies the log file into the back up folders.
-    If (Test-Path -Path $global:targetBackupFolder) {
+    # This if statement checks wether $global:targetBackupFolder contains a value. If the first of the two and conditions
+    # isn't met, the system won't check the second one, therefore preventing an error thrown by Test-Path due to an empty string.
+    If ($global:targetBackupFolder -and (Test-Path -Path $global:targetBackupFolder)) {
         Copy-Item -Path $logFilePath -Destination (Join-Path -Path $global:targetBackupFolder -ChildPath $logFileNameUpdate) -Force
         Copy-Item -Path $logFilePath -Destination (Join-Path -Path $global:targetBackupFolderTemp -ChildPath $logFileNameUpdate) -Force
     }
@@ -61,8 +63,10 @@ function onInit() {
     If (Test-Path -Path $supportFilesFolderUpdateFolder) {
         Copy-Item -Path $logFilePath -Destination (Join-Path -Path $supportFilesFolderUpdateFolder -ChildPath $logFileName) -Force
     }
-    
-    Start-Sleep -Seconds 3
+    # Speeds up the script when it's ran without the user seeing it.
+    If (checkIfScriptWindowIsHidden) {
+        Start-Sleep -Seconds 3
+    }
     Exit $exitCode
 }
 
@@ -100,12 +104,17 @@ function evaluateUpdate() {
         Return 2
     }
     If (-not (executeUpdate)) {
-        Write-Host "`n`n[evaluateUpdate()] [INFO] Failed to execute update from version [$global:currentVersion] to [$availableUpdateVersion].`n`n" -ForegroundColor "Green"
+        Write-Host "`n`n[evaluateUpdate()] [INFO] Failed to change version from [$global:currentVersion] to [$availableUpdateVersion].`n`n" -ForegroundColor "Green"
         Return 3
     }
     Else {
+        # Activats the tutorial after a successful update or version change.
+        $currentExecutableParentDirectory = Split-Path -Path $pCurrentExecutableLocation -Parent
+        $currentExecutableConfigFileLocation = Join-Path -Path $currentExecutableParentDirectory -ChildPath "GTAV_Tweaks\GTAV_Tweaks.ini"
+        Write-Host "[evaluateUpdate()] [INFO] Enabling tutorial in the config file again..."
+        changeINIFile -pFilePath $currentExecutableConfigFileLocation -pKey "ASK_FOR_TUTORIAL" -pValue 1
         Start-Process -FilePath $pCurrentExecutableLocation
-        Write-Host "`n`n[evaluateUpdate()] [INFO] Successfully updated from version [$global:currentVersion] to [$availableUpdateVersion].`n`n" -ForegroundColor "Green"
+        Write-Host "`n`n[evaluateUpdate()] [INFO] Successfully changed version from [$global:currentVersion] to [$availableUpdateVersion].`n`n" -ForegroundColor "Green"
         # Launch the new and updated script.
         Start-Process -FilePath $pCurrentExecutableLocation 
         Return 102
@@ -160,7 +169,8 @@ function extractCurrentVersionFileContent() {
         Write-Host "[extractCurrentVersionFileContent()] [ERROR] Found an invalid last update [$global:currentVersionLastUpdateDate] date for [$global:currentVersion]." -ForegroundColor "Red"
         Return $false
     }
-    $currentDateTime = Get-Date
+    # This date is forced into a specific format to avoid formatting issues.
+    $currentDateTime = Get-Date -Format "dd.MM.yyyy HH:mm:ss"
     $highestDateTime = compareDates -pDateString1 $global:currentVersionLastUpdateDate -pDateString2 $currentDateTime
     # This mean the current last update date lies in the future.
     If ((compareDates -pDateString1 $highestDateTime -pDateString2 $currentDateTime) -ne "identical_dates") {
@@ -322,6 +332,16 @@ function executeUpdate() {
     $newExecutableLocation = join-path -Path $updateArchiveLocation -ChildPath "GTAV_Tweaks.exe"
 
     Write-Host "[executeUpdate()] [INFO] Starting update process..."
+    # We need to end all autostart script instances because they would cause a file copy error while they are still running.
+    Write-Host "[executeUpdate()] [INFO] Ending all running autostart script instances..."
+    $allPowershellProcesses = Get-Process -Name "powershell"
+    ForEach ($processPID in $allPowershellProcesses.Id) {
+        $process = Get-WmiObject "Win32_Process" -Filter "ProcessId = $processPID"
+        If ($process.CommandLine -like "*-pGTAVTweaksExecutableLocation*") {
+            Stop-Process -Id $processPID -Force
+            Write-Host "[executeUpdate()] [INFO] The GTAV Tweaks autostart PowerShell process with the pid [$processPID] has been ended."
+        }
+    }
     If (-not (Test-Path -Path $updateZipArchiveLocation)) {
         Write-Host "[executeUpdate()] [ERROR] Could not find installer archive at [$pOutputDirectory\GTAV_Tweaks.zip]." -ForegroundColor "Red"
         Return $false
@@ -418,7 +438,7 @@ function backupOldVersionFiles() {
         Move-Item -Path $pCurrentExecutableLocation -Destination $global:targetBackupFolder -Force
         Copy-Item -Path $global:targetBackupFolder -Destination $global:targetBackupFolderTemp -Recurse
         Write-Host "[backupOldVersionFiles()] [INFO] The files from the old version have been saved to [$global:targetBackupFolder] and [$global:targetBackupFolderTemp]."
-        Write-Host "[backupOldVersionFiles()] [INFO] Moved a total of [$($files.Count) file(s).]"
+        Write-Host "[backupOldVersionFiles()] [INFO] Moved a total of [$($files.Count)] file(s)."
         Return $true
     }
     Catch {
@@ -584,6 +604,63 @@ function readFromCSVFile() {
         # We are using $null because $false would cause an error.
         Return $null
     }
+}
+
+function changeINIFile {
+    param (
+        [Parameter(Mandatory = $true)]
+        [String]$pFilePath,
+        [Parameter(Mandatory = $true)]
+        [String]$pKey,
+        [Parameter(Mandatory = $true)]
+        [String]$pValue
+    )
+
+    If (-not (Test-Path -Path $pFilePath)) {
+        Write-Host "[changeINIFile()] [WARNING] Could not find .INI file at [$pFilePath]." -ForegroundColor "Yellow"
+        Return $false
+    }
+    $iniFileContent = Get-Content -Path $pFilePath
+    $booleanSuccess = $false
+    # Scans the file for the key.
+    For ($i = 0; $i -lt $iniFileContent.Length; $i++) {
+        If ($iniFileContent[$i] -match "^$pKey=") {
+            $iniFileContent[$i] = "$pKey=$pValue"
+            $booleanSuccess = $true
+            Break
+        }
+    }
+    # Writes the new content to the file.
+    If ($booleanSuccess) {
+        $iniFileContent | Set-Content -Path $pFilePath
+        Write-Host "[changeINIFile()] [INFO] Successfully changed [$pKey]'s value to [$pValue] in [$pFilePath]."
+        Return $true
+    }
+    Write-Host "[changeINIFile()] [WARNING] Could not find key [$pKey] in .INI file at [$pFilePath]." -ForegroundColor "Yellow"
+    Return $false
+}
+
+function checkIfScriptWindowIsHidden() {
+    # Define the necessary Windows API functions
+    Add-Type @"
+using System;
+using System.Runtime.InteropServices;
+
+public class User32 {
+    [DllImport("user32.dll")]
+    [return: MarshalAs(UnmanagedType.Bool)]
+    public static extern bool IsWindowVisible(IntPtr hWnd);
+
+    [DllImport("user32.dll", SetLastError = true)]
+    public static extern IntPtr GetForegroundWindow();
+
+    [DllImport("user32.dll")]
+    public static extern int GetWindowText(IntPtr hWnd, System.Text.StringBuilder text, int count);
+}
+"@
+    $consoleHandle = [System.Diagnostics.Process]::GetCurrentProcess().MainWindowHandle
+    [boolean]$isVisible = [User32]::IsWindowVisible($consoleHandle)
+    Return $isVisible
 }
 
 onInit
