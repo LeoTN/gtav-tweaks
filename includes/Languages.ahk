@@ -1209,7 +1209,7 @@ createLanguageArrayMap(pLanguageCode)
         functionsMsgBox1_1 := [
             "There is an update available.`n`nUpdate from [",
             "",
-            "] to ["
+            "] to [",
             "",
             "now?"
         ]
