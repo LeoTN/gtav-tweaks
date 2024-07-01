@@ -1,39 +1,47 @@
 # **GTAV Tweaks**
 
 <p align="left">
-
-<a href="#installation" style="text-decoration: none;"><img src="https://img.shields.io/github/v/release/LeoTN/gtav-tweaks?sort=semver&display_name=release&style=for-the-badge&logo=Autohotkey&logoColor=green&label=Latest&color=green" alt="Latest Release"></a>
-<a href="https://github.com/LeoTN/gtav-tweaks/releases" style="text-decoration: none;"><img src="https://img.shields.io/github/v/release/LeoTN/gtav-tweaks?include_prereleases&sort=semver&filter=*-beta&display_name=release&style=for-the-badge&logo=Google%20Search%20Console&logoColor=orange&label=BETA&color=orange" alt="Latest Beta Release"></a>
-<br>
-<a href="https://github.com/LeoTN/gtav-tweaks/blob/main/LICENSE" style="text-decoration: none;"><img src="https://img.shields.io/github/license/LeoTN/gtav-tweaks?style=for-the-badge&logo=Google%20Docs&logoColor=orange&label=License&color=orange" alt="GitHub License"></a>
-<a href="https://github.com/LeoTN/gtav-tweaks/releases/latest/download/GTAV_Tweaks.zip" style="text-decoration: none;"><img src="https://img.shields.io/github/downloads/LeoTN/gtav-tweaks/GTAV_Tweaks.zip?style=for-the-badge&logo=DocuSign&logoColor=green&label=Total%20Downloads&color=green" alt="Total Downloads"></a>
-
+    <div style="display: flex; flex-wrap: wrap; gap: 5px;">
+        <a href="#installation" style="text-decoration: none;">
+            <img src="https://img.shields.io/github/v/release/LeoTN/gtav-tweaks?sort=semver&display_name=release&style=for-the-badge&logo=Autohotkey&logoColor=green&label=Latest&color=green">
+        </a>
+        <a href="https://github.com/LeoTN/gtav-tweaks/releases" style="text-decoration: none;">
+            <img src="https://img.shields.io/github/v/release/LeoTN/gtav-tweaks?include_prereleases&sort=semver&filter=*-beta&display_name=release&style=for-the-badge&logo=Google%20Search%20Console&logoColor=orange&label=BETA&color=orange">
+        </a>
+        <a href="https://github.com/LeoTN/gtav-tweaks/blob/main/LICENSE" style="text-decoration: none;">
+            <img src="https://img.shields.io/github/license/LeoTN/gtav-tweaks?style=for-the-badge&logo=Google%20Docs&logoColor=orange&label=License&color=orange">
+        </a>
+        <a href="https://github.com/LeoTN/gtav-tweaks/releases/latest/download/GTAV_Tweaks.zip" style="text-decoration: none;">
+            <img src="https://img.shields.io/github/downloads/LeoTN/gtav-tweaks/GTAV_Tweaks.zip?style=for-the-badge&logo=DocuSign&logoColor=green&label=Total%20Downloads&color=green">
+        </a>
+    </div>
 </p>
 
 **Hotkeys for GTA V Online**
 
 This program adds **hotkeys** in combination with **macros** for GTA V Online. You can even create your **very own hotkeys**.
 
-<div style="display: grid; grid-template-columns: 0.4fr 0.3fr; gap: 20px;">
-    <div style="text-align: center; display: flex; flex-direction: column; align-items: center; justify-content: flex-end;">
-        <img src="library/assets/gtav_tweaks_help_window.png" alt="Contains tutorials and further advice">
-        <div><em>Contains tutorials and further advice</em></div>
-    </div>
-    <div style="text-align: center; display: flex; flex-direction: column; align-items: center; justify-content: flex-end;">
-        <img src="library/assets/gtav_tweaks_main_window.png" alt="This is the main window">
+<div style="text-align: left;">
+    <div style="display: inline-block; text-align: center;">
+        <img src="library\assets\gtav_tweaks_main_window.png">
         <div><em>This is the main window</em></div>
     </div>
-    <div style="text-align: center; display: flex; flex-direction: column; align-items: center; justify-content: flex-end;">
-        <img src="library/assets/gtav_tweaks_hotkey_overview_window.png" alt="Provides an overview over all hotkeys">
+    <p><br></p>
+    <div style="display: inline-block; text-align: center;">
+        <img src="library\assets\gtav_tweaks_hotkey_overview_window.png">
         <div><em>Provides an overview over all hotkeys</em></div>
     </div>
-    <div style="text-align: center; display: flex; flex-direction: column; align-items: center; justify-content: flex-end;">
-        <img src="library/assets/gtav_tweaks_hotkey_window.png" alt="You can create and edit hotkeys here">
+    <p><br></p>
+    <div style="display: inline-block; text-align: center;">
+        <img src="library\assets\gtav_tweaks_hotkey_window.png">
         <div><em>You can create and edit hotkeys here</em></div>
     </div>
+    <p><br></p>
+    <div style="display: inline-block; text-align: center;">
+        <img src="library/assets/gtav_tweaks_help_window.png">
+        <div><em>Contains tutorials and further advice</em></div>
+    </div>
 </div>
-
-
 
 ## Installation
 
@@ -79,7 +87,6 @@ More information about this topic, including a FAQ section, can be found in the 
 * Ability to mute GTA V during launch and unmute it, once you start playing.
 
 * Many customizable script startup options, for example an autostart feature or a silent launch.
-
 
 <br>
 
