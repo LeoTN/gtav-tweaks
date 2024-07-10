@@ -1,11 +1,11 @@
 # **GTAV Tweaks**
 
 <p align="left">
-        <a href="#installation" style="text-decoration: none;"><img src="https://img.shields.io/github/v/release/LeoTN/gtav-tweaks?sort=semver&display_name=release&style=for-the-badge&logo=Autohotkey&logoColor=green&label=Latest&color=green"></a>
-        <a href="https://github.com/LeoTN/gtav-tweaks/releases" style="text-decoration: none;"><img src="https://img.shields.io/github/v/release/LeoTN/gtav-tweaks?include_prereleases&sort=semver&filter=*-beta&display_name=release&style=for-the-badge&logo=Google%20Search%20Console&logoColor=orange&label=BETA&color=orange"></a>
+        <a href="#installation" style="text-decoration: none;"><img src="https://img.shields.io/github/v/release/LeoTN/gtav-tweaks?sort=semver&display_name=release&style=for-the-badge&logo=Rocket&logoColor=green&label=Latest&color=green"></a>
+        <a href="https://github.com/LeoTN/gtav-tweaks/releases" style="text-decoration: none;"><img src="https://img.shields.io/github/v/release/LeoTN/gtav-tweaks?include_prereleases&sort=semver&filter=*-beta&display_name=release&style=for-the-badge&logo=Textpattern&logoColor=orange&label=BETA&color=orange"></a>
         <br>
         <a href="https://github.com/LeoTN/gtav-tweaks/blob/main/LICENSE" style="text-decoration: none;"><img src="https://img.shields.io/github/license/LeoTN/gtav-tweaks?style=for-the-badge&logo=Google%20Docs&logoColor=orange&label=License&color=orange"></a>
-        <a href="https://github.com/LeoTN/gtav-tweaks/releases/latest/download/GTAV_Tweaks.zip" style="text-decoration: none;"><img src="https://img.shields.io/github/downloads/LeoTN/gtav-tweaks/GTAV_Tweaks.zip?style=for-the-badge&logo=DocuSign&logoColor=green&label=Total%20Downloads&color=green"></a>
+        <a href="https://github.com/LeoTN/gtav-tweaks/releases/latest/download/GTAV_Tweaks.zip" style="text-decoration: none;"><img src="https://img.shields.io/github/downloads/LeoTN/gtav-tweaks/GTAV_Tweaks.zip?style=for-the-badge&logo=mlflow&logoColor=green&label=Total%20Downloads&color=green"></a>
 </p>
 
 **Hotkeys for GTA V Online**
@@ -13,6 +13,11 @@
 This program adds **hotkeys** in combination with **macros** for GTA V Online. You can even create your **very own hotkeys**.
 
 <div style="text-align: left;">
+    <div style="display: inline-block; text-align: center;">
+        <img src="library/assets/gtav_tweaks_macro_demo.gif">
+        <div><em>Example of a cash depositing macro</em></div>
+    </div>
+    <p><br></p>
     <div style="display: inline-block; text-align: center;">
         <img src="library\assets\gtav_tweaks_main_window.png">
         <div><em>This is the main window</em></div>
@@ -36,11 +41,11 @@ This program adds **hotkeys** in combination with **macros** for GTA V Online. Y
 
 ## Installation
 
-<a href="https://github.com/LeoTN/gtav-tweaks/releases/latest/download/GTAV_Tweaks.zip" style="text-decoration: none;"><img src="https://img.shields.io/github/v/release/LeoTN/gtav-tweaks?sort=semver& display_name=release&style=for-the-badge&logo=DocuSign&logoColor=green&label=Download&color=green"></a>
+<a href="https://github.com/LeoTN/gtav-tweaks/releases/latest/download/GTAV_Tweaks.zip" style="text-decoration: none;"><img src="https://img.shields.io/github/v/release/LeoTN/gtav-tweaks?sort=semver& display_name=release&style=for-the-badge&logo=Task&logoColor=green&label=Download&color=green"></a>
 <br>
 <img src="https://img.shields.io/badge/Extract-the%20zip%20file-w?style=for-the-badge&logo=dropbox&logoColor=orange&color=orange">
 <br>
-<img src="https://img.shields.io/badge/Execute-GTAV__Tweaks__Setup.exe-w?style=for-the-badge&logo=framework&logoColor=green&color=green">
+<img src="https://img.shields.io/badge/Execute-GTAV__Tweaks__Setup.exe-w?style=for-the-badge&logo=educative&logoColor=green&color=green">
 
 > All required files will be stored in the **GTAV_Tweaks** folder next to the **GTAV_Tweaks** executable. You can **uninstall** the program by simply deleting the files.
 
@@ -84,6 +89,7 @@ More information about this topic, including a FAQ section, can be found in the 
 ## Credits & License
 
 *  **NirSoft** ([source](https://www.nirsoft.net/utils/sound_volume_view.html)) for providing such an incredibly useful application.
+* **Shields.io** ([source](https://shields.io/)) for offering great and stylish badges.
 
 I appreciate your **constructive** and **honest** feedback. Feel free to create an **issue** or **feature request**.
 
