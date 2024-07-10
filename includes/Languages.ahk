@@ -1211,7 +1211,7 @@ createLanguageArrayMap(pLanguageCode)
             "",
             "] to [",
             "",
-            "now?"
+            "] now?"
         ]
         functionsMsgBox1_2 := [
             "GTAV Tweaks - Update Available"
