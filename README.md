@@ -14,7 +14,7 @@ This program adds **hotkeys** in combination with **macros** for GTA V Online. Y
 
 <div style="text-align: left;">
     <div style="display: inline-block; text-align: center;">
-        <img src="library/assets/gtav_tweaks_macro_demo.gif">
+        <video src="library/assets/gtav_tweaks_macro_demo.mp4" width="320" height="240" controls></video>
         <div><em>Example of a cash depositing macro</em></div>
     </div>
     <p><br></p>
