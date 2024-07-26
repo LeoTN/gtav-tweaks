@@ -37,7 +37,7 @@ createMainGUI()
     static tmpKey3 := unset
     static tmpKey4 := unset
     static tmpKey5 := unset
-    For key in languageCodeMap
+    For (key in languageCodeMap)
     {
         If (!IsSet(tmpKey1))
         {

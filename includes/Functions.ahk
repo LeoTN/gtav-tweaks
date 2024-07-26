@@ -17,10 +17,11 @@ functions_onInit()
 handleAllGUI_toolTips(not_used_1, not_used_2, not_used_3, pWindowHWND)
 {
     static oldHWND := 0
-    if (pWindowHWND != oldHWND)
+    If (pWindowHWND != oldHWND)
     {
         ; Closes all existing tooltips.
-        toolTipText := "", ToolTip()
+        toolTipText := ""
+        ToolTip()
         currentControlElement := GuiCtrlFromHwnd(pWindowHWND)
         If (currentControlElement)
         {
@@ -31,10 +32,21 @@ handleAllGUI_toolTips(not_used_1, not_used_2, not_used_3, pWindowHWND)
             }
             toolTipText := currentControlElement.ToolTip
             ; Displays the tooltip after the user hovers for 1.5 seconds over a control element.
-            SetTimer () => ToolTip(toolTipText), -1500
-            SetTimer () => ToolTip(), -10000
+            SetTimer () => displayToolTip(toolTipText, currentControlElement.Hwnd), -1500
         }
         oldHWND := pWindowHWND
+    }
+    /*
+    This function makes sure that the tooltip is only displayed when the user hovers over the same control element for
+    more than 1.5 seconds. If the control element under the cursor changes by any means, the tooltip won't be displayed.
+    */
+    displayToolTip(pToolTipText, pCurrentControlElementHWND)
+    {
+        MouseGetPos(, , , &currentControlElementUnderCursorHWND, 2)
+        If (pCurrentControlElementHWND == currentControlElementUnderCursorHWND)
+        {
+            ToolTip(pToolTipText)
+        }
     }
 }
 
