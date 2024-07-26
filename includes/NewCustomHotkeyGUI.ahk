@@ -138,7 +138,30 @@ handleNewCustomHotkeyGUI_selectMacroFileButton()
 {
     global recordedMacroFilesStorageDirectory
 
-    macroFile := FileSelect(3, recordedMacroFilesStorageDirectory, "Please select a macro file.", "*.ahk")
+    ; This will open the current directory where the current macro file is stored in if one is selected.
+    If (newCustomHotkeyGUIMacroFileLocationEdit.Value != "")
+    {
+        SplitPath(newCustomHotkeyGUIMacroFileLocationEdit.Value, , &outDir, &outExtension)
+        ; This means there is no file at the end of the path.
+        If ((outExtension == "") && DirExist(newCustomHotkeyGUIMacroFileLocationEdit.Value))
+        {
+            selectPath := newCustomHotkeyGUIMacroFileLocationEdit.Value
+        }
+        Else If (DirExist(outDir))
+        {
+            selectPath := outDir
+        }
+        Else
+        {
+            selectPath := recordedMacroFilesStorageDirectory
+        }
+    }
+    Else
+    {
+        selectPath := recordedMacroFilesStorageDirectory
+    }
+
+    macroFile := FileSelect(3, selectPath, "Please select a macro file.", "*.ahk")
     ; Makes sure that the path is an actual file and not a directory or more specifically a folder.
     SplitPath(macroFile, , , &outExtension)
     ; This usually happens, when the user cancels the selection.
