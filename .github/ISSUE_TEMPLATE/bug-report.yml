@@ -8,7 +8,7 @@ body:
           required: true
     type: checkboxes
   - attributes:
-      description: Specify your operating system (e.g. Windows 10).
+      description: Specify your operating system (e.g. Windows 10 22H2).
       label: Operating System
       placeholder: Enter your operating system
     type: input
