@@ -1,8 +1,8 @@
 # **GTAV Tweaks**
 
 <p align="left">
-        <a href="#installation" style="text-decoration: none;"><img src="https://img.shields.io/github/v/release/LeoTN/gtav-tweaks?sort=semver&display_name=release&style=for-the-badge&logo=Rocket&logoColor=green&label=Latest&color=green"></a>
-        <a href="https://github.com/LeoTN/gtav-tweaks/releases" style="text-decoration: none;"><img src="https://img.shields.io/github/v/release/LeoTN/gtav-tweaks?include_prereleases&sort=semver&filter=*-beta&display_name=release&style=for-the-badge&logo=Textpattern&logoColor=orange&label=BETA&color=orange"></a>
+        <a href="#installation" style="text-decoration: none;"><img src="https://img.shields.io/github/v/release/LeoTN/gtav-tweaks?sort=semver&display_name=release&style=for-the-badge&logo=Rocket&logoColor=green&label=CLICK TO INSTALL LATEST VERSION&color=green"></a>
+        <a href="https://github.com/LeoTN/gtav-tweaks/releases" style="text-decoration: none;"><img src="https://img.shields.io/github/v/release/LeoTN/gtav-tweaks?include_prereleases&sort=semver&filter=*-beta&display_name=release&style=for-the-badge&logo=Textpattern&logoColor=orange&label=LATEST BETA VERSION&color=orange"></a>
         <br>
         <a href="https://github.com/LeoTN/gtav-tweaks/blob/main/LICENSE" style="text-decoration: none;"><img src="https://img.shields.io/github/license/LeoTN/gtav-tweaks?style=for-the-badge&logo=Google%20Docs&logoColor=orange&label=License&color=orange"></a>
         <a href="https://github.com/LeoTN/gtav-tweaks/releases/latest/download/GTAV_Tweaks.zip" style="text-decoration: none;"><img src="https://img.shields.io/github/downloads/LeoTN/gtav-tweaks/GTAV_Tweaks.zip?style=for-the-badge&logo=mlflow&logoColor=green&label=Total%20Downloads&color=green"></a>
