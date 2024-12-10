@@ -281,8 +281,6 @@ handleMainGUI_checkbox_launchWithGTA() {
 
 handleMainGUI_close() {
     if (!readConfigFile("MINIMIZE_INSTEAD_OF_CLOSE")) {
-        TrayTip(getLanguageArrayString("generalScriptTrayTip3_1"), getLanguageArrayString("generalScriptTrayTip3_2"),
-        "Iconi Mute")
-        ExitApp()
+        exitScriptWithNotification()
     }
 }

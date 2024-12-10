@@ -112,7 +112,7 @@ onInit_unpackSupportFiles() {
             "] folder.`n`nThis folder needs to exist in the same directory as this script.`n`n"
             "You can achieve this by executing a compiled version in this directory that will create them for you.",
             "GTAV Tweaks - Uncompiled Script Information", "Iconi 262144")
-        ExitApp()
+        exitScriptWithNotification(true)
     }
     ; Prompts the user to confirm the creation of files.
     if (!DirExist(scriptMainDirectory)) {
@@ -121,7 +121,7 @@ onInit_unpackSupportFiles() {
             . " in the same directory as this script.`n`n"
             "Would you like to proceed?", "GTAV Tweaks - Confirm File Creation", "YN Iconi 262144")
         if (result != "Yes") {
-            ExitApp()
+            exitScriptWithNotification(true)
         }
         MsgBox("To uninstall this software you just need to delete the files.", "GTAV Tweaks - How To Uninstall?",
             "Iconi 262144")

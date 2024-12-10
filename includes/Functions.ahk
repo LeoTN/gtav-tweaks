@@ -449,11 +449,7 @@ terminateScriptPrompt() {
     buttonCancel := terminateScriptGUI.Add("Button", "w80 x160 y190", getLanguageArrayString("reloadAndTerminateGUI_8"))
     terminateScriptGUI.Show("AutoSize")
 
-    buttonOkay.OnEvent("Click", (*) =>
-        TrayTip(getLanguageArrayString("generalScriptTrayTip3_1"),
-        getLanguageArrayString("generalScriptTrayTip3_2"),
-        "Iconi Mute")
-        ExitApp())
+    buttonOkay.OnEvent("Click", (*) => exitScriptWithNotification())
     buttonCancel.OnEvent("Click", (*) => terminateScriptGUI.Destroy())
 
     ; The try statement is needed to protect the code from crashing because
@@ -471,11 +467,26 @@ terminateScriptPrompt() {
         }
         textField.Text := "The script has been terminated."
         Sleep(100)
+        exitScriptWithNotification()
+    }
+}
+
+/*
+Terminates the script and shows a tray tip message to inform the user.
+@param pBooleanUseFallbackMessage [boolean] If set to true, will use the hardcoded English version
+of the termination message. This can be useful if the language modules have not been loaded yet.
+*/
+exitScriptWithNotification(pBooleanUseFallbackMessage := false) {
+    if (pBooleanUseFallbackMessage) {
+        TrayTip("GTAV Tweaks terminated.", "GTAV Tweaks - Status", "Iconi Mute")
+    }
+    else {
         TrayTip(getLanguageArrayString("generalScriptTrayTip3_1"), getLanguageArrayString("generalScriptTrayTip3_2"),
         "Iconi Mute")
-        ExitApp()
-        ExitApp()
     }
+    ; Using ExitApp() twice ensures that the script will be terminated entirely.
+    ExitApp()
+    ExitApp()
 }
 
 /*
@@ -554,8 +565,7 @@ displayErrorMessage(pErrorObject := unset, pAdditionalErrorMessage := unset, pBo
     }
 
     if (pBooleanTerminatingError) {
-        ExitApp()
-        ExitApp()
+        exitScriptWithNotification(true)
     }
 }
 

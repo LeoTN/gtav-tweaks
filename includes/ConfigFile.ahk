@@ -146,7 +146,7 @@ createDefaultConfigFile(pBooleanCreateBackup := true, pBooleanShowPrompt := fals
             "GTAV Tweaks - Config File Status - Error", "O IconX 262144")
         MsgBox(getLanguageArrayString("generalScriptMsgBox1_1"), getLanguageArrayString("generalScriptMsgBox1_2"),
         "O IconX T1.5")
-        ExitApp()
+        exitScriptWithNotification()
     }
     else {
         /*
@@ -201,7 +201,7 @@ readConfigFile(pOptionName, pBooleanAskForPathCreation := true, pBooleanCheckCon
                     getLanguageArrayString("configFileMsgBox3_2"), "O Icon! 262144")
                     MsgBox(getLanguageArrayString("generalScriptMsgBox1_1"), getLanguageArrayString(
                         "generalScriptMsgBox1_2"), "O IconX T1.5")
-                    ExitApp()
+                    exitScriptWithNotification()
                 }
                 else {
                     ; This means that there was no error with the path given.
@@ -215,7 +215,7 @@ readConfigFile(pOptionName, pBooleanAskForPathCreation := true, pBooleanCheckCon
     }
     MsgBox(getLanguageArrayString("configFileMsgBox4_1", pOptionName), getLanguageArrayString("configFileMsgBox4_2"),
     "O IconX 262144")
-    ExitApp()
+    exitScriptWithNotification()
 }
 
 /*
@@ -296,7 +296,7 @@ checkConfigFileIntegrity(pBooleanResultOnly := false) {
                 {
                     MsgBox(getLanguageArrayString("generalScriptMsgBox1_1"), getLanguageArrayString(
                         "generalScriptMsgBox1_2"), "O IconX T1.5")
-                    ExitApp()
+                    exitScriptWithNotification()
                 }
             }
         }
@@ -317,7 +317,7 @@ validatePath(pPath, pBooleanAskForPathCreation := true, pBooleanCreatePathSilent
         MsgBox("[" . A_ThisFunc .
             "()] [ERROR] pBooleanAskForPathCreation and pBooleanCreatePathSilent cannot be true at the "
             . "same time.`nTerminating script.", "GTAV Tweaks - [" . A_ThisFunc . "()]", "IconX 262144")
-        ExitApp()
+        exitScriptWithNotification()
     }
 
     ; SplitPath makes sure the last part of the whole path is removed.
@@ -353,7 +353,7 @@ validatePath(pPath, pBooleanAskForPathCreation := true, pBooleanCreatePathSilent
                     {
                         MsgBox(getLanguageArrayString("generalScriptMsgBox1_1"), getLanguageArrayString(
                             "generalScriptMsgBox1_2"), "O IconX T1.5")
-                        ExitApp()
+                        exitScriptWithNotification()
                     }
                 }
             }
@@ -377,7 +377,7 @@ validatePath(pPath, pBooleanAskForPathCreation := true, pBooleanCreatePathSilent
                     {
                         MsgBox(getLanguageArrayString("generalScriptMsgBox1_1"), getLanguageArrayString(
                             "generalScriptMsgBox1_2"), "O IconX T1.5")
-                        ExitApp()
+                        exitScriptWithNotification()
                     }
                 }
             }
