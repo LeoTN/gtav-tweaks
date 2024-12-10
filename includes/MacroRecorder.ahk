@@ -177,7 +177,7 @@ checkIfMouseButtonPressed(pMouseButton) {
             mouseKeyIncompleteString .= "; Middle Click`n"
             mouseKeyLongName := "Middle"
         }
-        Default:
+        default:
         {
             MsgBox("[" . A_ThisFunc . "()] [WARNING] Received an invalid mouse key: [" . pMouseButton . "].")
             mouseKeyReturnArray := Array("invalid_mouse_key_received")

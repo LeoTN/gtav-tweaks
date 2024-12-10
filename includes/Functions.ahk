@@ -450,7 +450,11 @@ terminateScriptPrompt() {
     buttonCancel := terminateScriptGUI.Add("Button", "w80 x160 y190", getLanguageArrayString("reloadAndTerminateGUI_8"))
     terminateScriptGUI.Show("AutoSize")
 
-    buttonOkay.OnEvent("Click", (*) => ExitApp())
+    buttonOkay.OnEvent("Click", (*) =>
+        TrayTip(getLanguageArrayString("generalScriptTrayTip3_1"),
+        getLanguageArrayString("generalScriptTrayTip3_2"),
+        "Iconi Mute")
+        ExitApp())
     buttonCancel.OnEvent("Click", (*) => terminateScriptGUI.Destroy())
 
     ; The try statement is needed to protect the code from crashing because
@@ -468,6 +472,8 @@ terminateScriptPrompt() {
         }
         textField.Text := "The script has been terminated."
         Sleep(100)
+        TrayTip(getLanguageArrayString("generalScriptTrayTip3_1"), getLanguageArrayString("generalScriptTrayTip3_2"),
+        "Iconi Mute")
         ExitApp()
         ExitApp()
     }

@@ -153,6 +153,9 @@ createLanguageArrayMap(pLanguageCode) {
         mainGUI_11 := [
             "Nachricht beim Start von GTA anzeigen"
         ]
+        mainGUI_12 := [
+            "Das Skript minimieren beim Schließen dieses Fensters"
+        ]
         ; Main GUI menus
         ; **************
         mainGUIMenu_1 := [
@@ -252,6 +255,9 @@ createLanguageArrayMap(pLanguageCode) {
         ]
         mainGUIToolTip_8 := [
             "Zeigt mit Hilfe einer Nachricht an, dass GTA V gestartet wurde."
+        ]
+        mainGUIToolTip_9 := [
+            "Minimiert das Skript anstatt es beim Schließen des Hauptfensters zu beenden."
         ]
         ; Hotkey Overview GUI
         ; ###################
@@ -432,6 +438,12 @@ createLanguageArrayMap(pLanguageCode) {
             "GTAV Tweaks gestartet."
         ]
         generalScriptTrayTip2_2 := [
+            "GTAV Tweaks - Status"
+        ]
+        generalScriptTrayTip3_1 := [
+            "GTAV Tweaks beendet."
+        ]
+        generalScriptTrayTip3_2 := [
             "GTAV Tweaks - Status"
         ]
         ; Macro Recorder TrayTips
@@ -822,6 +834,9 @@ createLanguageArrayMap(pLanguageCode) {
         mainGUI_11 := [
             "Display message when launching GTA"
         ]
+        mainGUI_12 := [
+            "Minimize to tray when closing this window"
+        ]
         ; Main GUI menus
         ; **************
         mainGUIMenu_1 := [
@@ -919,6 +934,9 @@ createLanguageArrayMap(pLanguageCode) {
         ]
         mainGUIToolTip_8 := [
             "Displays a little message which indicates that GTA V has been launched."
+        ]
+        mainGUIToolTip_9 := [
+            "Minimizes the script instead of exiting it when closing the main window."
         ]
         ; Hotkey Overview GUI
         ; ###################
@@ -1099,6 +1117,12 @@ createLanguageArrayMap(pLanguageCode) {
             "GTAV Tweaks launched."
         ]
         generalScriptTrayTip2_2 := [
+            "GTAV Tweaks - Status"
+        ]
+        generalScriptTrayTip3_1 := [
+            "GTAV Tweaks terminated."
+        ]
+        generalScriptTrayTip3_2 := [
             "GTAV Tweaks - Status"
         ]
         ; Macro Recorder TrayTips
@@ -1461,6 +1485,7 @@ createLanguageArrayMap(pLanguageCode) {
         "mainGUI_9", mainGUI_9,
         "mainGUI_10", mainGUI_10,
         "mainGUI_11", mainGUI_11,
+        "mainGUI_12", mainGUI_12,
         "mainGUIMenu_1", mainGUIMenu_1,
         "mainGUIMenu_2", mainGUIMenu_2,
         "mainGUIMenu_3", mainGUIMenu_3,
@@ -1489,6 +1514,7 @@ createLanguageArrayMap(pLanguageCode) {
         "mainGUIToolTip_6", mainGUIToolTip_6,
         "mainGUIToolTip_7", mainGUIToolTip_7,
         "mainGUIToolTip_8", mainGUIToolTip_8,
+        "mainGUIToolTip_9", mainGUIToolTip_9,
         "hotkeyOverviewGUI_1", hotkeyOverviewGUI_1,
         "hotkeyOverviewGUI_2", hotkeyOverviewGUI_2,
         "hotkeyOverviewGUI_3", hotkeyOverviewGUI_3,
@@ -1538,6 +1564,8 @@ createLanguageArrayMap(pLanguageCode) {
         "generalScriptTrayTip1_2", generalScriptTrayTip1_2,
         "generalScriptTrayTip2_1", generalScriptTrayTip2_1,
         "generalScriptTrayTip2_2", generalScriptTrayTip2_2,
+        "generalScriptTrayTip3_1", generalScriptTrayTip3_1,
+        "generalScriptTrayTip3_2", generalScriptTrayTip3_2,
         "macroRecorderTrayTip1_1", macroRecorderTrayTip1_1,
         "macroRecorderTrayTip1_2", macroRecorderTrayTip1_2,
         "macroRecorderTrayTip2_1", macroRecorderTrayTip2_1,

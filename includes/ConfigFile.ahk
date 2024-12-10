@@ -36,6 +36,8 @@ configFile_onInit() {
     global LAUNCH_WITH_WINDOWS := false
     ; Launch minimized.
     global LAUNCH_MINIMIZED := false
+    ; Minimize the script to tray when closing the main GUI.
+    global MINIMIZE_INSTEAD_OF_CLOSE := true
     ; Display a notification when launching.
     global DISPLAY_LAUNCH_NOTIFICATION := true
     ; Checks out the GitHub page for a new release.
@@ -70,6 +72,7 @@ configFile_onInit() {
             "ASK_FOR_TUTORIAL",
             "LAUNCH_WITH_WINDOWS",
             "LAUNCH_MINIMIZED",
+            "MINIMIZE_INSTEAD_OF_CLOSE",
             "DISPLAY_LAUNCH_NOTIFICATION",
             "CHECK_FOR_UPDATES_AT_LAUNCH",
             "UPDATE_TO_BETA_VERSIONS",
@@ -85,6 +88,7 @@ configFile_onInit() {
             "DebugSettings",
             "DebugSettings",
             "GeneralSettings",
+            "StartupSettings",
             "StartupSettings",
             "StartupSettings",
             "StartupSettings",
@@ -288,7 +292,7 @@ checkConfigFileIntegrity(pBooleanResultOnly := false) {
                     createDefaultConfigFile()
                     return true
                 }
-                Default:
+                default:
                 {
                     MsgBox(getLanguageArrayString("generalScriptMsgBox1_1"), getLanguageArrayString(
                         "generalScriptMsgBox1_2"), "O IconX T1.5")
@@ -345,7 +349,7 @@ validatePath(pPath, pBooleanAskForPathCreation := true, pBooleanCreatePathSilent
                     {
                         DirCreate(pPath)
                     }
-                    Default:
+                    default:
                     {
                         MsgBox(getLanguageArrayString("generalScriptMsgBox1_1"), getLanguageArrayString(
                             "generalScriptMsgBox1_2"), "O IconX T1.5")
@@ -369,7 +373,7 @@ validatePath(pPath, pBooleanAskForPathCreation := true, pBooleanCreatePathSilent
                     {
                         DirCreate(outDir)
                     }
-                    Default:
+                    default:
                     {
                         MsgBox(getLanguageArrayString("generalScriptMsgBox1_1"), getLanguageArrayString(
                             "generalScriptMsgBox1_2"), "O IconX T1.5")

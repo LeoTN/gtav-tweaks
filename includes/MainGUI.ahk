@@ -89,11 +89,13 @@ createMainGUI() {
 
     ; This part begins to fill the GUI with checkboxes and all that stuff.
     applyChangesText := mainGUI.Add("Text", "", getLanguageArrayString("mainGUI_1"))
-    startupBehaviorGroupbox := mainGUI.Add("GroupBox", "yp+20 w320 R5.3", getLanguageArrayString("mainGUI_2"))
+    startupBehaviorGroupbox := mainGUI.Add("GroupBox", "yp+20 w320 R6.3", getLanguageArrayString("mainGUI_2"))
     launchWithWindowsCheckbox := mainGUI.Add("Checkbox", "xp+10 yp+20 vLaunchWithWindowsCheckbox",
         getLanguageArrayString("mainGUI_3"))
     launchMinimizedToTrayCheckbox := mainGUI.Add("Checkbox", "yp+20 vLaunchMinimizedToTrayCheckbox",
         getLanguageArrayString("mainGUI_4"))
+    minimizeToTrayInsteadOfCloseCheckbox := mainGUI.Add("Checkbox", "yp+20 vMinimizeToTrayInsteadOfCloseCheckbox",
+        getLanguageArrayString("mainGUI_12"))
     showLaunchMessageCheckbox := mainGUI.Add("Checkbox", "yp+20 vShowLaunchMessageCheckbox", getLanguageArrayString(
         "mainGUI_5"))
     checkForUpdateAtLaunchCheckbox := mainGUI.Add("Checkbox", "yp+20 vCheckForUpdateAtLaunchCheckbox",
@@ -108,6 +110,9 @@ createMainGUI() {
         getLanguageArrayString("mainGUI_10"))
     showGTALaunchMessageCheckbox := mainGUI.Add("Checkbox", "yp+20 vShowGTALaunchMessageCheckbox",
         getLanguageArrayString("mainGUI_11"))
+
+    ; Adds an action when the main GUI is closed.
+    mainGUI.OnEvent("Close", (*) => handleMainGUI_close())
 
     ; Makes it, that every checkbox triggers the save function to apply the changes when clicked.
     for (GUIControlObject in mainGUI) {
@@ -128,7 +133,7 @@ createMainGUI() {
             {
                 GUIControlObject.OnEvent("Click", (*) => handleMainGUI_checkbox_updateToBetaReleases())
             }
-            Default:
+            default:
             {
                 GUIControlObject.OnEvent("Click", (*) => handleMainGUI_writeValuesToConfigFile())
             }
@@ -138,6 +143,7 @@ createMainGUI() {
     ; Adds a tooltip to some GUI elements.
     launchWithWindowsCheckbox.ToolTip := getLanguageArrayString("mainGUIToolTip_1")
     launchMinimizedToTrayCheckbox.ToolTip := getLanguageArrayString("mainGUIToolTip_2")
+    minimizeToTrayInsteadOfCloseCheckbox.ToolTip := getLanguageArrayString("mainGUIToolTip_9")
     showLaunchMessageCheckbox.ToolTip := getLanguageArrayString("mainGUIToolTip_3")
     checkForUpdateAtLaunchCheckbox.ToolTip := getLanguageArrayString("mainGUIToolTip_4")
     updateToBetaReleasesCheckbox.ToolTip := getLanguageArrayString("mainGUIToolTip_5")
@@ -171,6 +177,7 @@ handleMainGUI_writeValuesToConfigFile() {
     {
         editConfigFile("LAUNCH_WITH_WINDOWS", launchWithWindowsCheckbox.Value)
         editConfigFile("LAUNCH_MINIMIZED", launchMinimizedToTrayCheckbox.Value)
+        editConfigFile("MINIMIZE_INSTEAD_OF_CLOSE", minimizeToTrayInsteadOfCloseCheckbox.Value)
         editConfigFile("DISPLAY_LAUNCH_NOTIFICATION", showLaunchMessageCheckbox.Value)
         editConfigFile("CHECK_FOR_UPDATES_AT_LAUNCH", checkForUpdateAtLaunchCheckbox.Value)
         editConfigFile("UPDATE_TO_BETA_VERSIONS", updateToBetaReleasesCheckbox.Value)
@@ -200,6 +207,7 @@ handleMainGUI_applyValuesFromConfigFile() {
             updateToBetaReleasesCheckbox.Value := readConfigFile("UPDATE_TO_BETA_VERSIONS")
         }
         launchMinimizedToTrayCheckbox.Value := readConfigFile("LAUNCH_MINIMIZED")
+        minimizeToTrayInsteadOfCloseCheckbox.Value := readConfigFile("MINIMIZE_INSTEAD_OF_CLOSE")
         showLaunchMessageCheckbox.Value := readConfigFile("DISPLAY_LAUNCH_NOTIFICATION")
         muteGameWhileLaunchCheckbox.Value := readConfigFile("MUTE_GAME_WHILE_LAUNCH")
         setGameProcessPriorityHighCheckbox.Value := readConfigFile("INCREASE_GAME_PRIORITY")
@@ -269,4 +277,12 @@ handleMainGUI_checkbox_launchWithWindows() {
         return false
     }
     handleMainGUI_writeValuesToConfigFile()
+}
+
+handleMainGUI_close() {
+    if (!readConfigFile("MINIMIZE_INSTEAD_OF_CLOSE")) {
+        TrayTip(getLanguageArrayString("generalScriptTrayTip3_1"), getLanguageArrayString("generalScriptTrayTip3_2"),
+        "Iconi Mute")
+        ExitApp()
+    }
 }
