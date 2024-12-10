@@ -87,8 +87,7 @@ onInit() {
     if (readConfigFile("DISPLAY_LAUNCH_NOTIFICATION")) {
         TrayTip(getLanguageArrayString("generalScriptTrayTip2_1"), getLanguageArrayString("generalScriptTrayTip2_2"),
         "Iconi Mute")
-        Sleep(1500)
-        TrayTip()
+        SetTimer () => TrayTip(), -1500
     }
     if (readConfigFile("ASK_FOR_TUTORIAL")) {
         scriptTutorial()

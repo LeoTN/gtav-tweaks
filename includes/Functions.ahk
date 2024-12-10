@@ -64,8 +64,7 @@ waitForGTAToExist() {
     if (readConfigFile("DISPLAY_GTA_LAUNCH_NOTIFICATION")) {
         TrayTip(getLanguageArrayString("generalScriptTrayTip1_1"), getLanguageArrayString("generalScriptTrayTip1_2"),
         "Iconi Mute")
-        Sleep(1500)
-        TrayTip()
+        SetTimer () => TrayTip(), -1500
     }
 }
 

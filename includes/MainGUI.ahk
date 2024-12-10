@@ -90,7 +90,7 @@ createMainGUI() {
     ; This part begins to fill the GUI with checkboxes and all that stuff.
     applyChangesText := mainGUI.Add("Text", "", getLanguageArrayString("mainGUI_1"))
     startupBehaviorGroupbox := mainGUI.Add("GroupBox", "yp+20 w320 R6.3", getLanguageArrayString("mainGUI_2"))
-    launchWithWindowsCheckbox := mainGUI.Add("Checkbox", "xp+10 yp+20 vLaunchWithWindowsCheckbox",
+    launchWithGTACheckbox := mainGUI.Add("Checkbox", "xp+10 yp+20 vLaunchWithGTACheckbox",
         getLanguageArrayString("mainGUI_3"))
     launchMinimizedToTrayCheckbox := mainGUI.Add("Checkbox", "yp+20 vLaunchMinimizedToTrayCheckbox",
         getLanguageArrayString("mainGUI_4"))
@@ -121,9 +121,9 @@ createMainGUI() {
         }
         ; Some checkboxes require more actions such as restarting the script.
         switch (GUIControlObject.Name) {
-            case "LaunchWithWindowsCheckbox":
+            case "LaunchWithGTACheckbox":
             {
-                GUIControlObject.OnEvent("Click", (*) => handleMainGUI_checkbox_launchWithWindows())
+                GUIControlObject.OnEvent("Click", (*) => handleMainGUI_checkbox_launchWithGTA())
             }
             case "CheckForUpdateAtLaunchCheckbox":
             {
@@ -141,7 +141,7 @@ createMainGUI() {
     }
 
     ; Adds a tooltip to some GUI elements.
-    launchWithWindowsCheckbox.ToolTip := getLanguageArrayString("mainGUIToolTip_1")
+    launchWithGTACheckbox.ToolTip := getLanguageArrayString("mainGUIToolTip_1")
     launchMinimizedToTrayCheckbox.ToolTip := getLanguageArrayString("mainGUIToolTip_2")
     minimizeToTrayInsteadOfCloseCheckbox.ToolTip := getLanguageArrayString("mainGUIToolTip_9")
     showLaunchMessageCheckbox.ToolTip := getLanguageArrayString("mainGUIToolTip_3")
@@ -169,13 +169,13 @@ mainGUI_onInit() {
     A_TrayMenu.Insert("1&", "Open Main Window", (*) => mainGUI.Show())
     ; When clicking on the tray icon twice, this will make sure, that the main GUI is shown to the user.
     A_TrayMenu.Default := "Open Main Window"
-    setAutostartWithGTAV(readConfigFile("LAUNCH_WITH_WINDOWS"))
+    setAutostartWithGTAV(readConfigFile("LAUNCH_WITH_GTA"))
 }
 
 handleMainGUI_writeValuesToConfigFile() {
     try
     {
-        editConfigFile("LAUNCH_WITH_WINDOWS", launchWithWindowsCheckbox.Value)
+        editConfigFile("LAUNCH_WITH_GTA", launchWithGTACheckbox.Value)
         editConfigFile("LAUNCH_MINIMIZED", launchMinimizedToTrayCheckbox.Value)
         editConfigFile("MINIMIZE_INSTEAD_OF_CLOSE", minimizeToTrayInsteadOfCloseCheckbox.Value)
         editConfigFile("DISPLAY_LAUNCH_NOTIFICATION", showLaunchMessageCheckbox.Value)
@@ -184,7 +184,7 @@ handleMainGUI_writeValuesToConfigFile() {
         editConfigFile("MUTE_GAME_WHILE_LAUNCH", muteGameWhileLaunchCheckbox.Value)
         editConfigFile("INCREASE_GAME_PRIORITY", setGameProcessPriorityHighCheckbox.Value)
         editConfigFile("DISPLAY_GTA_LAUNCH_NOTIFICATION", showGTALaunchMessageCheckbox.Value)
-        setAutostartWithGTAV(readConfigFile("LAUNCH_WITH_WINDOWS"))
+        setAutostartWithGTAV(readConfigFile("LAUNCH_WITH_GTA"))
         handleMainGUI_handleElementConflicts()
     }
     catch as error {
@@ -197,12 +197,12 @@ handleMainGUI_applyValuesFromConfigFile() {
     {
         ; Those options are set to false, because they are impossible without using the compiled version.
         if (!A_IsCompiled) {
-            launchWithWindowsCheckbox.Value := 0
+            launchWithGTACheckbox.Value := 0
             checkForUpdateAtLaunchCheckbox.Value := 0
             updateToBetaReleasesCheckbox.Value := 0
         }
         else {
-            launchWithWindowsCheckbox.Value := readConfigFile("LAUNCH_WITH_WINDOWS")
+            launchWithGTACheckbox.Value := readConfigFile("LAUNCH_WITH_GTA")
             checkForUpdateAtLaunchCheckbox.Value := readConfigFile("CHECK_FOR_UPDATES_AT_LAUNCH")
             updateToBetaReleasesCheckbox.Value := readConfigFile("UPDATE_TO_BETA_VERSIONS")
         }
@@ -267,12 +267,12 @@ handleMainGUI_checkbox_updateToBetaReleases() {
     handleMainGUI_writeValuesToConfigFile()
 }
 
-handleMainGUI_checkbox_launchWithWindows() {
+handleMainGUI_checkbox_launchWithGTA() {
     if (!A_IsCompiled) {
         ; Tells the user that he cannot use this checkbox, because the script is not compiled.
         MsgBox(getLanguageArrayString("generalScriptMsgBox2_1"), getLanguageArrayString("generalScriptMsgBox2_2"),
         "O Iconi 262144 T3")
-        launchWithWindowsCheckbox.Value := 0
+        launchWithGTACheckbox.Value := 0
         handleMainGUI_writeValuesToConfigFile()
         return false
     }

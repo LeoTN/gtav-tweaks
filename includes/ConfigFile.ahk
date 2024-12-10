@@ -32,8 +32,8 @@ configFile_onInit() {
 
     ; Defines if the script should ask the user for a brief explaination of it's core functions.
     global ASK_FOR_TUTORIAL := true
-    ; Launch script with windows.
-    global LAUNCH_WITH_WINDOWS := false
+    ; Launch script with GTA.
+    global LAUNCH_WITH_GTA := false
     ; Launch minimized.
     global LAUNCH_MINIMIZED := false
     ; Minimize the script to tray when closing the main GUI.
@@ -70,7 +70,7 @@ configFile_onInit() {
             "loadBuiltInHotkeys",
             "PREFERRED_LANGUAGE",
             "ASK_FOR_TUTORIAL",
-            "LAUNCH_WITH_WINDOWS",
+            "LAUNCH_WITH_GTA",
             "LAUNCH_MINIMIZED",
             "MINIMIZE_INSTEAD_OF_CLOSE",
             "DISPLAY_LAUNCH_NOTIFICATION",
