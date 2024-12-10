@@ -4,28 +4,35 @@
 SendMode "Input"
 CoordMode "Mouse", "Window"
 
-createNewCustomHotkeyGUI()
-{
-    Global
+createNewCustomHotkeyGUI() {
+    global
     newCustomHotkeyGUI := Gui(, getLanguageArrayString("newCustomHotkeyGUI_1"))
 
-    newCustomHotkeyGUIHotkeyNameText := newCustomHotkeyGUI.Add("Text", "yp+10", getLanguageArrayString("newCustomHotkeyGUI_2"))
+    newCustomHotkeyGUIHotkeyNameText := newCustomHotkeyGUI.Add("Text", "yp+10", getLanguageArrayString(
+        "newCustomHotkeyGUI_2"))
     newCustomHotkeyGUIHotkeyNameEdit := newCustomHotkeyGUI.Add("Edit", "yp+20 w200")
 
-    newCustomHotkeyGUIHotkeyFieldText := newCustomHotkeyGUI.Add("Text", "yp+30", getLanguageArrayString("newCustomHotkeyGUI_3"))
+    newCustomHotkeyGUIHotkeyFieldText := newCustomHotkeyGUI.Add("Text", "yp+30", getLanguageArrayString(
+        "newCustomHotkeyGUI_3"))
     newCustomHotkeyGUIHotkeyField := newCustomHotkeyGUI.Add("Hotkey", "yp+20 w200")
 
-    newCustomHotkeyGUIHotkeyDescriptionText := newCustomHotkeyGUI.Add("Text", "xp+210 yp-70", getLanguageArrayString("newCustomHotkeyGUI_4"))
+    newCustomHotkeyGUIHotkeyDescriptionText := newCustomHotkeyGUI.Add("Text", "xp+210 yp-70", getLanguageArrayString(
+        "newCustomHotkeyGUI_4"))
     newCustomHotkeyGUIHotkeyDescriptionEdit := newCustomHotkeyGUI.Add("Edit", "yp+20 R4.85 w108 -WantReturn")
 
-    newCustomHotkeyGUIMacroFileLocationText := newCustomHotkeyGUI.Add("Text", "xp-210 yp+82", getLanguageArrayString("newCustomHotkeyGUI_5"))
+    newCustomHotkeyGUIMacroFileLocationText := newCustomHotkeyGUI.Add("Text", "xp-210 yp+82", getLanguageArrayString(
+        "newCustomHotkeyGUI_5"))
     newCustomHotkeyGUIMacroFileLocationEdit := newCustomHotkeyGUI.Add("Edit", "yp+20 w285")
     newCustomHotkeyGUIMacroFileLocationButton := newCustomHotkeyGUI.Add("Button", "xp+299 yp-1 w20", "...")
-    newCustomHotkeyGUIWhatIsAMacroFileButton := newCustomHotkeyGUI.Add("Button", "xp-300 yp+30 w140", getLanguageArrayString("newCustomHotkeyGUI_6"))
+    newCustomHotkeyGUIWhatIsAMacroFileButton := newCustomHotkeyGUI.Add("Button", "xp-300 yp+30 w140",
+        getLanguageArrayString("newCustomHotkeyGUI_6"))
 
-    newCustomHotkeyGUISaveHotkeyButton := newCustomHotkeyGUI.Add("Button", "yp+41 w100", getLanguageArrayString("newCustomHotkeyGUI_7"))
-    newCustomHotkeyGUICloseHotkeyButton := newCustomHotkeyGUI.Add("Button", "xp+110 w100", getLanguageArrayString("newCustomHotkeyGUI_8"))
-    newCustomHotkeyGUIRecordMacroButton := newCustomHotkeyGUI.Add("Button", "xp+110 w100", getLanguageArrayString("newCustomHotkeyGUI_9"))
+    newCustomHotkeyGUISaveHotkeyButton := newCustomHotkeyGUI.Add("Button", "yp+41 w100", getLanguageArrayString(
+        "newCustomHotkeyGUI_7"))
+    newCustomHotkeyGUICloseHotkeyButton := newCustomHotkeyGUI.Add("Button", "xp+110 w100", getLanguageArrayString(
+        "newCustomHotkeyGUI_8"))
+    newCustomHotkeyGUIRecordMacroButton := newCustomHotkeyGUI.Add("Button", "xp+110 w100", getLanguageArrayString(
+        "newCustomHotkeyGUI_9"))
     ; Saves the new (or edited) hotkey.
     newCustomHotkeyGUISaveHotkeyButton.OnEvent("Click", (*) => handleNewCustomHotkeyGUI_saveHotkeyButton())
     newCustomHotkeyGUICloseHotkeyButton.OnEvent("Click", (*) => handleNewCustomHotkeyGUI_closeButton())
@@ -40,8 +47,7 @@ GUI SUPPORT FUNCTIONS
 -------------------------------------------------
 */
 
-newCustomHotkeyGUI_onInit()
-{
+newCustomHotkeyGUI_onInit() {
     ; Imagine the following situation: The user wants to edit a hotkey and he has selected the very first one. This means
     ; the DDL in the overview GUI will have an index value of 1. Now he clicks on the edit button and starts changing values.
     ; He selects another hotkey (for example the second one). If he applies the changes and we apply them to the custom macro object
@@ -56,18 +62,15 @@ newCustomHotkeyGUI_onInit()
 Opens the new hotkey GUI. This usually is used to edit hotkeys.
 @param pBooleanLoadCurrentlySelectedHotkey [boolean] If set to true, the GUI will load all values from the currently selected hotkey.
 */
-handleNewCustomHotkeyGUI_openGUI(pBooleanLoadCurrentlySelectedHotkey := false)
-{
+handleNewCustomHotkeyGUI_openGUI(pBooleanLoadCurrentlySelectedHotkey := false) {
     global customMacroObjectArray
     global currentlySelectedHotkeyDDLIndex := customHotkeyOverviewGUIHotkeyDropDownList.Value
 
-    If (!pBooleanLoadCurrentlySelectedHotkey)
-    {
+    if (!pBooleanLoadCurrentlySelectedHotkey) {
         ; Changing this value to 0 tells all following functions, that we are not editing an existing hotkey.
         currentlySelectedHotkeyDDLIndex := 0
     }
-    If (currentlySelectedHotkeyDDLIndex != 0)
-    {
+    if (currentlySelectedHotkeyDDLIndex != 0) {
         newCustomHotkeyGUIHotkeyNameEdit.Value := customMacroObjectArray.Get(currentlySelectedHotkeyDDLIndex).name
         newCustomHotkeyGUIHotkeyDescriptionEdit.Value := customMacroObjectArray.Get(currentlySelectedHotkeyDDLIndex).description
         newCustomHotkeyGUIHotkeyField.Value := customMacroObjectArray.Get(currentlySelectedHotkeyDDLIndex).hotkey
@@ -77,8 +80,7 @@ handleNewCustomHotkeyGUI_openGUI(pBooleanLoadCurrentlySelectedHotkey := false)
 }
 
 ; Checks if all values are correct and creates a new custom hotkey.
-handleNewCustomHotkeyGUI_saveHotkeyButton()
-{
+handleNewCustomHotkeyGUI_saveHotkeyButton() {
     global ahkBaseFileLocation
     global macroConfigFileLocation
     global customMacroObjectArray
@@ -88,44 +90,40 @@ handleNewCustomHotkeyGUI_saveHotkeyButton()
     saveHotkeyHotkey := newCustomHotkeyGUIHotkeyField.Value
     saveHotkeyMacroFileLocation := newCustomHotkeyGUIMacroFileLocationEdit.Value
     ; Checks if all important fields have a valid value.
-    If (!saveHotkeyName)
-    {
-        MsgBox(getLanguageArrayString("newCustomHotkeyOverviewGUIMsgBox1_1"), getLanguageArrayString("newCustomHotkeyOverviewGUIMsgBox1_2"), "O Icon! 262144 T1.5")
-        Return
+    if (!saveHotkeyName) {
+        MsgBox(getLanguageArrayString("newCustomHotkeyOverviewGUIMsgBox1_1"), getLanguageArrayString(
+            "newCustomHotkeyOverviewGUIMsgBox1_2"), "O Icon! 262144 T1.5")
+        return
     }
-    Else If (!saveHotkeyHotkey)
-    {
-        MsgBox(getLanguageArrayString("newCustomHotkeyOverviewGUIMsgBox2_1"), getLanguageArrayString("newCustomHotkeyOverviewGUIMsgBox2_2"), "O Icon! 262144 T1.5")
-        Return
+    else if (!saveHotkeyHotkey) {
+        MsgBox(getLanguageArrayString("newCustomHotkeyOverviewGUIMsgBox2_1"), getLanguageArrayString(
+            "newCustomHotkeyOverviewGUIMsgBox2_2"), "O Icon! 262144 T1.5")
+        return
     }
     ; Makes sure that the path is an actual file and not a directory or more specifically a folder.
     SplitPath(saveHotkeyMacroFileLocation, , , &outExtension)
-    If (!FileExist(saveHotkeyMacroFileLocation) || outExtension != "ahk")
-    {
-        MsgBox(getLanguageArrayString("newCustomHotkeyOverviewGUIMsgBox3_1"), getLanguageArrayString("newCustomHotkeyOverviewGUIMsgBox3_2"), "O Icon! 262144 T1.5")
-        Return
+    if (!FileExist(saveHotkeyMacroFileLocation) || outExtension != "ahk") {
+        MsgBox(getLanguageArrayString("newCustomHotkeyOverviewGUIMsgBox3_1"), getLanguageArrayString(
+            "newCustomHotkeyOverviewGUIMsgBox3_2"), "O Icon! 262144 T1.5")
+        return
     }
     ; This means that the user wants to edit an existing hotkey.
-    If (currentlySelectedHotkeyDDLIndex != 0)
-    {
+    if (currentlySelectedHotkeyDDLIndex != 0) {
         ; This happens when editing was successful.
-        If (editHotkey(currentlySelectedHotkeyDDLIndex, saveHotkeyName, saveHotkeyDescription, saveHotkeyHotkey, saveHotkeyMacroFileLocation))
-        {
+        if (editHotkey(currentlySelectedHotkeyDDLIndex, saveHotkeyName, saveHotkeyDescription, saveHotkeyHotkey,
+            saveHotkeyMacroFileLocation)) {
             handleNewCustomHotkeyGUI_closeButton()
         }
     }
-    Else
-    {
+    else {
         ; This happens when creating the hotkey was successful.
-        If (createHotkey(saveHotkeyName, saveHotkeyDescription, saveHotkeyHotkey, saveHotkeyMacroFileLocation))
-        {
+        if (createHotkey(saveHotkeyName, saveHotkeyDescription, saveHotkeyHotkey, saveHotkeyMacroFileLocation)) {
             handleNewCustomHotkeyGUI_closeButton()
         }
     }
 }
 
-handleNewCustomHotkeyGUI_closeButton()
-{
+handleNewCustomHotkeyGUI_closeButton() {
     newCustomHotkeyGUI.Hide()
     ; Clears all fields.
     newCustomHotkeyGUIHotkeyNameEdit.Value := ""
@@ -134,30 +132,24 @@ handleNewCustomHotkeyGUI_closeButton()
     newCustomHotkeyGUIMacroFileLocationEdit.Value := ""
 }
 
-handleNewCustomHotkeyGUI_selectMacroFileButton()
-{
+handleNewCustomHotkeyGUI_selectMacroFileButton() {
     global recordedMacroFilesStorageDirectory
 
     ; This will open the current directory where the current macro file is stored in if one is selected.
-    If (newCustomHotkeyGUIMacroFileLocationEdit.Value != "")
-    {
+    if (newCustomHotkeyGUIMacroFileLocationEdit.Value != "") {
         SplitPath(newCustomHotkeyGUIMacroFileLocationEdit.Value, , &outDir, &outExtension)
         ; This means there is no file at the end of the path.
-        If ((outExtension == "") && DirExist(newCustomHotkeyGUIMacroFileLocationEdit.Value))
-        {
+        if ((outExtension == "") && DirExist(newCustomHotkeyGUIMacroFileLocationEdit.Value)) {
             selectPath := newCustomHotkeyGUIMacroFileLocationEdit.Value
         }
-        Else If (DirExist(outDir))
-        {
+        else if (DirExist(outDir)) {
             selectPath := outDir
         }
-        Else
-        {
+        else {
             selectPath := recordedMacroFilesStorageDirectory
         }
     }
-    Else
-    {
+    else {
         selectPath := recordedMacroFilesStorageDirectory
     }
 
@@ -165,50 +157,46 @@ handleNewCustomHotkeyGUI_selectMacroFileButton()
     ; Makes sure that the path is an actual file and not a directory or more specifically a folder.
     SplitPath(macroFile, , , &outExtension)
     ; This usually happens, when the user cancels the selection.
-    If (macroFile == "")
-    {
-        Return
+    if (macroFile == "") {
+        return
     }
-    Else If (!FileExist(macroFile) || outExtension != "ahk")
-    {
-        MsgBox(getLanguageArrayString("newCustomHotkeyOverviewGUIMsgBox4_1"), getLanguageArrayString("newCustomHotkeyOverviewGUIMsgBox4_2"), "O Icon! 262144 T1.5")
-        Return
+    else if (!FileExist(macroFile) || outExtension != "ahk") {
+        MsgBox(getLanguageArrayString("newCustomHotkeyOverviewGUIMsgBox4_1"), getLanguageArrayString(
+            "newCustomHotkeyOverviewGUIMsgBox4_2"), "O Icon! 262144 T1.5")
+        return
     }
     newCustomHotkeyGUIMacroFileLocationEdit.Value := macroFile
 }
 
-handleNewCustomHotkeyGUI_explainMacros()
-{
+handleNewCustomHotkeyGUI_explainMacros() {
     global macroRecordHotkey
     global recordedMacroFilesStorageDirectory
 
     MsgBox(getLanguageArrayString("newCustomHotkeyOverviewGUIMsgBox5_1"),
-        getLanguageArrayString("newCustomHotkeyOverviewGUIMsgBox5_2"), "O Iconi 262144 ")
-    MsgBox(getLanguageArrayString("newCustomHotkeyOverviewGUIMsgBox6_1", macroRecordHotkey, recordedMacroFilesStorageDirectory),
-        getLanguageArrayString("newCustomHotkeyOverviewGUIMsgBox6_2"), "O Iconi 262144")
+    getLanguageArrayString("newCustomHotkeyOverviewGUIMsgBox5_2"), "O Iconi 262144 ")
+    MsgBox(getLanguageArrayString("newCustomHotkeyOverviewGUIMsgBox6_1", macroRecordHotkey,
+        recordedMacroFilesStorageDirectory),
+    getLanguageArrayString("newCustomHotkeyOverviewGUIMsgBox6_2"), "O Iconi 262144")
     MsgBox(getLanguageArrayString("newCustomHotkeyOverviewGUIMsgBox7_1"),
-        getLanguageArrayString("newCustomHotkeyOverviewGUIMsgBox7_2"), "O Icon! 262144 ")
+    getLanguageArrayString("newCustomHotkeyOverviewGUIMsgBox7_2"), "O Icon! 262144 ")
     result := MsgBox(getLanguageArrayString("newCustomHotkeyOverviewGUIMsgBox8_1"),
-        getLanguageArrayString("newCustomHotkeyOverviewGUIMsgBox8_2"), "YN Iconi 262144 ")
-    If (result == "Yes")
-    {
+    getLanguageArrayString("newCustomHotkeyOverviewGUIMsgBox8_2"), "YN Iconi 262144 ")
+    if (result == "Yes") {
         openReadMeFile()
     }
 }
 
-handleNewCustomHotkeyGUI_recordMacro()
-{
+handleNewCustomHotkeyGUI_recordMacro() {
     global macroRecordHotkey
     global recordedMacroFilesStorageDirectory
 
-    result := MsgBox(getLanguageArrayString("newCustomHotkeyOverviewGUIMsgBox9_1", macroRecordHotkey, macroRecordHotkey),
-        getLanguageArrayString("newCustomHotkeyOverviewGUIMsgBox9_2"), "OC Iconi 262144")
-    If (result != "OK")
-    {
-        Return
+    result := MsgBox(getLanguageArrayString("newCustomHotkeyOverviewGUIMsgBox9_1", macroRecordHotkey, macroRecordHotkey
+    ),
+    getLanguageArrayString("newCustomHotkeyOverviewGUIMsgBox9_2"), "OC Iconi 262144")
+    if (result != "OK") {
+        return
     }
-    If (KeyWait(macroRecordHotkey, "D T15"))
-    {
+    if (KeyWait(macroRecordHotkey, "D T15")) {
         ; This hotkey cannot be suspended.
         Hotkey(macroRecordHotkey, (*) => stopMacroRecording(), "On S")
         ; Records the macro file with the current time stamp as it's file name.

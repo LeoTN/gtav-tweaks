@@ -3,17 +3,16 @@
 SendMode "Input"
 CoordMode "Mouse", "Window"
 
-tutorials_onInit()
-{
+tutorials_onInit() {
     ; Initializes all tutorials and info texts.
     tutorial_howToRecordMacros()
     tutorial_howToFindHelpGUI()
     tutorial_gettingStarted()
 }
 
-tutorial_howToRecordMacros()
-{
-    global howToRecordMacrosTutorial := InteractiveTutorial("GTAV Tweaks - " . getLanguageArrayString("tutorialHowToRecordMacros_3_2"))
+tutorial_howToRecordMacros() {
+    global howToRecordMacrosTutorial := InteractiveTutorial("GTAV Tweaks - " . getLanguageArrayString(
+        "tutorialHowToRecordMacros_3_2"))
     currentlyHighlightedControlObject := ""
 
     howToRecordMacrosTutorial.addText(getLanguageArrayString("tutorialHowToRecordMacros_1_1"))
@@ -25,36 +24,30 @@ tutorial_howToRecordMacros()
     ; Makes sure the highlighted controls become normal again.
     howToRecordMacrosTutorial.addExitAction((*) => hideAllHighlightedElements())
 
-    showMainGUIAndHighlightMenu()
-    {
+    showMainGUIAndHighlightMenu() {
         hideAllHighlightedElements()
         mainGUI.Show()
         currentlyHighlightedControlObject := highlightMenuElement(mainGUI.Hwnd, 3)
     }
-    highlightCreateHotkeyButton()
-    {
+    highlightCreateHotkeyButton() {
         hideAllHighlightedElements()
         customHotkeyOverviewGUI.Show()
         currentlyHighlightedControlObject := highlightControl(customHotkeyOverviewGUICreateHotkeyButton)
     }
-    highlightRecordMacroButton()
-    {
+    highlightRecordMacroButton() {
         hideAllHighlightedElements()
         newCustomHotkeyGUI.Show()
         currentlyHighlightedControlObject := highlightControl(newCustomHotkeyGUIRecordMacroButton)
     }
-    hideAllHighlightedElements()
-    {
-        If (IsObject(currentlyHighlightedControlObject))
-        {
+    hideAllHighlightedElements() {
+        if (IsObject(currentlyHighlightedControlObject)) {
             ; Hides the highlighted control box.
             currentlyHighlightedControlObject.destroy()
         }
     }
 }
 
-tutorial_howToFindHelpGUI()
-{
+tutorial_howToFindHelpGUI() {
     global howToUseHelpGUITutorial := InteractiveTutorial(getLanguageArrayString("tutorialHowToUseHelpGUI_3_2"))
     currentlyHighlightedControlObject := ""
 
@@ -69,47 +62,39 @@ tutorial_howToFindHelpGUI()
     ; Makes sure the highlighted controls become normal again.
     howToUseHelpGUITutorial.addExitAction((*) => hideAllHighlightedElements())
 
-    showMainGUIAndHighlightMenu()
-    {
+    showMainGUIAndHighlightMenu() {
         hideAllHighlightedElements()
         mainGUI.Show()
         currentlyHighlightedControlObject := highlightMenuElement(mainGUI.Hwnd, 4)
     }
-    highlightSearchBar()
-    {
+    highlightSearchBar() {
         hideAllHighlightedElements()
         helpGUI.Show()
         currentlyHighlightedControlObject := highlightControl(helpGUISearchBarEdit)
     }
-    demonstrateSearchBar()
-    {
+    demonstrateSearchBar() {
         hideAllHighlightedElements()
         helpGUISearchBarEdit.Focus()
         ; This array contains the letters "typed" into the search bar for demonstration purposes.
         searchBarDemoLetterArray := stringToArray(getLanguageArrayString("tutorialSearchBarDemoArrayString"))
         ; Demonstrates the search bar to the user.
-        For (letter in searchBarDemoLetterArray)
-        {
-            If (WinExist("ahk_id " . helpGUI.Hwnd))
-            {
+        for (letter in searchBarDemoLetterArray) {
+            if (WinExist("ahk_id " . helpGUI.Hwnd)) {
                 WinActivate()
             }
             ControlSend(letter, helpGUISearchBarEdit, "ahk_id " . helpGUI.Hwnd)
             Sleep(20)
         }
     }
-    hideAllHighlightedElements()
-    {
-        If (IsObject(currentlyHighlightedControlObject))
-        {
+    hideAllHighlightedElements() {
+        if (IsObject(currentlyHighlightedControlObject)) {
             ; Hides the highlighted control box.
             currentlyHighlightedControlObject.destroy()
         }
     }
 }
 
-tutorial_gettingStarted()
-{
+tutorial_gettingStarted() {
     global gettingStartedTutorial := InteractiveTutorial(getLanguageArrayString("tutorialHowToUseHelpGUI_3_2"))
     currentlyHighlightedControlObject := ""
 
@@ -124,35 +109,29 @@ tutorial_gettingStarted()
     ; Makes sure the highlighted controls become normal again.
     gettingStartedTutorial.addExitAction((*) => hideAllHighlightedElements())
 
-    showAndFlashMainGUI()
-    {
+    showAndFlashMainGUI() {
         hideAllHighlightedElements()
         mainGUI.Show()
         currentlyHighlightedControlObject := highlightControl(mainGUI)
         mainGUI.Flash()
     }
-    highlightOptionsMenu()
-    {
+    highlightOptionsMenu() {
         hideAllHighlightedElements()
         mainGUI.Show()
         currentlyHighlightedControlObject := highlightMenuElement(mainGUI.Hwnd, 2)
     }
-    highlightFileMenu()
-    {
+    highlightFileMenu() {
         hideAllHighlightedElements()
         mainGUI.Show()
         currentlyHighlightedControlObject := highlightMenuElement(mainGUI.Hwnd, 1)
     }
-    highlightHelpMenu()
-    {
+    highlightHelpMenu() {
         hideAllHighlightedElements()
         mainGUI.Show()
         currentlyHighlightedControlObject := highlightMenuElement(mainGUI.Hwnd, 4)
     }
-    hideAllHighlightedElements()
-    {
-        If (IsObject(currentlyHighlightedControlObject))
-        {
+    hideAllHighlightedElements() {
+        if (IsObject(currentlyHighlightedControlObject)) {
             ; Hides the highlighted control box.
             currentlyHighlightedControlObject.destroy()
         }
@@ -163,13 +142,13 @@ tutorial_gettingStarted()
 Creates an array, which contains list view entry objects. They contain the required data to be added into a list view element.
 @returns [Array] This array is filled with list view objects.
 */
-createListViewContentCollectionArray()
-{
+createListViewContentCollectionArray() {
     ; This array contains all list view entries.
     helpGUIListViewContentArray := Array()
     ; 1. Topic 2. Type 3. Title 4. Action
     listViewEntry_1 := ListViewEntry(
-        getLanguageArrayString("tutorialHowToRecordMacros_1_2"), getLanguageArrayString("tutorialHowToRecordMacros_2_2"),
+        getLanguageArrayString("tutorialHowToRecordMacros_1_2"), getLanguageArrayString("tutorialHowToRecordMacros_2_2"
+        ),
         getLanguageArrayString("tutorialHowToRecordMacros_3_2"),
         ; This will show the window relatively to the help GUI.
         (*) => calculateInteractiveTutorialGUICoordinates(helpGUI.Hwnd, &x, &y) howToRecordMacrosTutorial.start(x, y)
@@ -180,63 +159,54 @@ createListViewContentCollectionArray()
         ; This will show the window relatively to the main GUI.
         (*) => calculateInteractiveTutorialGUICoordinates(mainGUI.Hwnd, &x, &y) howToUseHelpGUITutorial.start(x, y)
     )
-    listViewEntry_3 := ListViewEntry(getLanguageArrayString("tutorialGettingStarted_1_2"), getLanguageArrayString("tutorialGettingStarted_2_2"),
-        getLanguageArrayString("tutorialGettingStarted_3_2"),
-        ; This will show the window relatively to the help GUI.
-        (*) => calculateInteractiveTutorialGUICoordinates(helpGUI.Hwnd, &x, &y) gettingStartedTutorial.start(x, y)
-    )
+    listViewEntry_3 := ListViewEntry(getLanguageArrayString("tutorialGettingStarted_1_2"), getLanguageArrayString(
+        "tutorialGettingStarted_2_2"),
+    getLanguageArrayString("tutorialGettingStarted_3_2"),
+    ; This will show the window relatively to the help GUI.
+    (*) => calculateInteractiveTutorialGUICoordinates(helpGUI.Hwnd, &x, &y) gettingStartedTutorial.start(x, y))
 
     ; The number needes to be updated depending on how many list view entries there are.
-    Loop (3)
-    {
+    loop (3) {
         helpGUIListViewContentArray.InsertAt(A_Index, %"listViewEntry_" . A_Index%)
     }
-    Return helpGUIListViewContentArray
+    return helpGUIListViewContentArray
 }
 
 ; A small tutorial to show off the help GUI of this script.
-scriptTutorial()
-{
+scriptTutorial() {
     result_1 := MsgBox(getLanguageArrayString("tutorialMsgBox1_1"),
-        getLanguageArrayString("tutorialMsgBox1_2"), "YN Iconi 262144")
+    getLanguageArrayString("tutorialMsgBox1_2"), "YN Iconi 262144")
     ; The dialog to disable the tutorial for the next time is only shown when the config file entry mentioned below is true.
-    If (readConfigFile("ASK_FOR_TUTORIAL"))
-    {
+    if (readConfigFile("ASK_FOR_TUTORIAL")) {
         result_2 := MsgBox(getLanguageArrayString("tutorialMsgBox2_1"),
-            getLanguageArrayString("tutorialMsgBox2_2"), "YN Iconi 262144")
-        If (result_2 == "Yes")
-        {
+        getLanguageArrayString("tutorialMsgBox2_2"), "YN Iconi 262144")
+        if (result_2 == "Yes") {
             editConfigFile("ASK_FOR_TUTORIAL", false)
         }
     }
-    If (result_1 == "Yes")
-    {
+    if (result_1 == "Yes") {
         minimizeAllGUIs()
         ; Welcome message.
-        MsgBox(getLanguageArrayString("tutorialMsgBox3_1"), getLanguageArrayString("tutorialMsgBox3_2"), "O Iconi 262144")
+        MsgBox(getLanguageArrayString("tutorialMsgBox3_1"), getLanguageArrayString("tutorialMsgBox3_2"),
+        "O Iconi 262144")
         ; This will show the window relatively to the main GUI.
         calculateInteractiveTutorialGUICoordinates(mainGUI.Hwnd, &x, &y)
         howToUseHelpGUITutorial.start(x, y)
     }
 }
 
-minimizeAllGUIs()
-{
+minimizeAllGUIs() {
     ; Minimizes all script windows to reduce diversion.
-    If (WinExist("ahk_id " . mainGUI.Hwnd))
-    {
+    if (WinExist("ahk_id " . mainGUI.Hwnd)) {
         WinMinimize()
     }
-    If (WinExist("ahk_id " . customHotkeyOverviewGUI.Hwnd))
-    {
+    if (WinExist("ahk_id " . customHotkeyOverviewGUI.Hwnd)) {
         WinMinimize()
     }
-    If (WinExist("ahk_id " . newCustomHotkeyGUI.Hwnd))
-    {
+    if (WinExist("ahk_id " . newCustomHotkeyGUI.Hwnd)) {
         WinMinimize()
     }
-    If (WinExist("ahk_id " . helpGUI.Hwnd))
-    {
+    if (WinExist("ahk_id " . helpGUI.Hwnd)) {
         WinMinimize()
     }
 }
@@ -247,15 +217,13 @@ The position will be selected relatively to the right of a given window.
 @var coordinateX [int] The x coordinate for the window.
 @var coordinateY [int] The y coordinate for the window.
 */
-calculateInteractiveTutorialGUICoordinates(pWindowHWND, &coordinateX, &coordinateY)
-{
+calculateInteractiveTutorialGUICoordinates(pWindowHWND, &coordinateX, &coordinateY) {
     coordinateX := 0
     coordinateY := 0
-    If (!WinExist("ahk_id " . pWindowHWND))
-    {
+    if (!WinExist("ahk_id " . pWindowHWND)) {
         MsgBox("[" . A_ThisFunc . "()] [WARNING] Could not find window with HWND: [" . pWindowHWND . "].",
             "GTAV Tweaks - [" . A_ThisFunc . "()]", "Icon! 262144")
-        Return
+        return
     }
     ; This is done to make WinGetPos() work reliably.
     WinActivate("ahk_id " . pWindowHWND)
@@ -274,10 +242,8 @@ Can be used to create an interactive tutorial with a navigation window for the u
 IMPORTANT: When adding text to a step, a height of 10 lines must not be exceeded!
 In other words: ([K]eep [I]t [S]hort and [S]imple => KISS).
 */
-class InteractiveTutorial
-{
-    __New(pTutorialTitle)
-    {
+class InteractiveTutorial {
+    __New(pTutorialTitle) {
         this.tutorialTitle := pTutorialTitle
         ; Contains the text for each step.
         this.textArray := Array()
@@ -299,22 +265,19 @@ class InteractiveTutorial
         this.guiStatusBar.SetIcon("shell32.dll", 278)
     }
     ; You can provide optional coordinates for the GUI to show up.
-    start(pGuiX := unset, pGuiY := unset)
-    {
+    start(pGuiX := unset, pGuiY := unset) {
         ; Both parameters are omitted.
-        If (!IsSet(pGuiX) && !IsSet(pGuiY))
-        {
+        if (!IsSet(pGuiX) && !IsSet(pGuiY)) {
             this.gui.Show()
         }
         ; Only one parameter is given and the other one is missing.
-        Else If (!IsSet(pGuiX) || !IsSet(pGuiY))
-        {
-            MsgBox("[" . A_ThisFunc . "()] [WARNING] Make sure that either both (pGuiX and pGuiY) are given or omitted entirely.",
+        else if (!IsSet(pGuiX) || !IsSet(pGuiY)) {
+            MsgBox("[" . A_ThisFunc .
+                "()] [WARNING] Make sure that either both (pGuiX and pGuiY) are given or omitted entirely.",
                 "GTAV Tweaks - [" . A_ThisFunc . "()]", "Icon! 262144")
             this.gui.Show()
         }
-        Else
-        {
+        else {
             this.gui.Show("x" . pGuiX . " y" . pGuiY)
         }
         ; Setting this to 1 will reset the tutorial.
@@ -322,67 +285,54 @@ class InteractiveTutorial
         ; Displays the first text and starts the first action.
         this.playStep(1)
     }
-    next()
-    {
+    next() {
         this.currentStepIndex++
         this.playStep(this.currentStepIndex)
     }
-    previous()
-    {
+    previous() {
         this.currentStepIndex--
         this.playStep(this.currentStepIndex)
     }
-    exit()
-    {
+    exit() {
         /*
         Executes a variety of actions when the user exits the tutorial (if there are any actions provided).
         This could be used to hide certain windows or to stop controls from being highlighted for instance.
         */
-        For (action in this.exitActionArray)
-        {
+        for (action in this.exitActionArray) {
             action.Call()
         }
         this.gui.Hide()
     }
-    playStep(pStepIndex)
-    {
+    playStep(pStepIndex) {
         ; Updates the status bar.
         this.guiStatusBar.SetText(getLanguageArrayString("tutorialGUI_4", this.currentStepIndex, this.textArray.Length))
         ; Enables and disables the buttons accordingly to the current step index.
-        If (pStepIndex <= 1)
-        {
+        if (pStepIndex <= 1) {
             ; Disables the previous button because you cannot go any further back on the very first step.
             this.guiPreviousButton.Opt("+Disabled")
         }
-        Else
-        {
+        else {
             this.guiPreviousButton.Opt("-Disabled")
         }
-        If (pStepIndex >= this.textArray.Length)
-        {
+        if (pStepIndex >= this.textArray.Length) {
             ; Disables the next button because you cannot go any further on the very last step.
             this.guiNextButton.Opt("+Disabled")
         }
-        Else
-        {
+        else {
             this.guiNextButton.Opt("-Disabled")
         }
 
-        If (this.textArray.Has(pStepIndex))
-        {
+        if (this.textArray.Has(pStepIndex)) {
             this.guiText.Text := this.textArray.Get(pStepIndex)
         }
-        Else
-        {
+        else {
             MsgBox("[" . A_ThisFunc . "()]`n`n[WARNING] Received an invalid text array index: [" . pStepIndex . "].",
                 "GTAV Tweaks - [" . A_ThisFunc . "()]", "Icon! 262144")
         }
-        If (this.actionArray.Has(pStepIndex))
-        {
+        if (this.actionArray.Has(pStepIndex)) {
             this.actionArray.Get(pStepIndex).Call()
         }
-        Else
-        {
+        else {
             MsgBox("[" . A_ThisFunc . "()]`n`n[WARNING] Received an invalid action array index: [" . pStepIndex . "].",
                 "GTAV Tweaks - [" . A_ThisFunc . "()]", "Icon! 262144")
         }
@@ -391,8 +341,7 @@ class InteractiveTutorial
     This method adds a text for the user to read. Will be played along with the actions in the actionArray.
     Do not exceed a length of 10 lines or there will be graphical issues.
     */
-    addText(pText)
-    {
+    addText(pText) {
         this.textArray.Push(pText)
     }
     /*
@@ -400,17 +349,16 @@ class InteractiveTutorial
     You can create these objects by passing the following parameter "(*) => doSomething()" without the quotation marks.
     Our method in the code would be called "doSomething()" in this example.
     */
-    addAction(pFuncObject)
-    {
+    addAction(pFuncObject) {
         ; Checks if the given data is a valid function object.
-        Try
+        try
         {
             pFuncObject.IsOptional()
         }
-        Catch
-        {
-            MsgBox("[" . A_ThisFunc . "()]`n`n[WARNING] Received an invalid function object.", "GTAV Tweaks - [" . A_ThisFunc . "()]", "Icon! 262144")
-            Return
+        catch {
+            MsgBox("[" . A_ThisFunc . "()]`n`n[WARNING] Received an invalid function object.", "GTAV Tweaks - [" .
+                A_ThisFunc . "()]", "Icon! 262144")
+            return
         }
         this.actionArray.Push(pFuncObject)
     }
@@ -419,17 +367,16 @@ class InteractiveTutorial
     You can create these objects by passing the following parameter "(*) => doSomething()" without the quotation marks.
     Our method in the code would be called "doSomething()" in this example.
     */
-    addExitAction(pFuncObject)
-    {
+    addExitAction(pFuncObject) {
         ; Checks if the given data is a valid function object.
-        Try
+        try
         {
             pFuncObject.IsOptional()
         }
-        Catch
-        {
-            MsgBox("[" . A_ThisFunc . "()]`n`n[WARNING] Received an invalid function object.", "GTAV Tweaks - [" . A_ThisFunc . "()]", "Icon! 262144")
-            Return
+        catch {
+            MsgBox("[" . A_ThisFunc . "()]`n`n[WARNING] Received an invalid function object.", "GTAV Tweaks - [" .
+                A_ThisFunc . "()]", "Icon! 262144")
+            return
         }
         this.exitActionArray.Push(pFuncObject)
     }

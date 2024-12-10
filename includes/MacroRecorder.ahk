@@ -4,8 +4,7 @@
 SendMode "Input"
 CoordMode "Mouse", "Window"
 
-macroRecorder_onInit()
-{
+macroRecorder_onInit() {
 
 }
 
@@ -13,32 +12,31 @@ macroRecorder_onInit()
 Starts the macro recording process. This will pause the current thread until the macro recording is
 terminated via the stopMacroRecording() function.
 */
-startMacroRecording()
-{
+startMacroRecording() {
     global booleanMacroIsRecording := true
     global recordedMacroFilesStorageDirectory
     global macroRecordHotkey
     currentDateString := FormatTime(A_Now, "dd.MM.yyyy_HH-mm-ss")
     macroFileLocation := recordedMacroFilesStorageDirectory . "\" . currentDateString . ".ahk"
 
-    TrayTip(getLanguageArrayString("macroRecorderTrayTip1_1", macroRecordHotkey), getLanguageArrayString("macroRecorderTrayTip1_2"), "20")
+    TrayTip(getLanguageArrayString("macroRecorderTrayTip1_1", macroRecordHotkey), getLanguageArrayString(
+        "macroRecorderTrayTip1_2"), "20")
     SetTimer(TrayTip, -6000)
     macroFileString .= getMacroFileTemplateString(currentDateString)
 
-    While (booleanMacroIsRecording)
-    {
+    while (booleanMacroIsRecording) {
         currentlyRecoredMacro := appendToMacroFileString(waitForAnyKey())
     }
     macroFileString .= currentlyRecoredMacro
     FileAppend(macroFileString, macroFileLocation)
 }
 
-stopMacroRecording()
-{
+stopMacroRecording() {
     global recordedMacroFilesStorageDirectory
     global booleanMacroIsRecording := false
 
-    TrayTip(getLanguageArrayString("macroRecorderTrayTip2_1", recordedMacroFilesStorageDirectory), getLanguageArrayString("macroRecorderTrayTip2_2"), "20")
+    TrayTip(getLanguageArrayString("macroRecorderTrayTip2_1", recordedMacroFilesStorageDirectory),
+    getLanguageArrayString("macroRecorderTrayTip2_2"), "20")
     SetTimer(TrayTip, -6000)
 }
 
@@ -46,14 +44,13 @@ stopMacroRecording()
 Creates the basic template for every macro file.
 @returns [String] The string, which will be written at the start of the macro file.
 */
-getMacroFileTemplateString(pMacroCreationTimeStampString)
-{
+getMacroFileTemplateString(pMacroCreationTimeStampString) {
     global macroRecorderTemplateFileLocation
     global scriptMainDirectory
 
-    If (!FileExist(macroRecorderTemplateFileLocation))
-    {
-        MsgBox("[" . A_ThisFunc . "()] [WARNING] Unable to find template file [" . macroRecorderTemplateFileLocation . "].")
+    if (!FileExist(macroRecorderTemplateFileLocation)) {
+        MsgBox("[" . A_ThisFunc . "()] [WARNING] Unable to find template file [" . macroRecorderTemplateFileLocation .
+            "].")
         stopMacroRecording()
     }
     SplitPath(scriptMainDirectory, &outFolderName)
@@ -67,7 +64,7 @@ getMacroFileTemplateString(pMacroCreationTimeStampString)
     macroTemplateString .= "**************************************************`n"
     macroTemplateString .= "*/`n`n"
     macroTemplateString .= FileRead(macroRecorderTemplateFileLocation) . "`n`n"
-    Return macroTemplateString
+    return macroTemplateString
 }
 
 /*
@@ -76,28 +73,24 @@ Appends strings to the macro file string, which will be later written into a mac
 @param pBooleanClearString [boolean] If set to true, the internally stored string will be cleared.
 @returns [String] The macro file string.
 */
-appendToMacroFileString(pString := unset, pBooleanClearString := false)
-{
+appendToMacroFileString(pString := unset, pBooleanClearString := false) {
     static commitCounter := 0
     static macroFileString := ""
 
-    If (pBooleanClearString)
-    {
+    if (pBooleanClearString) {
         commitCounter := 0
         macroFileString := ""
     }
-    If (IsSet(pString))
-    {
+    if (IsSet(pString)) {
         commitCounter++
         macroFileString .= "/*##### " . commitCounter . " #####*/`n"
         macroFileString .= pString . "`n"
     }
-    Return macroFileString
+    return macroFileString
 }
 
 ; Returns the string for the macro file, depending on the pressed key during recording.
-waitForAnyKey()
-{
+waitForAnyKey() {
     global macroRecordHotkey
     global macroRecorderInputHook := InputHook("V")
     keyboardKeyMinimumWaitTimeMilliseconds := 800
@@ -107,49 +100,44 @@ waitForAnyKey()
     macroRecorderInputHook.Start()
 
     ; It only stops, when a key or a mouse button is pressed.
-    While (macroRecorderInputHook.InProgress)
-    {
+    while (macroRecorderInputHook.InProgress) {
         ; We have to check the value after each time, because the loop is too fast and won't stop without checking all three keys.
         ; This mean the variable mouseKey will not receive the correct value correspondingly to the pressed mouse key.
         mouseKeyReturnedArray := checkIfMouseButtonPressed("LButton")
         mouseKey := mouseKeyReturnedArray.Get(1)
-        If (mouseKey != "invalid_mouse_key_received" && mouseKey != "no_mouse_key_pressed")
-        {
-            Break
+        if (mouseKey != "invalid_mouse_key_received" && mouseKey != "no_mouse_key_pressed") {
+            break
         }
         mouseKeyReturnedArray := checkIfMouseButtonPressed("RButton")
         mouseKey := mouseKeyReturnedArray.Get(1)
-        If (mouseKey != "invalid_mouse_key_received" && mouseKey != "no_mouse_key_pressed")
-        {
-            Break
+        if (mouseKey != "invalid_mouse_key_received" && mouseKey != "no_mouse_key_pressed") {
+            break
         }
         mouseKeyReturnedArray := checkIfMouseButtonPressed("MButton")
         mouseKey := mouseKeyReturnedArray.Get(1)
-        If (mouseKey != "invalid_mouse_key_received" && mouseKey != "no_mouse_key_pressed")
-        {
-            Break
+        if (mouseKey != "invalid_mouse_key_received" && mouseKey != "no_mouse_key_pressed") {
+            break
         }
         idleTimeMilliseconds += 10
         Sleep(10)
     }
     ; We don't want the macro record hotkey to be included into the file.
-    If (macroRecorderInputHook.EndKey == macroRecordHotkey)
-    {
-        Return "; This is the end of the macro."
+    if (macroRecorderInputHook.EndKey == macroRecordHotkey) {
+        return "; This is the end of the macro."
     }
     ; ##### MOUSE KEY #####
-    If (mouseKey != "invalid_mouse_key_received" && mouseKey != "no_mouse_key_pressed")
-    {
+    if (mouseKey != "invalid_mouse_key_received" && mouseKey != "no_mouse_key_pressed") {
         ; The array is returned by the checkIfMouseButtonPressed() function and contains all values at the specific indexes.
         mouseKeyIncompleteString := mouseKeyReturnedArray.Get(2)
         ; We now know the idleTimeMilliseconds and can fill in the value.
-        pressedKeyCompleteString := StrReplace(mouseKeyIncompleteString, "insert_sleep_time_milliseconds_here", idleTimeMilliseconds)
-        Return pressedKeyCompleteString
+        pressedKeyCompleteString := StrReplace(mouseKeyIncompleteString, "insert_sleep_time_milliseconds_here",
+            idleTimeMilliseconds)
+        return pressedKeyCompleteString
     }
     ; ##### KEYBOARD KEY #####
     ; Checks if the given key is not a letter.
-    If (!RegExMatch(macroRecorderInputHook.EndKey, "\A\p{L}\z") && idleTimeMilliseconds < keyboardKeyMinimumWaitTimeMilliseconds)
-    {
+    if (!RegExMatch(macroRecorderInputHook.EndKey, "\A\p{L}\z") && idleTimeMilliseconds <
+    keyboardKeyMinimumWaitTimeMilliseconds) {
         ; This is a safety feature to make sure the game has enough time to process the inputs. Otherwise the macros might be broken.
         idleTimeMilliseconds := keyboardKeyMinimumWaitTimeMilliseconds
     }
@@ -161,7 +149,7 @@ waitForAnyKey()
     pressedKeyCompleteString .= "Sleep(keyboardKeyWaitTimeMilliseconds) "
     pressedKeyCompleteString .= "; Be careful when changing this value.`n"
     pressedKeyCompleteString .= "Send(`"{`" . keyboardKey . `" up}`")`n"
-    Return pressedKeyCompleteString
+    return pressedKeyCompleteString
 }
 
 /*
@@ -170,36 +158,33 @@ Checks if the given mouse button is pressed.
 @returns [Array] An array which contains multiple values. The string (conained in the 2th index) needs to be further processed,
 using the other values in the array from index 1-2.
 */
-checkIfMouseButtonPressed(pMouseButton)
-{
+checkIfMouseButtonPressed(pMouseButton) {
     global macroRecorderInputHook
 
-    Switch (pMouseButton)
-    {
-        Case "LButton":
-            {
-                mouseKeyIncompleteString .= "; Left Click`n"
-                mouseKeyLongName := "Left"
-            }
-        Case "RButton":
-            {
-                mouseKeyIncompleteString .= "; Right Click`n"
-                mouseKeyLongName := "Right"
-            }
-        Case "MButton":
-            {
-                mouseKeyIncompleteString .= "; Middle Click`n"
-                mouseKeyLongName := "Middle"
-            }
+    switch (pMouseButton) {
+        case "LButton":
+        {
+            mouseKeyIncompleteString .= "; Left Click`n"
+            mouseKeyLongName := "Left"
+        }
+        case "RButton":
+        {
+            mouseKeyIncompleteString .= "; Right Click`n"
+            mouseKeyLongName := "Right"
+        }
+        case "MButton":
+        {
+            mouseKeyIncompleteString .= "; Middle Click`n"
+            mouseKeyLongName := "Middle"
+        }
         Default:
-            {
-                MsgBox("[" . A_ThisFunc . "()] [WARNING] Received an invalid mouse key: [" . pMouseButton . "].")
-                mouseKeyReturnArray := Array("invalid_mouse_key_received")
-                Return mouseKeyReturnArray
-            }
+        {
+            MsgBox("[" . A_ThisFunc . "()] [WARNING] Received an invalid mouse key: [" . pMouseButton . "].")
+            mouseKeyReturnArray := Array("invalid_mouse_key_received")
+            return mouseKeyReturnArray
+        }
     }
-    If (GetKeyState(pMouseButton, "P"))
-    {
+    if (GetKeyState(pMouseButton, "P")) {
         MouseGetPos(&mouseX, &mouseY)
         mouseKeyIncompleteString .= 'mouseKey := "' . mouseKeyLongName . '"`n'
         mouseKeyIncompleteString .= "mouseX := " . mouseX . "`n"
@@ -219,8 +204,8 @@ checkIfMouseButtonPressed(pMouseButton)
         macroRecorderInputHook.Stop()
         ; Waits for the mouse button to be released.
         KeyWait(pMouseButton, "L")
-        Return mouseKeyReturnArray
+        return mouseKeyReturnArray
     }
     mouseKeyReturnArray := Array("no_mouse_key_pressed")
-    Return mouseKeyReturnArray
+    return mouseKeyReturnArray
 }

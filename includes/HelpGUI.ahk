@@ -3,14 +3,12 @@
 SendMode "Input"
 CoordMode "Mouse", "Window"
 
-help_onInit()
-{
+help_onInit() {
     createHelpGUI()
 }
 
-createHelpGUI()
-{
-    Global
+createHelpGUI() {
+    global
     helpGUI := Gui(, getLanguageArrayString("infoAndHelpGUI_1"))
     helpGUISearchBarText := helpGUI.Add("Text", , getLanguageArrayString("infoAndHelpGUI_2"))
     helpGUISearchBarEdit := helpGUI.Add("Edit", "w150 -WantReturn")
@@ -19,7 +17,7 @@ createHelpGUI()
     helpGUISearchBarEdit.OnEvent("Focus", (*) => ControlSend("^A", helpGUISearchBarEdit))
 
     helpGUIListViewArray := Array(getLanguageArrayString("infoAndHelpGUIListView_1"),
-        getLanguageArrayString("infoAndHelpGUIListView_2"), getLanguageArrayString("infoAndHelpGUIListView_3"))
+    getLanguageArrayString("infoAndHelpGUIListView_2"), getLanguageArrayString("infoAndHelpGUIListView_3"))
     helpGUIListView := helpGUI.Add("ListView", "yp+40 w400 R10 -Multi", helpGUIListViewArray)
     helpGUIListView.OnEvent("DoubleClick", (*) => processDoubleClickedListViewItem())
 
@@ -34,8 +32,10 @@ createHelpGUI()
     helpGUIScriptVersionLink := helpGUI.Add("Link", "xp+10 yp+18", tmpLanguageLink)
 
     ; These links need to be changed when renaming the .YAML files for the GitHub issues section.
-    local featureRequestLink := "https://github.com/LeoTN/gtav-tweaks/issues/new?assignees=&labels=enhancement&projects=&template=feature-request.yml&title=Feature+Request"
-    local bugReportLink := "https://github.com/LeoTN/gtav-tweaks/issues/new?assignees=&labels=bug&projects=&template=bug-report.yml&title=Bug+Report"
+    local featureRequestLink :=
+        "https://github.com/LeoTN/gtav-tweaks/issues/new?assignees=&labels=enhancement&projects=&template=feature-request.yml&title=Feature+Request"
+    local bugReportLink :=
+        "https://github.com/LeoTN/gtav-tweaks/issues/new?assignees=&labels=bug&projects=&template=bug-report.yml&title=Bug+Report"
     local tmpLanguageLink := getLanguageArrayString("infoAndHelpGUI_5", featureRequestLink, bugReportLink)
     ; We need to take this extra step because there would be a gap between href= and the url (href= "url_here"), which breaks the link.
     ; The same goes for the space after the url ends.
@@ -49,37 +49,32 @@ createHelpGUI()
     helpGUIStatusBar.OnEvent("Click", (*) => handleHelpGUI_helpSectionEasterEgg())
 
     helpGUIListViewContentArray := createListViewContentCollectionArray()
-    For (contentEntry in helpGUIListViewContentArray)
-    {
+    for (contentEntry in helpGUIListViewContentArray) {
         addLineToListView(contentEntry)
     }
     ; Sorts the data according to the title column.
     helpGUIListView.ModifyCol(3, "SortHdr")
 }
 
-updateListViewAccordinglyToSearch(pSearchString)
-{
+updateListViewAccordinglyToSearch(pSearchString) {
     global helpGUIListViewContentArray
 
     helpGUIListView.Delete()
     ; Shows all data when the search bar is empty.
-    If (pSearchString == "")
-    {
-        For (contentEntry in helpGUIListViewContentArray)
-        {
+    if (pSearchString == "") {
+        for (contentEntry in helpGUIListViewContentArray) {
             addLineToListView(contentEntry)
         }
-        Return
+        return
     }
     ; Calls the search function to search in all entries.
     resultArray := searchInListView(pSearchString)
-    For (resultEntry in resultArray)
-    {
+    for (resultEntry in resultArray) {
         addLineToListView(resultEntry)
     }
-    Else
-    {
-        tmpListViewEntry := ListViewEntry("*****", getLanguageArrayString("infoAndHelpGUIListView_4"), "*****", (*) => 0)
+    else {
+        tmpListViewEntry := ListViewEntry("*****", getLanguageArrayString("infoAndHelpGUIListView_4"), "*****", (*) =>
+            0)
         addLineToListView(tmpListViewEntry)
     }
 }
@@ -89,28 +84,23 @@ Allows to search for elements in the list view element.
 @param pSearchString [String] A string to search for.
 @returns [Array] This array contains all ListView objects matching the search string.
 */
-searchInListView(pSearchString)
-{
+searchInListView(pSearchString) {
     global helpGUIListViewContentArray
 
     resultArrayCollection := Array()
     ; Scans every string in the content array.
-    For (contentEntry in helpGUIListViewContentArray)
-    {
-        If (InStr(contentEntry.topic, pSearchString))
-        {
+    for (contentEntry in helpGUIListViewContentArray) {
+        if (InStr(contentEntry.topic, pSearchString)) {
             resultArrayCollection.Push(contentEntry)
         }
-        Else If (InStr(contentEntry.type, pSearchString))
-        {
+        else if (InStr(contentEntry.type, pSearchString)) {
             resultArrayCollection.Push(contentEntry)
         }
-        Else If (InStr(contentEntry.title, pSearchString))
-        {
+        else if (InStr(contentEntry.title, pSearchString)) {
             resultArrayCollection.Push(contentEntry)
         }
     }
-    Return resultArrayCollection
+    return resultArrayCollection
 }
 
 /*
@@ -118,29 +108,24 @@ Adds the content of a list view entry object into the list view element.
 @param pListViewObject [ListViewEntry] An object containing relevant information to create an item in the list view.
 @param pBooleanAutoAdjust [boolean] If set to true, the column width will be adjusted accordingly to the content.
 */
-addLineToListView(pListViewObject, pBooleanAutoAdjust := true)
-{
+addLineToListView(pListViewObject, pBooleanAutoAdjust := true) {
     global helpGUIListViewArray
 
     helpGUIListView.Add(, pListViewObject.topic, pListViewObject.type, pListViewObject.title)
-    If (pBooleanAutoAdjust)
-    {
+    if (pBooleanAutoAdjust) {
         ; Adjust the width accordingly to the content.
-        Loop (helpGUIListViewArray.Length)
-        {
+        loop (helpGUIListViewArray.Length) {
             helpGUIListView.ModifyCol(A_Index, "AutoHdr")
         }
     }
 }
 
 ; Runs the bound action of the currently selected list view element.
-processDoubleClickedListViewItem()
-{
+processDoubleClickedListViewItem() {
     global helpGUIListViewContentArray
     ; This map stores all visible list view entries together with their identifyer string.
     identifyerMap := Map()
-    For (contentEntry in helpGUIListViewContentArray)
-    {
+    for (contentEntry in helpGUIListViewContentArray) {
         identifyerMap[contentEntry.identifyerString] := contentEntry
     }
     ; Finds out the currently selected entry's index.
@@ -162,21 +147,21 @@ Highlights a control with a colored border.
 @param pLineTransparicy [int] Should be a value between 0 and 255. 0 makes the border invisible and 255 makes it entirely visible.
 @returns [RectangleHollowBox] This object can be used to control the border and it's properties.
 */
-highlightControl(pControlElement, pColor := "red", pLineThickness := 2, pLineTransparicy := 200)
-{
-    Try
+highlightControl(pControlElement, pColor := "red", pLineThickness := 2, pLineTransparicy := 200) {
+    try
     {
         ; Retrieves the control's position relative to the computer screen.
         WinGetClientPos(&screenControlX, &screenControlY, &controlWidth, &controlHeight, pControlElement)
     }
-    Catch
-    {
-        MsgBox("[" . A_ThisFunc . "()] [WARNING] The control with the text [" . pControlElement.Text . "] does not exist.",
+    catch {
+        MsgBox("[" . A_ThisFunc . "()] [WARNING] The control with the text [" . pControlElement.Text .
+            "] does not exist.",
             "GTAV Tweaks - [" . A_ThisFunc . "()]", "IconX 262144")
     }
-    highlightBox := RectangleHollowBox(screenControlX, screenControlY, controlWidth, controlHeight, pColor, pLineThickness, pLineTransparicy)
+    highlightBox := RectangleHollowBox(screenControlX, screenControlY, controlWidth, controlHeight, pColor,
+        pLineThickness, pLineTransparicy)
     highlightBox.draw()
-    Return highlightBox
+    return highlightBox
 }
 
 /*
@@ -188,23 +173,20 @@ the menu next to it an index of 2 and so on. Enter 0 as a parameter to highlight
 @param pLineTransparicy [int] Should be a value between 0 and 255. 0 makes the border invisible and 255 makes it entirely visible.
 @returns [RectangleHollowBox] This object can be used to control the border and it's properties.
 */
-highlightMenuElement(pWindowHWND, pMenuElementIndex, pColor := "red", pLineThickness := 2, pLineTransparicy := 200)
-{
+highlightMenuElement(pWindowHWND, pMenuElementIndex, pColor := "red", pLineThickness := 2, pLineTransparicy := 200) {
     menuBarInfo := getMenuBarInfo(pWindowHWND)
     ; This means we are extracting information about the complete menu bar.
-    If (pMenuElementIndex == 0)
-    {
+    if (pMenuElementIndex == 0) {
         menuElementInfo := menuBarInfo.menuBarInfo
     }
     ; This means we are extracting information about a specific menu element in the menu bar.
-    Else
-    {
+    else {
         menuElementInfo := menuBarInfo.%"menuElementInfo_" . pMenuElementIndex%
     }
     highlightedMenuElement := RectangleHollowBox(menuElementInfo.topLeftCornerX, menuElementInfo.topLeftCornerY,
         menuElementInfo.width, menuElementInfo.heigth, pColor, pLineThickness, pLineTransparicy)
     highlightedMenuElement.draw()
-    Return highlightedMenuElement
+    return highlightedMenuElement
 }
 
 /*
@@ -223,50 +205,49 @@ menuBarInfoObject.menuElementInfo_n.topLeftCornerY (The y coordinate from the to
 menuBarInfoObject.menuElementInfo_n.width (The width of the menu / menu bar)
 menuBarInfoObject.menuElementInfo_n.heigth (The heigth of the menu / menu bar)
 */
-getMenuBarInfo(pWindowHWND)
-{
+getMenuBarInfo(pWindowHWND) {
     ; Get the menu bar info object.
     menuBarInfoDLL := DllCall("GetMenu", "Ptr", pWindowHWND, "Ptr")
-    If (!menuBarInfoDLL)
-    {
-        MsgBox("[" . A_ThisFunc . "()] [WARNING] Failed to get menu bar info from window with HWND [" . pWindowHWND . "]."
+    if (!menuBarInfoDLL) {
+        MsgBox("[" . A_ThisFunc . "()] [WARNING] Failed to get menu bar info from window with HWND [" . pWindowHWND .
+            "]."
             . "`n`nError description: [`n" . A_LastError . "`n]",
             "GTAV Tweaks - [" . A_ThisFunc . "()]", "Icon! 262144")
-        Return
+        return
     }
     ; Finds out how many menu elements the menu bar has.
     menuBarMenuAmount := DllCall("GetMenuItemCount", "Ptr", menuBarInfoDLL, "Int")
-    If (menuBarMenuAmount == -1)
-    {
-        MsgBox("[" . A_ThisFunc . "()] [WARNING] Failed to get menu bar info from window with HWND [" . pWindowHWND . "]."
+    if (menuBarMenuAmount == -1) {
+        MsgBox("[" . A_ThisFunc . "()] [WARNING] Failed to get menu bar info from window with HWND [" . pWindowHWND .
+            "]."
             . "`n`nError description: [`n" . A_LastError . "`n]",
             "GTAV Tweaks - [" . A_ThisFunc . "()]", "Icon! 262144")
-        Return
+        return
     }
 
     ; Collect information about every menu element.
     menuInfoObjectArray := Array()
-    Loop (menuBarMenuAmount) {
+    loop (menuBarMenuAmount) {
         ; All menu info objects are stored into an array.
         menuInfoObjectArray.Push(getMenuElementInfoObject(A_Index))
     }
     menuBarInfoObject := Object()
     menuBarInfoObject.menuBarInfo := getMenuElementInfoObject(0)
     ; Adds all menu element info objects into the menuBarInfoObject.
-    For (menuElementInfoObject in menuInfoObjectArray)
-    {
+    for (menuElementInfoObject in menuInfoObjectArray) {
         menuBarInfoObject.%"menuElementInfo_" . A_Index% := menuElementInfoObject
     }
-    Return menuBarInfoObject
+    return menuBarInfoObject
     ; Passing the index 0 will return info about the menu bar.
-    getMenuElementInfoObject(menuElementIndex)
-    {
+    getMenuElementInfoObject(menuElementIndex) {
         menuElementInfoBuffer := Buffer(48, 0)
         NumPut("UInt", 48, menuElementInfoBuffer, 0)
 
-        result := DllCall("GetMenuBarInfo", "Ptr", pWindowHWND, "Int", 0xFFFFFFFD, "Int", menuElementIndex, "Ptr", menuElementInfoBuffer)
-        If (!result) {
-            MsgBox("[" . A_ThisFunc . "()] [WARNING] Failed to get menu element info from window with HWND [" . pWindowHWND . "]."
+        result := DllCall("GetMenuBarInfo", "Ptr", pWindowHWND, "Int", 0xFFFFFFFD, "Int", menuElementIndex, "Ptr",
+            menuElementInfoBuffer)
+        if (!result) {
+            MsgBox("[" . A_ThisFunc . "()] [WARNING] Failed to get menu element info from window with HWND [" .
+                pWindowHWND . "]."
                 . "`n`nError description: [`n" . A_LastError . "`n]",
                 "GTAV Tweaks - [" . A_ThisFunc . "()]", "Icon! 262144")
         }
@@ -279,19 +260,18 @@ getMenuBarInfo(pWindowHWND)
         menuTmp2 := NumGet(menuElementInfoBuffer, 16, "int")
         menuElementInfo.width := menuTmp1 - menuElementInfo.topLeftCornerX
         menuElementInfo.heigth := menuTmp2 - menuElementInfo.topLeftCornerY
-        Return menuElementInfo
+        return menuElementInfo
     }
 }
 
-handleHelpGUI_helpSectionEasterEgg()
-{
+handleHelpGUI_helpSectionEasterEgg() {
     static i := 0
 
     i++
-    If (i >= 5)
-    {
+    if (i >= 5) {
         i := 0
-        MsgBox(getLanguageArrayString("mainGUIMsgBox1_1"), getLanguageArrayString("mainGUIMsgBox1_2"), "O Iconi 262144")
+        MsgBox(getLanguageArrayString("mainGUIMsgBox1_1"), getLanguageArrayString("mainGUIMsgBox1_2"), "O Iconi 262144"
+        )
     }
 }
 
@@ -303,10 +283,8 @@ Stores all data required to create an entry in a list view element.
 @param pAction [Function] Can be a fat arrow function ((*) =>) or a function call (doSomething()).
 @param pEntryIndex [int] Should be increased by 1 each time a new entry is created. Starting with 1 initially.
 */
-class ListViewEntry
-{
-    __New(pTopic, pType, pTitle, pAction)
-    {
+class ListViewEntry {
+    __New(pTopic, pType, pTitle, pAction) {
         this.topic := pTopic
         this.type := pType
         this.title := pTitle
@@ -314,8 +292,7 @@ class ListViewEntry
         ; This string will be used to identify the entry.
         this.identifyerString := this.topic . this.type . this.title
     }
-    runAction()
-    {
+    runAction() {
         this.action
     }
 }
@@ -331,27 +308,24 @@ of the hollow box inside the borders.
 @param pOuterLineThickness [int] Defines how thick the outer lines around the inner box will be in pixels.
 @param pOuterLineTransparicy [int] Should be a value between 0 and 255. 0 makes the borders invisible and 255 makes them entirely visible.
 */
-class RectangleHollowBox
-{
-    __New(pTopLeftCornerX := unset, pTopLeftCornerY := unset, pBoxWidth := 10, pBoxHeight := 10, pOuterLineColor := "red", pOuterLineThickness := 1, pOuterLineTransparicy := 50)
-    {
+class RectangleHollowBox {
+    __New(pTopLeftCornerX := unset, pTopLeftCornerY := unset, pBoxWidth := 10, pBoxHeight := 10, pOuterLineColor :=
+        "red", pOuterLineThickness := 1, pOuterLineTransparicy := 50) {
         ; Both parameters are omitted.
-        If (!IsSet(pTopLeftCornerX) && !IsSet(pTopLeftCornerY))
-        {
+        if (!IsSet(pTopLeftCornerX) && !IsSet(pTopLeftCornerY)) {
             ; We use the current mouse cursor position here.
             MouseGetPos(&mouseX, &mouseY)
             this.topLeftCornerX := mouseX
             this.topLeftCornerY := mouseY
         }
         ; Only one parameter is given and the other one is missing.
-        Else If (!IsSet(pTopLeftCornerX) || !IsSet(pTopLeftCornerY))
-        {
-            MsgBox("[" . A_ThisFunc . "()] [WARNING] Make sure that either both (pTopLeftCornerX and pTopLeftCornerY) are given or omitted entirely.",
+        else if (!IsSet(pTopLeftCornerX) || !IsSet(pTopLeftCornerY)) {
+            MsgBox("[" . A_ThisFunc .
+                "()] [WARNING] Make sure that either both (pTopLeftCornerX and pTopLeftCornerY) are given or omitted entirely.",
                 "GTAV Tweaks - [" . A_ThisFunc . "()]", "Icon! 262144")
-            Return
+            return
         }
-        Else
-        {
+        else {
             this.topLeftCornerX := pTopLeftCornerX
             this.topLeftCornerY := pTopLeftCornerY
         }
@@ -361,8 +335,7 @@ class RectangleHollowBox
         this.outerLineThickness := pOuterLineThickness
         this.outerLineTransparicy := pOuterLineTransparicy
     }
-    draw()
-    {
+    draw() {
         /*
         ------
         
@@ -422,8 +395,7 @@ class RectangleHollowBox
         WinSetTransparent(this.outerLineTransparicy, this.__line3)
         WinSetTransparent(this.outerLineTransparicy, this.__line4)
     }
-    move(pX, pY)
-    {
+    move(pX, pY) {
         this.topLeftCornerX := pX
         this.topLeftCornerY := pY
 
@@ -431,22 +403,19 @@ class RectangleHollowBox
         this.draw()
     }
     ; This does NOT destroy the object, but the rectangle box instead.
-    destroy()
-    {
+    destroy() {
         this.__line1.Destroy()
         this.__line2.Destroy()
         this.__line3.Destroy()
         this.__line4.Destroy()
     }
-    show()
-    {
+    show() {
         this.__line1.Show()
         this.__line2.Show()
         this.__line3.Show()
         this.__line4.Show()
     }
-    hide()
-    {
+    hide() {
         this.__line1.Hide()
         this.__line2.Hide()
         this.__line3.Hide()

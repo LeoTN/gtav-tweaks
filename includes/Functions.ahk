@@ -4,8 +4,7 @@
 SendMode "Input"
 CoordMode "Mouse", "Window"
 
-functions_onInit()
-{
+functions_onInit() {
     /*
     This causes the script to react upon the user moving his mouse and show
     a tooltip if possible for the GUI element under the cursor.
@@ -14,21 +13,17 @@ functions_onInit()
 }
 
 ; This function determines the current control under the mouse cursor and if it has a tooltip, displays it.
-handleAllGUI_toolTips(not_used_1, not_used_2, not_used_3, pWindowHWND)
-{
+handleAllGUI_toolTips(not_used_1, not_used_2, not_used_3, pWindowHWND) {
     static oldHWND := 0
-    If (pWindowHWND != oldHWND)
-    {
+    if (pWindowHWND != oldHWND) {
         ; Closes all existing tooltips.
         toolTipText := ""
         ToolTip()
         currentControlElement := GuiCtrlFromHwnd(pWindowHWND)
-        If (currentControlElement)
-        {
-            If (!currentControlElement.HasProp("ToolTip"))
-            {
+        if (currentControlElement) {
+            if (!currentControlElement.HasProp("ToolTip")) {
                 ; There is no tooltip for this control element.
-                Return
+                return
             }
             toolTipText := currentControlElement.ToolTip
             ; Displays the tooltip after the user hovers for 1.5 seconds over a control element.
@@ -40,11 +35,9 @@ handleAllGUI_toolTips(not_used_1, not_used_2, not_used_3, pWindowHWND)
     This function makes sure that the tooltip is only displayed when the user hovers over the same control element for
     more than 1.5 seconds. If the control element under the cursor changes by any means, the tooltip won't be displayed.
     */
-    displayToolTip(pToolTipText, pCurrentControlElementHWND)
-    {
+    displayToolTip(pToolTipText, pCurrentControlElementHWND) {
         MouseGetPos(, , , &currentControlElementUnderCursorHWND, 2)
-        If (pCurrentControlElementHWND == currentControlElementUnderCursorHWND)
-        {
+        if (pCurrentControlElementHWND == currentControlElementUnderCursorHWND) {
             ToolTip(pToolTipText)
         }
     }
@@ -55,58 +48,48 @@ Changes application audio settings, as if you would change them in the audio set
 @param pApplicationName [String] Should be the name of the application or rather it's process, for example Firefox.exe.
 @param pAction [String] Can be /mute or /unmute.
 */
-manipulateApplicationAudio(pApplicationName, pAction)
-{
+manipulateApplicationAudio(pApplicationName, pAction) {
     Run(audioHookFileLocation . ' ' . pAction . ' ' . pApplicationName . ' /waitForItem 120', , "Hide")
 }
 
-muteGTAWhileInLoadingScreen()
-{
+muteGTAWhileInLoadingScreen() {
     manipulateApplicationAudio("GTA5.exe", "/mute")
     Sleep(10000)
     waitForUserInputInGTA()
     manipulateApplicationAudio("GTA5.exe", "/unmute")
 }
 
-waitForGTAToExist()
-{
+waitForGTAToExist() {
     WinWait("ahk_exe GTA5.exe")
-    If (readConfigFile("DISPLAY_GTA_LAUNCH_NOTIFICATION"))
-    {
-        TrayTip(getLanguageArrayString("generalScriptTrayTip1_1"), getLanguageArrayString("generalScriptTrayTip1_2"), "Iconi Mute")
+    if (readConfigFile("DISPLAY_GTA_LAUNCH_NOTIFICATION")) {
+        TrayTip(getLanguageArrayString("generalScriptTrayTip1_1"), getLanguageArrayString("generalScriptTrayTip1_2"),
+        "Iconi Mute")
         Sleep(1500)
         TrayTip()
     }
 }
 
 ; Waits for the user to press w while the window is active, to continue the script execution and unmute the game.
-waitForUserInputInGTA()
-{
+waitForUserInputInGTA() {
     ; This prevents the script from loading infinitely.
-    If (WinWaitActive("ahk_exe GTA5.exe", , 600) == 0)
-    {
+    if (WinWaitActive("ahk_exe GTA5.exe", , 600) == 0) {
         Reload()
     }
-    While (WinActive("ahk_exe GTA5.exe"))
-    {
-        If (KeyWait("w", "D T1") == 1)
-        {
-            Return
+    while (WinActive("ahk_exe GTA5.exe")) {
+        if (KeyWait("w", "D T1") == 1) {
+            return
         }
     }
-    Return waitForUserInputInGTA()
+    return waitForUserInputInGTA()
 }
 
-checkForExistingGTA()
-{
+checkForExistingGTA() {
     ; Enables the hotkeys if GTA is the active window.
-    If (WinActive("ahk_exe GTA5.exe"))
-    {
+    if (WinActive("ahk_exe GTA5.exe")) {
         Suspend(false)
     }
     ; Disables the hotkeys if GTA is not the active window.
-    Else
-    {
+    else {
         Suspend(true)
     }
 }
@@ -115,41 +98,36 @@ checkForExistingGTA()
 Forces the script to update to the latest version, depending on the update settings.
 @returns [boolean] True or false, depending on the function's success.
 */
-forceUpdate()
-{
+forceUpdate() {
     global versionFullName
 
-    If (!A_IsCompiled)
-    {
-        MsgBox(getLanguageArrayString("generalScriptMsgBox2_1"), getLanguageArrayString("generalScriptMsgBox2_2"), "O Iconi 262144 T3")
-        Return false
+    if (!A_IsCompiled) {
+        MsgBox(getLanguageArrayString("generalScriptMsgBox2_1"), getLanguageArrayString("generalScriptMsgBox2_2"),
+        "O Iconi 262144 T3")
+        return false
     }
     result := MsgBox(getLanguageArrayString("mainGUIMsgBox2_1"),
-        getLanguageArrayString("mainGUIMsgBox2_2"), "OC Icon! 262144")
-    If (result != "OK")
-    {
-        Return false
+    getLanguageArrayString("mainGUIMsgBox2_2"), "OC Icon! 262144")
+    if (result != "OK") {
+        return false
     }
-    If (!startUpdate(true))
-    {
-        Return false
+    if (!startUpdate(true)) {
+        return false
     }
-    Return true
+    return true
 }
 
 /*
 Checks all GitHub Repository tags to find new versions.
 @returns [boolean] Returns true, when an update is available. False otherwise.
 */
-checkForAvailableUpdates()
-{
+checkForAvailableUpdates() {
     global currentVersionFileLocation
     global psUpdateScriptLocation
 
     ; Does not check for updates, if there is no Internet connection or the script isn't compiled.
-    If (!checkInternetConnection() || !A_IsCompiled)
-    {
-        Return false
+    if (!checkInternetConnection() || !A_IsCompiled) {
+        return false
     }
     SplitPath(psUpdateScriptLocation, &outFileName)
     psUpdateScriptLocationTemp := A_Temp . "\" . outFileName
@@ -158,23 +136,22 @@ checkForAvailableUpdates()
     ; Copies the script to the temp directory. This ensure that there are no file errors while the script is moving or copying files,
     ; because it cannot copy itself, while it is running.
     FileCopy(psUpdateScriptLocation, psUpdateScriptLocationTemp, true)
-    parameterString := '-pGitHubRepositoryLink "https://github.com/LeoTN/gtav-tweaks" -pCurrentVersionFileLocation "' . currentVersionFileLocation
+    parameterString := '-pGitHubRepositoryLink "https://github.com/LeoTN/gtav-tweaks" -pCurrentVersionFileLocation "' .
+        currentVersionFileLocation
         . '" -pCurrentExecutableLocation "' . A_ScriptFullPath . '" -pOutputDirectory "' . updateWorkingDir . '"'
 
-    If (readConfigFile("UPDATE_TO_BETA_VERSIONS"))
-    {
+    if (readConfigFile("UPDATE_TO_BETA_VERSIONS")) {
         parameterString .= " -pSwitchConsiderBetaReleases"
     }
     ; Calls the PowerShell script to check for available updates.
     exitCode := RunWait('powershell.exe -executionPolicy bypass -file "' . psUpdateScriptLocationTemp
         . '" ' . parameterString . ' -pSwitchDoNotStartUpdate', , "Hide")
-    Switch (exitCode)
-    {
+    switch (exitCode) {
         ; Available update, but pSwitchDoNotStartUpdate was set to true.
-        Case 101:
+        case 101:
         {
             startUpdate()
-            Return true
+            return true
         }
     }
     ; Maybe more cases in the future.
@@ -185,15 +162,13 @@ Calls the PowerShell script to start updating this software.
 @param pBooleanForceUpdate [boolean] If set to true, will not show a prompt and update instantly.
 @returns [boolean] True or false, depending on the function's success.
 */
-startUpdate(pBooleanForceUpdate := false)
-{
+startUpdate(pBooleanForceUpdate := false) {
     global currentVersionFileLocation
     global psUpdateScriptLocation
 
     ; Does not check for updates, if there is no Internet connection or the script isn't compiled.
-    If (!checkInternetConnection() || !A_IsCompiled)
-    {
-        Return false
+    if (!checkInternetConnection() || !A_IsCompiled) {
+        return false
     }
     SplitPath(psUpdateScriptLocation, &outFileName)
     psUpdateScriptLocationTemp := A_Temp . "\" . outFileName
@@ -202,32 +177,29 @@ startUpdate(pBooleanForceUpdate := false)
     ; Copies the script to the temp directory. This ensure that there are no file errors while the script is moving or copying files,
     ; because it cannot copy itself, while it is running.
     FileCopy(psUpdateScriptLocation, psUpdateScriptLocationTemp, true)
-    parameterString := '-pGitHubRepositoryLink "https://github.com/LeoTN/gtav-tweaks" -pCurrentVersionFileLocation "' . currentVersionFileLocation
+    parameterString := '-pGitHubRepositoryLink "https://github.com/LeoTN/gtav-tweaks" -pCurrentVersionFileLocation "' .
+        currentVersionFileLocation
         . '" -pCurrentExecutableLocation "' . A_ScriptFullPath . '" -pOutputDirectory "' . updateWorkingDir . '"'
     ; Depending on the parameters and settings.
-    If (readConfigFile("UPDATE_TO_BETA_VERSIONS"))
-    {
+    if (readConfigFile("UPDATE_TO_BETA_VERSIONS")) {
         parameterString .= " -pSwitchConsiderBetaReleases"
     }
     ; Extracts the available update from the current version file.
     currentVersionFileMap := readFromCSVFile(currentVersionFileLocation)
     updateVersion := currentVersionFileMap.Get("AVAILABLE_UPDATE")
-    If (updateVersion == "no_available_update" && !pBooleanForceUpdate)
-    {
-        Return false
+    if (updateVersion == "no_available_update" && !pBooleanForceUpdate) {
+        return false
     }
-    If (pBooleanForceUpdate)
-    {
+    if (pBooleanForceUpdate) {
         ; Calls the PowerShell script to install the update.
         Run('powershell.exe -executionPolicy bypass -file "' . psUpdateScriptLocationTemp
             . '" ' . parameterString . ' -pSwitchForceUpdate')
         ExitApp()
     }
     result := MsgBox(getLanguageArrayString("functionsMsgBox1_1", versionFullName, updateVersion),
-        getLanguageArrayString("functionsMsgBox1_2"), "YN Iconi T30 262144")
-    If (result != "Yes")
-    {
-        Return false
+    getLanguageArrayString("functionsMsgBox1_2"), "YN Iconi T30 262144")
+    if (result != "Yes") {
+        return false
     }
     ; Calls the PowerShell script to install the update.
     Run('powershell.exe -executionPolicy bypass -file "' . psUpdateScriptLocationTemp
@@ -239,50 +211,44 @@ startUpdate(pBooleanForceUpdate := false)
 Tries to ping google.com to determine the computer's Internet connection status.
 @returns [boolean] True, if the computer is connected to the Internet. False otherwise.
 */
-checkInternetConnection()
-{
+checkInternetConnection() {
     ; Checks if the user has an established Internet connection.
-    Try
+    try
     {
         httpRequest := ComObject("WinHttp.WinHttpRequest.5.1")
         httpRequest.Open("GET", "http://www.google.com", false)
         httpRequest.Send()
 
-        If (httpRequest.Status == 200)
-        {
-            Return true
+        if (httpRequest.Status == 200) {
+            return true
         }
     }
 
-    Return false
+    return false
 }
 
 /*
 Opens the config file.
 @returns [boolean] Depeding on the function's success.
 */
-openConfigFile()
-{
+openConfigFile() {
     global configFileLocation
 
-    Try
+    try
     {
-        If (FileExist(configFileLocation))
-        {
+        if (FileExist(configFileLocation)) {
             Run(configFileLocation)
-            Return true
+            return true
         }
-        Else
-        {
+        else {
             createDefaultConfigFile()
-            Return true
+            return true
         }
     }
-    Catch As error
-    {
+    catch as error {
         displayErrorMessage(error, "This error is rare.", true)
         ; Technically unreachable :D
-        Return false
+        return false
     }
 }
 
@@ -290,27 +256,23 @@ openConfigFile()
 Opens the macro config file.
 @returns [boolean] Depeding on the function's success.
 */
-openMacroConfigFile()
-{
+openMacroConfigFile() {
     global macroConfigFileLocation
 
-    Try
+    try
     {
-        If (FileExist(macroConfigFileLocation))
-        {
+        if (FileExist(macroConfigFileLocation)) {
             Run(macroConfigFileLocation)
-            Return true
+            return true
         }
-        Else
-        {
+        else {
             IniWrite("Always back up your files!", macroConfigFileLocation, "CustomHotkeysBelow", "Advice")
-            Return openMacroConfigFile()
+            return openMacroConfigFile()
         }
     }
-    Catch As error
-    {
+    catch as error {
         displayErrorMessage(error)
-        Return false
+        return false
     }
 }
 
@@ -318,27 +280,24 @@ openMacroConfigFile()
 Opens the README file.
 @returns [boolean] Depeding on the function's success.
 */
-openReadMeFile()
-{
+openReadMeFile() {
     global readmeFileLocation
 
-    Try
+    try
     {
-        If (FileExist(readmeFileLocation))
-        {
+        if (FileExist(readmeFileLocation)) {
             Run(readmeFileLocation)
-            Return true
+            return true
         }
-        Else
-        {
-            MsgBox(getLanguageArrayString("functionsMsgBox2_1"), getLanguageArrayString("functionsMsgBox2_2"), "Icon! T5")
-            Return false
+        else {
+            MsgBox(getLanguageArrayString("functionsMsgBox2_1"), getLanguageArrayString("functionsMsgBox2_2"),
+            "Icon! T5")
+            return false
         }
     }
-    Catch As error
-    {
+    catch as error {
         displayErrorMessage(error, "This error is rare.")
-        Return false
+        return false
     }
 }
 
@@ -346,22 +305,21 @@ openReadMeFile()
 Enables / disables the abillity of the script to start simultaniously with GTA V.
 @param pBooleanEnableAutostart [boolean] If set to true, will put a shortcut to this script into the autostart folder.
 */
-setAutostartWithGTAV(pBooleanEnableAutostart)
-{
+setAutostartWithGTAV(pBooleanEnableAutostart) {
     global psManageAutoStartTaskFileLocation
     global silentAutoStartScriptLauncherExecutableLocation
 
     ; Creating an autostart for the .AHK file doesn't make sense in this case.
-    If (!A_IsCompiled)
-    {
-        Return
+    if (!A_IsCompiled) {
+        return
     }
-    parameterString_1 := 'powershell.exe -ExecutionPolicy Bypass -WindowStyle Hidden -File "' . psManageAutoStartTaskFileLocation . '"'
-    parameterString_2 := parameterString_1 . ' -pLaunchWithGTAScriptLauncherLocation "' . silentAutoStartScriptLauncherExecutableLocation . '"'
+    parameterString_1 := 'powershell.exe -ExecutionPolicy Bypass -WindowStyle Hidden -File "' .
+        psManageAutoStartTaskFileLocation . '"'
+    parameterString_2 := parameterString_1 . ' -pLaunchWithGTAScriptLauncherLocation "' .
+        silentAutoStartScriptLauncherExecutableLocation . '"'
     parameterString_3 := parameterString_2 . ' -pGTAVTweaksExecutableLocation "' . A_ScriptFullPath . '"'
     ; Disables the task.
-    If (!pBooleanEnableAutostart)
-    {
+    if (!pBooleanEnableAutostart) {
         parameterString_3 .= " -pSwitchDeleteTask"
     }
     Run(parameterString_3, , "Hide")
@@ -376,27 +334,25 @@ Writes values to a comma seperated file (CSV).
 */
 writeToCSVFile(pFileLocation, pContent, pBooleanForce := false) {
     ; Checks if the file exists.
-    If (FileExist(pFileLocation) && !pBooleanForce) {
+    if (FileExist(pFileLocation) && !pBooleanForce) {
         MsgBox("[" . A_ThisFunc . "()] [WARNING] The file [" . pFileLocation . "] does already exist.`n`n"
             "To overwrite it, set pBooleanForce to 'true'.", "GTAV Tweaks - [" . A_ThisFunc . "()]", "Icon! 262144")
-        Return false
+        return false
     }
 
-    Try
+    try
     {
         fileObject := FileOpen(pFileLocation, "w")
         ; Writes the map object to the file.
-        For (key, value in pContent)
-        {
+        for (key, value in pContent) {
             fileObject.WriteLine('"' . key . '","' . value . '"')
         }
         fileObject.Close()
-        Return true
+        return true
     }
-    Catch As error
-    {
+    catch as error {
         displayErrorMessage(error)
-        Return false
+        return false
     }
 }
 
@@ -407,49 +363,42 @@ Reads values from a comma seperated file (CSV).
 */
 readFromCSVFile(pFileLocation) {
     ; Checks, if the file is available.
-    If (!FileExist(pFileLocation)) {
+    if (!FileExist(pFileLocation)) {
         MsgBox("[" . A_ThisFunc . "()] [WARNING] The file [" . pFileLocation . "] does not exist."
             , "GTAV Tweaks - [" . A_ThisFunc . "()]", "Icon! 262144")
-        Return
+        return
     }
 
-    Try
+    try
     {
         CSVMap := Map()
         CSVArray := []
-        Loop Read, pFileLocation
-        {
-            Loop Parse, A_LoopReadLine, "CSV"
-            {
+        loop read, pFileLocation {
+            loop parse, A_LoopReadLine, "CSV" {
                 ; Those two entries are created by the PowerShell script and we don't want them in our map.
-                If (A_LoopField != "Key" && A_LoopField != "Value")
-                {
+                if (A_LoopField != "Key" && A_LoopField != "Value") {
                     CSVArray.Push(A_LoopField)
                 }
             }
         }
         ; Writes the key and value data to the actual map.
         i := 0
-        Loop (CSVArray.Length)
-        {
-            If (CSVArray.Has(A_Index + 1 + i))
-            {
+        loop (CSVArray.Length) {
+            if (CSVArray.Has(A_Index + 1 + i)) {
                 CSVMap.Set(CSVArray.Get(A_Index + i), CSVArray.Get(A_Index + 1 + i))
                 ; This skips the loop to the next key and value pair.
                 i++
             }
         }
-        Return CSVMap
+        return CSVMap
     }
-    Catch As error
-    {
+    catch as error {
         displayErrorMessage(error)
-        Return false
+        return false
     }
 }
 
-reloadScriptPrompt()
-{
+reloadScriptPrompt() {
     ; Number in seconds.
     i := 4
 
@@ -458,7 +407,8 @@ reloadScriptPrompt()
     textField.SetFont("s12")
     textField.SetFont("bold")
     progressBar := reloadScriptGUI.Add("Progress", "w280 h20 x10 y120", 0)
-    buttonOkay := reloadScriptGUI.Add("Button", "Default w80 x60 y190", getLanguageArrayString("reloadAndTerminateGUI_7"))
+    buttonOkay := reloadScriptGUI.Add("Button", "Default w80 x60 y190", getLanguageArrayString(
+        "reloadAndTerminateGUI_7"))
     buttonCancel := reloadScriptGUI.Add("Button", "w80 x160 y190", getLanguageArrayString("reloadAndTerminateGUI_8"))
     reloadScriptGUI.Show("AutoSize")
 
@@ -467,13 +417,11 @@ reloadScriptPrompt()
 
     ; The try statement is needed to protect the code from crashing because
     ; of the destroyed GUI when the user presses cancel.
-    Try
+    try
     {
-        while (i >= 0)
-        {
+        while (i >= 0) {
             ; Makes the progress bar feel smoother.
-            Loop (20)
-            {
+            loop (20) {
                 progressBar.Value += 1.25
                 Sleep(50)
             }
@@ -488,8 +436,7 @@ reloadScriptPrompt()
     }
 }
 
-terminateScriptPrompt()
-{
+terminateScriptPrompt() {
     ; Number in seconds.
     i := 4
 
@@ -498,7 +445,8 @@ terminateScriptPrompt()
     textField.SetFont("s12")
     textField.SetFont("bold")
     progressBar := terminateScriptGUI.Add("Progress", "w280 h20 x10 y120 cRed backgroundBlack", 0)
-    buttonOkay := terminateScriptGUI.Add("Button", "Default w80 x60 y190", getLanguageArrayString("reloadAndTerminateGUI_7"))
+    buttonOkay := terminateScriptGUI.Add("Button", "Default w80 x60 y190", getLanguageArrayString(
+        "reloadAndTerminateGUI_7"))
     buttonCancel := terminateScriptGUI.Add("Button", "w80 x160 y190", getLanguageArrayString("reloadAndTerminateGUI_8"))
     terminateScriptGUI.Show("AutoSize")
 
@@ -507,13 +455,11 @@ terminateScriptPrompt()
 
     ; The try statement is needed to protect the code from crashing because
     ; of the destroyed GUI when the user presses cancel.
-    Try
+    try
     {
-        while (i >= 0)
-        {
+        while (i >= 0) {
             ; Makes the progress bar feel smoother.
-            Loop (20)
-            {
+            loop (20) {
                 progressBar.Value += 1.25
                 Sleep(50)
             }
@@ -534,28 +480,24 @@ Outputs a little GUI containing information about the error. Allows to be copied
 @param pBooleanTerminatingError [boolean] If set to true, will force the script to terminate once the message disappears.
 @param pMessageTimeoutMilliseconds [double] Optional message timeout. Closes the message after a delay of time.
 */
-displayErrorMessage(pErrorObject := unset, pAdditionalErrorMessage := unset, pBooleanTerminatingError := false, pMessageTimeoutMilliseconds := unset)
-{
-    If (IsSet(pErrorObject))
-    {
-        errorMessageBlock := "*****ERROR MESSAGE*****`n" . pErrorObject.Message . "`n`n*****ERROR TRIGGER*****`n" . pErrorObject.What
-        If (pErrorObject.Extra != "")
-        {
+displayErrorMessage(pErrorObject := unset, pAdditionalErrorMessage := unset, pBooleanTerminatingError := false,
+    pMessageTimeoutMilliseconds := unset) {
+    if (IsSet(pErrorObject)) {
+        errorMessageBlock := "*****ERROR MESSAGE*****`n" . pErrorObject.Message . "`n`n*****ERROR TRIGGER*****`n" .
+            pErrorObject.What
+        if (pErrorObject.Extra != "") {
             errorMessageBlock .= "`n`n*****ADDITIONAL INFO*****`n" . pErrorObject.Extra
         }
         errorMessageBlock .= "`n`n*****FILE*****`n" . pErrorObject.File . "`n`n*****LINE*****`n" . pErrorObject.Line
             . "`n`n*****CALL STACK*****`n" . pErrorObject.Stack
     }
-    If (IsSet(pAdditionalErrorMessage))
-    {
+    if (IsSet(pAdditionalErrorMessage)) {
         errorMessageBlock .= "`n`n#####ADDITIONAL ERROR MESSAGE#####`n" . pAdditionalErrorMessage
     }
-    If (pBooleanTerminatingError)
-    {
+    if (pBooleanTerminatingError) {
         errorMessageBlock .= "`n`nScript has to exit!"
     }
-    If (IsSet(pMessageTimeoutMilliseconds))
-    {
+    if (IsSet(pMessageTimeoutMilliseconds)) {
         ; Hides the GUI and therefore
         SetTimer((*) => errorGUI.Destroy(), "-" . pMessageTimeoutMilliseconds)
     }
@@ -583,33 +525,30 @@ displayErrorMessage(pErrorObject := unset, pAdditionalErrorMessage := unset, pBo
     errorGUIerrorMessageBlockText := errorGUI.Add("Text", "yp+50", errorMessageBlock)
 
     errorGUIbuttonGroupBox := errorGUI.Add("GroupBox", "r2.1 w340")
-    errorGUIgitHubIssuePageButton := errorGUI.Add("Button", "xp+10 yp+15 w100 R2 Default", "Report this issue on GitHub")
+    errorGUIgitHubIssuePageButton := errorGUI.Add("Button", "xp+10 yp+15 w100 R2 Default",
+        "Report this issue on GitHub")
     errorGUIgitHubIssuePageButton.OnEvent("Click", (*) => Run("https://github.com/LeoTN/gtav-tweaks/issues/new/choose"))
     errorGUIcopyErrorToClipboardButton := errorGUI.Add("Button", "xp+110 w100 R2", "Copy error to clipboard")
     errorGUIcopyErrorToClipboardButton.OnEvent("Click", (*) => A_Clipboard := errorMessageBlock)
 
-    If (pBooleanTerminatingError)
-    {
+    if (pBooleanTerminatingError) {
         errorGUIActionButton := errorGUI.Add("Button", "xp+110 w100 R2", "Exit Script")
     }
-    Else
-    {
+    else {
         errorGUIActionButton := errorGUI.Add("Button", "xp+110 w100 R2", "Continue Script")
     }
     errorGUIActionButton.OnEvent("Click", (*) => errorGUI.Destroy())
     errorGUI.Show()
     errorGUI.Flash()
     ; There might be an error with the while condition, once the GUI is destroyed.
-    Try
+    try
     {
-        While (WinExist("ahk_id " . errorGUI.Hwnd))
-        {
+        while (WinExist("ahk_id " . errorGUI.Hwnd)) {
             Sleep(500)
         }
     }
 
-    If (pBooleanTerminatingError)
-    {
+    if (pBooleanTerminatingError) {
         ExitApp()
         ExitApp()
     }
@@ -620,21 +559,18 @@ A simple method to convert an array into a string form.
 @param pArray [Array] Should be an array to convert.
 @returns [String] The array converted into a string form.
 */
-arrayToString(pArray)
-{
+arrayToString(pArray) {
     string := "["
 
-    For (index, value in pArray)
-    {
+    for (index, value in pArray) {
         string .= value
-        if (index < pArray.Length)
-        {
+        if (index < pArray.Length) {
             string .= ","
         }
     }
 
     string .= "]"
-    Return string
+    return string
 }
 
 /*
@@ -642,10 +578,9 @@ A simple method to convert a string (in array form) into an array.
 @param pString [String] Should be a string (in array form) to convert.
 @returns [Array] The string converted into an array form.
 */
-stringToArray(pString)
-{
+stringToArray(pString) {
     array := StrSplit(pString, ",")
-    Return array
+    return array
 }
 
 /*
@@ -653,13 +588,12 @@ stringToArray(pString)
 @param pHotkey [String] Should be a valid AutoHotkey hotkey for example "+!F4".
 @returns [String] A "decyphered" AutoHotkey hotkey for example "Shift + Alt + F4".
 */
-expandHotkey(pHotkey)
-{
+expandHotkey(pHotkey) {
     hotkeyString := pHotkey
     hotkeyString := StrReplace(hotkeyString, "+", "SHIFT + ")
     hotkeyString := StrReplace(hotkeyString, "^", "CTRL + ")
     hotkeyString := StrReplace(hotkeyString, "!", "ALT + ")
     hotkeyString := StrReplace(hotkeyString, "#", "WIN + ")
 
-    Return hotkeyString
+    return hotkeyString
 }
