@@ -165,7 +165,7 @@ createLanguageArrayMap(pLanguageCode) {
             "Optionen"
         ]
         mainGUIMenu_3 := [
-            "Hotkey && Makros"
+            "Hotkeys && Makros"
         ]
         mainGUIMenu_4 := [
             "Hilfe"
@@ -454,7 +454,7 @@ createLanguageArrayMap(pLanguageCode) {
             "] um die Aufnahme zu beenden."
         ]
         macroRecorderTrayTip1_2 := [
-            "Makro Aufnahme Gestartet"
+            "Makro Aufnahme gestartet"
         ]
         macroRecorderTrayTip2_1 := [
             "Datei gespeichert unter [",
@@ -462,7 +462,7 @@ createLanguageArrayMap(pLanguageCode) {
             "]."
         ]
         macroRecorderTrayTip2_2 := [
-            "Makro Aufnahme Gestoppt"
+            "Makro Aufnahme gestoppt"
         ]
         ; General Script MsgBoxes
         ; #######################
@@ -551,12 +551,6 @@ createLanguageArrayMap(pLanguageCode) {
         ]
         functionsMsgBox2_2 := [
             "GTAV Tweaks - Fehlende README-Datei"
-        ]
-        functionsMsgBox3_1 := [
-            "Es scheint bereits eine Verknüpfung im Autostartordner zu geben.`n`nWillst du sie überschreiben?"
-        ]
-        functionsMsgBox3_2 := [
-            "GTAV Tweaks - Vorhandene Autostart-Verknüpfung gefunden"
         ]
         ; Main GUI MsgBoxes
         ; #################
@@ -1133,7 +1127,7 @@ createLanguageArrayMap(pLanguageCode) {
             "] to stop recording."
         ]
         macroRecorderTrayTip1_2 := [
-            "Macro Recording Started"
+            "Macro recording started"
         ]
         macroRecorderTrayTip2_1 := [
             "File saved at [",
@@ -1141,7 +1135,7 @@ createLanguageArrayMap(pLanguageCode) {
             "]."
         ]
         macroRecorderTrayTip2_2 := [
-            "Macro Recording Stopped"
+            "Macro recording stopped"
         ]
         ; General Script MsgBoxes
         ; #######################
@@ -1230,12 +1224,6 @@ createLanguageArrayMap(pLanguageCode) {
         ]
         functionsMsgBox2_2 := [
             "GTAV Tweaks - Missing README File"
-        ]
-        functionsMsgBox3_1 := [
-            "There seems to be a shortcut in the autostart folder already.`n`nWould you like to overwrite it?"
-        ]
-        functionsMsgBox3_2 := [
-            "GTAV Tweaks - Found Existing Autostart Shortcut"
         ]
         ; Main GUI MsgBoxes
         ; #################
@@ -1592,8 +1580,6 @@ createLanguageArrayMap(pLanguageCode) {
         "functionsMsgBox1_2", functionsMsgBox1_2,
         "functionsMsgBox2_1", functionsMsgBox2_1,
         "functionsMsgBox2_2", functionsMsgBox2_2,
-        "functionsMsgBox3_1", functionsMsgBox3_1,
-        "functionsMsgBox3_2", functionsMsgBox3_2,
         "mainGUIMsgBox1_1", mainGUIMsgBox1_1,
         "mainGUIMsgBox1_2", mainGUIMsgBox1_2,
         "mainGUIMsgBox2_1", mainGUIMsgBox2_1,

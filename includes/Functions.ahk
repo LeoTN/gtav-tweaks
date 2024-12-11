@@ -194,6 +194,7 @@ startUpdate(pBooleanForceUpdate := false) {
         Run('powershell.exe -executionPolicy bypass -file "' . psUpdateScriptLocationTemp
             . '" ' . parameterString . ' -pSwitchForceUpdate')
         ExitApp()
+        ExitApp()
     }
     result := MsgBox(getLanguageArrayString("functionsMsgBox1_1", versionFullName, updateVersion),
     getLanguageArrayString("functionsMsgBox1_2"), "YN Iconi T30 262144")
@@ -203,6 +204,7 @@ startUpdate(pBooleanForceUpdate := false) {
     ; Calls the PowerShell script to install the update.
     Run('powershell.exe -executionPolicy bypass -file "' . psUpdateScriptLocationTemp
         . '" ' . parameterString)
+    ExitApp()
     ExitApp()
 }
 
