@@ -5,6 +5,11 @@
 
 #SingleInstance Force
 #MaxThreadsPerHotkey 2
+; This forces all hotkeys created in this script to use the key hook. All hotkeys were no longer recognized while the
+; GTA window was active. Probably caused by the changes Rockstar Games made to the Anti Cheat system.
+#UseHook true
+
+InstallKeybdHook
 SendMode "Input"
 CoordMode "Mouse", "Window"
 
