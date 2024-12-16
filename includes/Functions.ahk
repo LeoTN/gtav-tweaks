@@ -189,6 +189,9 @@ startUpdate(pBooleanForceUpdate := false) {
     if (updateVersion == "no_available_update" && !pBooleanForceUpdate) {
         return false
     }
+    ; We need to disable the automatic start with GTA V here because it can cause problems while the script is updating.
+    ; We should not need a sleep delay or wait for the task here because the PowerShell script works fast.
+    setAutostartWithGTAV(false)
     if (pBooleanForceUpdate) {
         ; Calls the PowerShell script to install the update.
         Run('powershell.exe -executionPolicy bypass -file "' . psUpdateScriptLocationTemp
@@ -304,7 +307,7 @@ openReadMeFile() {
 
 /*
 Enables / disables the abillity of the script to start simultaniously with GTA V.
-@param pBooleanEnableAutostart [boolean] If set to true, will put a shortcut to this script into the autostart folder.
+@param pBooleanEnableAutostart [boolean] If set to true, will create a task that checks for a running GTA V instance.
 */
 setAutostartWithGTAV(pBooleanEnableAutostart) {
     global psManageAutoStartTaskFileLocation

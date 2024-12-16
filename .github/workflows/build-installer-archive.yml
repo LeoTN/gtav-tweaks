@@ -117,7 +117,7 @@ jobs:
         $currentVersionFileLocation = "${{ github.workspace }}\library\build\currentVersion.csv"
         $currentVersionFileObject = readFromCSVFile -pFileLocation $currentVersionFileLocation
         $currentVersionFileObject["CURRENT_VERSION"] = $releaseName
-        writeToCSVFile -pFileLocation $currentVersionFileLocation -pContent $currentVersionFileObject -pSwitchForce | Out-Null
+        $null = writeToCSVFile -pFileLocation $currentVersionFileLocation -pContent $currentVersionFileObject -pSwitchForce
 
     - name: Extract Autohotkey Compiler
       run: |

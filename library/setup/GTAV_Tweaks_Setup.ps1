@@ -21,13 +21,13 @@ function onInit() {
         Exit
     }
     If (unblockExecutable) {
-        runExecutable | Out-Null
+        $null = runExecutable
     }
 }
 
 function unblockExecutable() {
     Try {
-        Unblock-File -Path $global:executableLocation | Out-Null
+        $null = Unblock-File -Path $global:executableLocation
         Return $true
     }
     Catch {
@@ -37,7 +37,7 @@ function unblockExecutable() {
 
 function runExecutable() {
     Try {
-        Start-Process -FilePath $global:executableLocation | Out-Null
+        $null = Start-Process -FilePath $global:executableLocation
         Return $true
     }
     Catch {
