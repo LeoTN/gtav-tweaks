@@ -44,7 +44,7 @@ createHelpGUI() {
     helpGUIFeatureAndBugSubmitLink := helpGUI.Add("Link", "yp+20", tmpLanguageLink)
 
     helpGUIStatusBar := helpGUI.Add("StatusBar", , getLanguageArrayString("infoAndHelpGUI_6"))
-    helpGUIStatusBar.SetIcon("shell32.dll", 278)
+    helpGUIStatusBar.SetIcon(iconFileLocation, 9) ; ICON_DLL_USED_HERE
     ; This is used for the easter egg.
     helpGUIStatusBar.OnEvent("Click", (*) => handleHelpGUI_helpSectionEasterEgg())
 

@@ -1,7 +1,7 @@
 ;@Ahk2Exe-SetCompanyName Made by LeoTN
 ;@Ahk2Exe-SetCopyright Licence available on my GitHub project (https://github.com/LeoTN/gtav-tweaks)
 ;@Ahk2Exe-SetDescription GTAV Tweaks
-;@Ahk2Exe-SetMainIcon library\assets\gtav_tweaks_icon.ico
+;@Ahk2Exe-SetMainIcon library\assets\icons\1.ico
 
 #SingleInstance Force
 #MaxThreadsPerHotkey 2
@@ -39,7 +39,8 @@ onInit() {
     global readmeFileLocation := scriptMainDirectory . "\README.txt"
 
     global assetDirectory := scriptMainDirectory . "\assets"
-    global iconFileLocation := assetDirectory . "\gtav_tweaks_icon.ico"
+    global iconDirectory := assetDirectory . "\icons"
+    global iconFileLocation := iconDirectory . "\gtav_tweaks_icons.dll"
 
     global autostartDirectory := scriptMainDirectory . "\autostart"
     global psLaunchWithGTAVFileLocation := autostartDirectory . "\launchWithGTAV.ps1"
@@ -76,7 +77,7 @@ onInit() {
         global versionFullName := "v0.0.1"
     }
     ; Changes the tray icon and freezes it.
-    TraySetIcon(iconFileLocation, , true)
+    TraySetIcon(iconFileLocation, 1, true) ; ICON_DLL_USED_HERE
     ; Runs all onInit() functions from included files.
     ; languages_onInit() is included in configFile_onInit().
     configFile_onInit()
@@ -135,6 +136,9 @@ onInit_unpackSupportFiles() {
     if (!DirExist(assetDirectory)) {
         DirCreate(assetDirectory)
     }
+    if (!DirExist(iconDirectory)) {
+        DirCreate(iconDirectory)
+    }
     if (!DirExist(autostartDirectory)) {
         DirCreate(autostartDirectory)
     }
@@ -163,7 +167,7 @@ onInit_unpackSupportFiles() {
     }
 
     if (!FileExist(iconFileLocation)) {
-        FileInstall("library\assets\gtav_tweaks_icon.ico", iconFileLocation, true)
+        FileInstall("library\assets\icons\gtav_tweaks_icons.dll", iconFileLocation, true)
     }
 
     if (!FileExist(psLaunchWithGTAVFileLocation)) {

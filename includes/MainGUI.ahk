@@ -8,28 +8,28 @@ createMainGUI() {
     global
     fileSelectionMenuOpen := Menu()
     fileSelectionMenuOpen.Add(getLanguageArrayString("mainGUIFileSubMenu1_1") . "`t1", (*) => openConfigFile())
-    fileSelectionMenuOpen.SetIcon(getLanguageArrayString("mainGUIFileSubMenu1_1") . "`t1", "shell32.dll", 70)
+    fileSelectionMenuOpen.SetIcon(getLanguageArrayString("mainGUIFileSubMenu1_1") . "`t1", iconFileLocation, 3) ; ICON_DLL_USED_HERE
     fileSelectionMenuOpen.Add(getLanguageArrayString("mainGUIFileSubMenu1_2") . "`t2", (*) => openMacroConfigFile())
-    fileSelectionMenuOpen.SetIcon(getLanguageArrayString("mainGUIFileSubMenu1_2") . "`t2", "shell32.dll", 174)
+    fileSelectionMenuOpen.SetIcon(getLanguageArrayString("mainGUIFileSubMenu1_2") . "`t2", iconFileLocation, 10) ; ICON_DLL_USED_HERE
     ; The reason why the path is opened explicitly with explorer.exe is, that sometimes it will attempt to sort of guess the file
     ; extension and open other files. For example GTAV_Tweaks.exe instead of the folder GTAV_Tweaks.
     fileSelectionMenuOpen.Add(getLanguageArrayString("mainGUIFileSubMenu1_3") . "`t3", (*) => Run('explorer.exe "' .
         A_ScriptDir . '"'))
-    fileSelectionMenuOpen.SetIcon(getLanguageArrayString("mainGUIFileSubMenu1_3") . "`t3", "shell32.dll", 276)
+    fileSelectionMenuOpen.SetIcon(getLanguageArrayString("mainGUIFileSubMenu1_3") . "`t3", iconFileLocation, 12) ; ICON_DLL_USED_HERE
     fileSelectionMenuOpen.Add(getLanguageArrayString("mainGUIFileSubMenu1_4") . "`t4", (*) => Run('explorer.exe "' .
         A_ScriptDir . '\GTAV_Tweaks"'))
-    fileSelectionMenuOpen.SetIcon(getLanguageArrayString("mainGUIFileSubMenu1_4") . "`t4", "shell32.dll", 279)
+    fileSelectionMenuOpen.SetIcon(getLanguageArrayString("mainGUIFileSubMenu1_4") . "`t4", iconFileLocation, 2) ; ICON_DLL_USED_HERE
 
     fileSelectionMenuReset := Menu()
     fileSelectionMenuReset.Add(getLanguageArrayString("mainGUIFileSubMenu2_1") . "`tShift+1", (*) =>
         createDefaultConfigFile(, true, true))
-    fileSelectionMenuReset.SetIcon(getLanguageArrayString("mainGUIFileSubMenu2_1") . "`tShift+1", "shell32.dll", 70)
+    fileSelectionMenuReset.SetIcon(getLanguageArrayString("mainGUIFileSubMenu2_1") . "`tShift+1", iconFileLocation, 3) ; ICON_DLL_USED_HERE
 
     fileMenu := Menu()
     fileMenu.Add("&" . getLanguageArrayString("mainGUIFileMenu_1") . "...", fileSelectionMenuOpen)
-    fileMenu.SetIcon("&" . getLanguageArrayString("mainGUIFileMenu_1") . "...", "shell32.dll", 127)
+    fileMenu.SetIcon("&" . getLanguageArrayString("mainGUIFileMenu_1") . "...", iconFileLocation, 11) ; ICON_DLL_USED_HERE
     fileMenu.Add("&" . getLanguageArrayString("mainGUIFileMenu_2") . "...", fileSelectionMenuReset)
-    fileMenu.SetIcon("&" . getLanguageArrayString("mainGUIFileMenu_2") . "...", "shell32.dll", 239)
+    fileMenu.SetIcon("&" . getLanguageArrayString("mainGUIFileMenu_2") . "...", iconFileLocation, 13) ; ICON_DLL_USED_HERE
 
     languageMenu := Menu()
     ; Adds all supported langues to the menu.
@@ -64,25 +64,25 @@ createMainGUI() {
 
     optionsMenu := Menu()
     optionsMenu.Add(getLanguageArrayString("mainGUIOptionsMenu_3"), languageMenu)
-    optionsMenu.SetIcon(getLanguageArrayString("mainGUIOptionsMenu_3"), "shell32.dll", 231)
+    optionsMenu.SetIcon(getLanguageArrayString("mainGUIOptionsMenu_3"), iconFileLocation, 7) ; ICON_DLL_USED_HERE
     optionsMenu.Add()
     optionsMenu.Add(getLanguageArrayString("mainGUIOptionsMenu_4"), (*) => forceUpdate())
     optionsMenu.Add()
-    optionsMenu.SetIcon(getLanguageArrayString("mainGUIOptionsMenu_4"), "shell32.dll", 250)
+    optionsMenu.SetIcon(getLanguageArrayString("mainGUIOptionsMenu_4"), iconFileLocation, 4) ; ICON_DLL_USED_HERE
     optionsMenu.Add(getLanguageArrayString("mainGUIOptionsMenu_1"), (*) => terminateScriptPrompt())
-    optionsMenu.SetIcon(getLanguageArrayString("mainGUIOptionsMenu_1"), "shell32.dll", 28)
+    optionsMenu.SetIcon(getLanguageArrayString("mainGUIOptionsMenu_1"), iconFileLocation, 5) ; ICON_DLL_USED_HERE
     optionsMenu.Add(getLanguageArrayString("mainGUIOptionsMenu_2"), (*) => reloadScriptPrompt())
-    optionsMenu.SetIcon(getLanguageArrayString("mainGUIOptionsMenu_2"), "shell32.dll", 207)
+    optionsMenu.SetIcon(getLanguageArrayString("mainGUIOptionsMenu_2"), iconFileLocation, 16) ; ICON_DLL_USED_HERE
 
     allMenus := MenuBar()
     allMenus.Add("&" . getLanguageArrayString("mainGUIMenu_1"), fileMenu)
-    allMenus.SetIcon("&" . getLanguageArrayString("mainGUIMenu_1"), "shell32.dll", 4)
+    allMenus.SetIcon("&" . getLanguageArrayString("mainGUIMenu_1"), iconFileLocation, 6) ; ICON_DLL_USED_HERE
     allMenus.Add("&" . getLanguageArrayString("mainGUIMenu_2"), optionsMenu)
-    allMenus.SetIcon("&" . getLanguageArrayString("mainGUIMenu_2"), "shell32.dll", 317)
+    allMenus.SetIcon("&" . getLanguageArrayString("mainGUIMenu_2"), iconFileLocation, 14) ; ICON_DLL_USED_HERE
     allMenus.Add("&" . getLanguageArrayString("mainGUIMenu_3"), (*) => customHotkeyOverviewGUI.Show())
-    allMenus.SetIcon("&" . getLanguageArrayString("mainGUIMenu_3"), "shell32.dll", 177)
+    allMenus.SetIcon("&" . getLanguageArrayString("mainGUIMenu_3"), iconFileLocation, 15) ; ICON_DLL_USED_HERE
     allMenus.Add("&" . getLanguageArrayString("mainGUIMenu_4"), (*) => helpGUI.Show())
-    allMenus.SetIcon("&" . getLanguageArrayString("mainGUIMenu_4"), "shell32.dll", 24)
+    allMenus.SetIcon("&" . getLanguageArrayString("mainGUIMenu_4"), iconFileLocation, 8) ; ICON_DLL_USED_HERE
 
     mainGUI := Gui(, "GTAV Tweaks")
     mainGUI.MenuBar := allMenus
