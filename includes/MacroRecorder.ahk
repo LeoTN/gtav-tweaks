@@ -143,7 +143,8 @@ waitForAnyKey() {
     }
     pressedKeyCompleteString := "; " . macroRecorderInputHook.EndKey . "`n"
     pressedKeyCompleteString .= 'keyboardKey := "' . macroRecorderInputHook.EndKey . '"`n'
-    pressedKeyCompleteString .= "sleepTimeMilliseconds := " . idleTimeMilliseconds . "`n"
+    pressedKeyCompleteString .= "sleepTimeMilliseconds := " . idleTimeMilliseconds . " "
+    pressedKeyCompleteString .= "; The script waits this amount of time before pressing the key defined above.`n"
     pressedKeyCompleteString .= "Sleep(sleepTimeMilliseconds / macroPlayBackSpeedModificator)`n"
     pressedKeyCompleteString .= "Send(`"{`" . keyboardKey . `" down}`")`n"
     pressedKeyCompleteString .= "Sleep(keyboardKeyWaitTimeMilliseconds) "
