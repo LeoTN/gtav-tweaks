@@ -33,32 +33,59 @@ createMainGUI() {
 
     languageMenu := Menu()
     ; Adds all supported langues to the menu.
-    ; Currently supported language amount: 5.
+    ; Currently supported language amount: 4. One slot is occupied by the SYSTEM option.
     static tmpKey1 := unset
     static tmpKey2 := unset
     static tmpKey3 := unset
     static tmpKey4 := unset
     static tmpKey5 := unset
+    selectedLanguage := readConfigFile("PREFERRED_LANGUAGE")
+    ; Remember to CHANGE the icons as well when adding a new language.
     for (key in languageCodeMap) {
         if (!IsSet(tmpKey1)) {
             tmpKey1 := key
             languageMenu.Add(tmpKey1, (*) => editConfigFile("PREFERRED_LANGUAGE", tmpKey1) reloadScriptPrompt())
+            languageMenu.SetIcon(tmpKey1, iconFileLocation, 18) ; ICON_DLL_USED_HERE
+            ; Disables the currently selected language option.
+            if (selectedLanguage == tmpKey1) {
+                languageMenu.Disable(tmpKey1)
+            }
         }
         else if (!IsSet(tmpKey2)) {
             tmpKey2 := key
             languageMenu.Add(tmpKey2, (*) => editConfigFile("PREFERRED_LANGUAGE", tmpKey2) reloadScriptPrompt())
+            languageMenu.SetIcon(tmpKey2, iconFileLocation, 19) ; ICON_DLL_USED_HERE
+            ; Disables the currently selected language option.
+            if (selectedLanguage == tmpKey2) {
+                languageMenu.Disable(tmpKey2)
+            }
         }
         else if (!IsSet(tmpKey3)) {
             tmpKey3 := key
             languageMenu.Add(tmpKey3, (*) => editConfigFile("PREFERRED_LANGUAGE", tmpKey3) reloadScriptPrompt())
+            languageMenu.SetIcon(tmpKey3, iconFileLocation, 17) ; ICON_DLL_USED_HERE
+            ; Disables the currently selected language option.
+            if (selectedLanguage == tmpKey3) {
+                languageMenu.Disable(tmpKey3)
+            }
         }
         else if (!IsSet(tmpKey4)) {
             tmpKey4 := key
             languageMenu.Add(tmpKey4, (*) => editConfigFile("PREFERRED_LANGUAGE", tmpKey4) reloadScriptPrompt())
+            languageMenu.SetIcon(tmpKey4, iconFileLocation, 1) ; ICON_DLL_USED_HERE
+            ; Disables the currently selected language option.
+            if (selectedLanguage == tmpKey4) {
+                languageMenu.Disable(tmpKey4)
+            }
         }
         else if (!IsSet(tmpKey5)) {
             tmpKey5 := key
             languageMenu.Add(tmpKey5, (*) => editConfigFile("PREFERRED_LANGUAGE", tmpKey5) reloadScriptPrompt())
+            languageMenu.SetIcon(tmpKey5, iconFileLocation, 1) ; ICON_DLL_USED_HERE
+            ; Disables the currently selected language option.
+            if (selectedLanguage == tmpKey4) {
+                languageMenu.Disable(tmpKey4)
+            }
         }
     }
 
