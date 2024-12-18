@@ -779,9 +779,9 @@ createLanguageArrayMap(pLanguageCode) {
         ; Built-in Hotkey Description
         ; #########################
         builtInHotkeyDescription_1 := [
-            "Hält die W Taste geDrücket und sendet hin und wieder Numpad Up.",
+            "Hält die W Taste gedrücket und sendet hin und wieder Numpad Up.",
             "Dieser Hotkey eignet sich zum Beispiel gut zum AFK Laufen, Fahren oder Fliegen von Flugzeugen.",
-            "Wenn der Hotkey erneut geDrücket wird, werden die Tasten losgelassen.",
+            "Wenn der Hotkey erneut gedrücket wird, werden die Tasten losgelassen.",
             ; The empty space is intended.
             " [Das hier ist ein eingebauter Hotkey]"
         ]
