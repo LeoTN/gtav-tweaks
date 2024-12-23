@@ -23,8 +23,7 @@ These default variables are used to generate the config file template.
 Otherwise this can lead to fatal errors and failures!
 */
 
-configFile_onInit()
-{
+configFile_onInit() {
     ; Determines the location of the script's configuration file.
     global configFileLocation := A_ScriptDir . "\GTAV_Tweaks\GTAV_Tweaks.ini"
 
@@ -33,10 +32,12 @@ configFile_onInit()
 
     ; Defines if the script should ask the user for a brief explaination of it's core functions.
     global ASK_FOR_TUTORIAL := true
-    ; Launch script with windows.
-    global LAUNCH_WITH_WINDOWS := false
+    ; Launch script with GTA.
+    global LAUNCH_WITH_GTA := false
     ; Launch minimized.
     global LAUNCH_MINIMIZED := false
+    ; Minimize the script to tray when closing the main GUI.
+    global MINIMIZE_INSTEAD_OF_CLOSE := true
     ; Display a notification when launching.
     global DISPLAY_LAUNCH_NOTIFICATION := true
     ; Checks out the GitHub page for a new release.
@@ -69,8 +70,9 @@ configFile_onInit()
             "loadBuiltInHotkeys",
             "PREFERRED_LANGUAGE",
             "ASK_FOR_TUTORIAL",
-            "LAUNCH_WITH_WINDOWS",
+            "LAUNCH_WITH_GTA",
             "LAUNCH_MINIMIZED",
+            "MINIMIZE_INSTEAD_OF_CLOSE",
             "DISPLAY_LAUNCH_NOTIFICATION",
             "CHECK_FOR_UPDATES_AT_LAUNCH",
             "UPDATE_TO_BETA_VERSIONS",
@@ -92,13 +94,13 @@ configFile_onInit()
             "StartupSettings",
             "StartupSettings",
             "StartupSettings",
+            "StartupSettings",
             "GameSettings",
             "GameSettings",
             "GameSettings"
         ]
 
-    If (!FileExist(configFileLocation))
-    {
+    if (!FileExist(configFileLocation)) {
         global booleanFirstTimeLaunch := true
     }
     languages_onInit()
@@ -117,56 +119,50 @@ Does what the name implies.
 @param pBooleanShowPrompt [boolean] Show a prompt to create the config file or do it silent.
 @param pBooleanReloadScript [boolean] Reloads the script, when set to true.
 */
-createDefaultConfigFile(pBooleanCreateBackup := true, pBooleanShowPrompt := false, pBooleanReloadScript := false)
-{
-    If (pBooleanShowPrompt)
-    {
-        result := MsgBox(getLanguageArrayString("configFileMsgBox1_1"), getLanguageArrayString("configFileMsgBox1_2"), "YN Icon! 262144")
-        If (result == "No" || result == "Timeout")
-        {
-            Return
+createDefaultConfigFile(pBooleanCreateBackup := true, pBooleanShowPrompt := false, pBooleanReloadScript := false) {
+    if (pBooleanShowPrompt) {
+        result := MsgBox(getLanguageArrayString("configFileMsgBox1_1"), getLanguageArrayString("configFileMsgBox1_2"),
+        "YN Icon! 262144")
+        if (result == "No" || result == "Timeout") {
+            return
         }
     }
-    If (pBooleanCreateBackup)
-    {
-        If (!DirExist(SplitPath(configFileLocation, , &outDir)))
-        {
+    if (pBooleanCreateBackup) {
+        if (!DirExist(SplitPath(configFileLocation, , &outDir))) {
             DirCreate(outDir)
         }
-        If (FileExist(configFileLocation))
-        {
+        if (FileExist(configFileLocation)) {
             FileMove(configFileLocation, configFileLocation . "_old", true)
         }
     }
-    FileAppend("#Important note: When changing the config file, the script has to be reloaded for the changes to take effect!`n"
-        . "#You can find a hotkey list here: (https://www.autohotkey.com/docs/v2/Hotkeys.htm#Symbols)", configFileLocation)
+    FileAppend(
+        "#Important note: When changing the config file, the script has to be reloaded for the changes to take effect!`n"
+        . "#You can find a hotkey list here: (https://www.autohotkey.com/docs/v2/Hotkeys.htm#Symbols)",
+        configFileLocation)
     ; In case you forget to specify a section for EACH new config file entry this will remind you to do so :D
-    If (configVariableNameArray.Length != configSectionNameArray.Length)
-    {
+    if (configVariableNameArray.Length != configSectionNameArray.Length) {
         ; Those MsgBoxes typically only appear when changing the code. This means, that they don't need language support.
         MsgBox("Not every config file entry has been asigned to a section!`n`nPlease fix this by checking both arrays.",
             "GTAV Tweaks - Config File Status - Error", "O IconX 262144")
-        MsgBox(getLanguageArrayString("generalScriptMsgBox1_1"), getLanguageArrayString("generalScriptMsgBox1_2"), "O IconX T1.5")
-        ExitApp()
+        MsgBox(getLanguageArrayString("generalScriptMsgBox1_1"), getLanguageArrayString("generalScriptMsgBox1_2"),
+        "O IconX T1.5")
+        exitScriptWithNotification()
     }
-    Else
-    {
+    else {
         /*
         This it what it looked like before using an array to define all parameters.
         IniWrite(URL_FILE_LOCATION, configFileLocation, "FileLocations", "URL_FILE_LOCATION")
         */
-        Loop configVariableNameArray.Length
-        {
+        loop configVariableNameArray.Length {
             IniWrite(%configVariableNameArray.Get(A_Index)%, configFileLocation, configSectionNameArray.Get(A_Index),
-                configVariableNameArray.Get(A_Index))
+            configVariableNameArray.Get(A_Index))
         }
-        If (pBooleanShowPrompt)
-        {
-            MsgBox(getLanguageArrayString("configFileMsgBox2_1"), getLanguageArrayString("configFileMsgBox2_2"), "O Iconi T3")
+        if (pBooleanShowPrompt) {
+            MsgBox(getLanguageArrayString("configFileMsgBox2_1"), getLanguageArrayString("configFileMsgBox2_2"),
+            "O Iconi T3")
         }
     }
-    If (pBooleanReloadScript)
-    {
+    if (pBooleanReloadScript) {
         Reload()
     }
 }
@@ -179,53 +175,47 @@ if it does not exist on the current system.
 @param pBooleanCheckConfigFileStatus [boolean] If set to true, will check the config file integrity while reading.
 @returns [Any] A value from the config file.
 */
-readConfigFile(pOptionName, pBooleanAskForPathCreation := true, pBooleanCheckConfigFileStatus := true)
-{
+readConfigFile(pOptionName, pBooleanAskForPathCreation := true, pBooleanCheckConfigFileStatus := true) {
     global configVariableNameArray
     global configFileContentArray
     global booleanFirstTimeLaunch
 
-    If (pBooleanCheckConfigFileStatus)
-    {
+    if (pBooleanCheckConfigFileStatus) {
         checkConfigFileIntegrity()
     }
 
-    Loop (configVariableNameArray.Length)
-    {
+    loop (configVariableNameArray.Length) {
         ; Searches in the config file for the given option name to then extract the value.
-        If (InStr(configVariableNameArray.Get(A_Index), pOptionName, 0))
-        {
+        if (InStr(configVariableNameArray.Get(A_Index), pOptionName, 0)) {
             ; The following code only applies for path values.
             ; Everything else should be excluded.
-            If (InStr(configFileContentArray.Get(A_Index), "\"))
-            {
+            if (InStr(configFileContentArray.Get(A_Index), "\")) {
                 booleanCreatePathSilent := false
-                If (booleanFirstTimeLaunch)
-                {
+                if (booleanFirstTimeLaunch) {
                     pBooleanAskForPathCreation := false
                     booleanCreatePathSilent := true
                 }
-                If (!validatePath(configFileContentArray.Get(A_Index), pBooleanAskForPathCreation, booleanCreatePathSilent))
-                {
+                if (!validatePath(configFileContentArray.Get(A_Index), pBooleanAskForPathCreation,
+                booleanCreatePathSilent)) {
                     MsgBox(getLanguageArrayString("configFileMsgBox3_1", configVariableNameArray.Get(A_Index)),
-                        getLanguageArrayString("configFileMsgBox3_2"), "O Icon! 262144")
-                    MsgBox(getLanguageArrayString("generalScriptMsgBox1_1"), getLanguageArrayString("generalScriptMsgBox1_2"), "O IconX T1.5")
-                    ExitApp()
+                    getLanguageArrayString("configFileMsgBox3_2"), "O Icon! 262144")
+                    MsgBox(getLanguageArrayString("generalScriptMsgBox1_1"), getLanguageArrayString(
+                        "generalScriptMsgBox1_2"), "O IconX T1.5")
+                    exitScriptWithNotification()
                 }
-                Else
-                {
+                else {
                     ; This means that there was no error with the path given.
-                    Return configFileContentArray.Get(A_Index)
+                    return configFileContentArray.Get(A_Index)
                 }
             }
-            Else
-            {
-                Return configFileContentArray.Get(A_Index)
+            else {
+                return configFileContentArray.Get(A_Index)
             }
         }
     }
-    MsgBox(getLanguageArrayString("configFileMsgBox4_1", pOptionName), getLanguageArrayString("configFileMsgBox4_2"), "O IconX 262144")
-    ExitApp()
+    MsgBox(getLanguageArrayString("configFileMsgBox4_1", pOptionName), getLanguageArrayString("configFileMsgBox4_2"),
+    "O IconX 262144")
+    exitScriptWithNotification()
 }
 
 /*
@@ -233,35 +223,29 @@ Changes existing values in the config file.
 @param pOptionName [String] Should be the name of a config file option for example "ASK_FOR_TUTORIAL".
 @param pData [Any] The data to replace the old value with.
 */
-editConfigFile(pOptionName, pData)
-{
+editConfigFile(pOptionName, pData) {
     ; Basically the same as creating the config file.
-    Try
+    try
     {
-        Loop (configVariableNameArray.Length)
-        {
+        loop (configVariableNameArray.Length) {
             ; Searches in the config file for the given option name to then change the value.
-            If (InStr(configVariableNameArray.Get(A_Index), pOptionName, 0))
-            {
-                Try
+            if (InStr(configVariableNameArray.Get(A_Index), pOptionName, 0)) {
+                try
                 {
                     ; Check just in case the given data is an array.
-                    If (pData.Has(1))
-                    {
+                    if (pData.Has(1)) {
                         dataString := arrayToString(pData)
                         IniWrite(dataString, configFileLocation
                             , configSectionNameArray.Get(A_Index)
                             , configVariableNameArray.Get(A_Index))
                     }
-                    Else
-                    {
+                    else {
                         IniWrite(pData, configFileLocation
                             , configSectionNameArray.Get(A_Index)
                             , configVariableNameArray.Get(A_Index))
                     }
                 }
-                Catch
-                {
+                catch {
                     ; If the try statement fails the object above cannot be an array.
                     IniWrite(pData, configFileLocation
                         , configSectionNameArray.Get(A_Index)
@@ -270,8 +254,7 @@ editConfigFile(pOptionName, pData)
             }
         }
     }
-    Catch As error
-    {
+    catch as error {
         displayErrorMessage(error)
     }
 }
@@ -282,48 +265,43 @@ Reads the whole config file and throws an error when something is not right.
 the state of of the config file.
 @returns [boolean] True, if the config file is not corrupted. False otherwise.
 */
-checkConfigFileIntegrity(pBooleanResultOnly := false)
-{
+checkConfigFileIntegrity(pBooleanResultOnly := false) {
     global booleanFirstTimeLaunch
 
-    Loop (configVariableNameArray.Length)
-    {
-        Try
+    loop (configVariableNameArray.Length) {
+        try
         {
             ; Replaces every slot in the configFileContentArray with the value from the config file's content.
             configFileContentArray.InsertAt(A_Index, IniRead(configFileLocation, configSectionNameArray.Get(A_Index)
-                , configVariableNameArray.Get(A_Index)))
+            , configVariableNameArray.Get(A_Index)))
         }
-        Catch
-        {
-            If (pBooleanResultOnly)
-            {
-                Return false
+        catch {
+            if (pBooleanResultOnly) {
+                return false
             }
             ; Does not show a prompt when the script is launched for the very first time.
-            If (booleanFirstTimeLaunch)
-            {
+            if (booleanFirstTimeLaunch) {
                 createDefaultConfigFile()
-                Return true
+                return true
             }
             result := MsgBox(getLanguageArrayString("configFileMsgBox5_1"),
-                getLanguageArrayString("configFileMsgBox5_2"), "YN Icon! 262144")
-            Switch (result)
-            {
-                Case "Yes":
-                    {
-                        createDefaultConfigFile()
-                        Return true
-                    }
-                Default:
+            getLanguageArrayString("configFileMsgBox5_2"), "YN Icon! 262144")
+            switch (result) {
+                case "Yes":
                 {
-                    MsgBox(getLanguageArrayString("generalScriptMsgBox1_1"), getLanguageArrayString("generalScriptMsgBox1_2"), "O IconX T1.5")
-                    ExitApp()
+                    createDefaultConfigFile()
+                    return true
+                }
+                default:
+                {
+                    MsgBox(getLanguageArrayString("generalScriptMsgBox1_1"), getLanguageArrayString(
+                        "generalScriptMsgBox1_2"), "O IconX T1.5")
+                    exitScriptWithNotification()
                 }
             }
         }
     }
-    Return true
+    return true
 }
 
 /*
@@ -334,13 +312,12 @@ NOTE: pBooleanAskForPathCreation and pBooleanCreatePathSilent cannot be true at 
 @param pBooleanCreatePathSilent [boolean] If set to true, will create any valid directory, if it doesn't exist.
 @returns [boolean] True if a path is valid and false otherwise.
 */
-validatePath(pPath, pBooleanAskForPathCreation := true, pBooleanCreatePathSilent := false)
-{
-    If (pBooleanAskForPathCreation && pBooleanCreatePathSilent)
-    {
-        MsgBox("[" . A_ThisFunc . "()] [ERROR] pBooleanAskForPathCreation and pBooleanCreatePathSilent cannot be true at the "
+validatePath(pPath, pBooleanAskForPathCreation := true, pBooleanCreatePathSilent := false) {
+    if (pBooleanAskForPathCreation && pBooleanCreatePathSilent) {
+        MsgBox("[" . A_ThisFunc .
+            "()] [ERROR] pBooleanAskForPathCreation and pBooleanCreatePathSilent cannot be true at the "
             . "same time.`nTerminating script.", "GTAV Tweaks - [" . A_ThisFunc . "()]", "IconX 262144")
-        ExitApp()
+        exitScriptWithNotification()
     }
 
     ; SplitPath makes sure the last part of the whole path is removed.
@@ -351,74 +328,63 @@ validatePath(pPath, pBooleanAskForPathCreation := true, pBooleanCreatePathSilent
     ; Looks for one of the specified characters to identify invalid path names.
     ; Searches for common mistakes in the path name.
     specialChars := '<>"/|?*:'
-    Loop Parse (specialChars)
-    {
-        If (InStr(pathWithoutDrive, A_LoopField))
-        {
-            Return false
+    loop parse (specialChars) {
+        if (InStr(pathWithoutDrive, A_LoopField)) {
+            return false
         }
     }
     ; Checks if the path contains two or more or no "\".
-    If (RegExMatch(pPath, "\\{2,}") || !InStr(pPath, "\"))
-    {
-        Return false
+    if (RegExMatch(pPath, "\\{2,}") || !InStr(pPath, "\")) {
+        return false
     }
 
     ; This means the path has no file at the end.
-    If (outExtension == "")
-    {
-        If (!DirExist(pPath))
-        {
-            If (pBooleanAskForPathCreation)
-            {
+    if (outExtension == "") {
+        if (!DirExist(pPath)) {
+            if (pBooleanAskForPathCreation) {
                 result := MsgBox(getLanguageArrayString("configFileMsgBox6_1", pPath),
-                    getLanguageArrayString("configFileMsgBox6_1"), "YN Icon! 262144")
-                Switch (result)
-                {
-                    Case "Yes":
-                        {
-                            DirCreate(pPath)
-                        }
-                    Default:
+                getLanguageArrayString("configFileMsgBox6_1"), "YN Icon! 262144")
+                switch (result) {
+                    case "Yes":
                     {
-                        MsgBox(getLanguageArrayString("generalScriptMsgBox1_1"), getLanguageArrayString("generalScriptMsgBox1_2"), "O IconX T1.5")
-                        ExitApp()
+                        DirCreate(pPath)
+                    }
+                    default:
+                    {
+                        MsgBox(getLanguageArrayString("generalScriptMsgBox1_1"), getLanguageArrayString(
+                            "generalScriptMsgBox1_2"), "O IconX T1.5")
+                        exitScriptWithNotification()
                     }
                 }
             }
-            Else If (pBooleanCreatePathSilent)
-            {
+            else if (pBooleanCreatePathSilent) {
                 DirCreate(pPath)
             }
         }
     }
     ; This means the path has a file at the end, which has to be excluded.
-    Else
-    {
-        If (!DirExist(outDir))
-        {
-            If (pBooleanAskForPathCreation)
-            {
+    else {
+        if (!DirExist(outDir)) {
+            if (pBooleanAskForPathCreation) {
                 result := MsgBox(getLanguageArrayString("configFileMsgBox6_1", outDir),
-                    getLanguageArrayString("configFileMsgBox6_1"), "YN Icon! 262144")
-                Switch (result)
-                {
-                    Case "Yes":
-                        {
-                            DirCreate(outDir)
-                        }
-                    Default:
+                getLanguageArrayString("configFileMsgBox6_1"), "YN Icon! 262144")
+                switch (result) {
+                    case "Yes":
                     {
-                        MsgBox(getLanguageArrayString("generalScriptMsgBox1_1"), getLanguageArrayString("generalScriptMsgBox1_2"), "O IconX T1.5")
-                        ExitApp()
+                        DirCreate(outDir)
+                    }
+                    default:
+                    {
+                        MsgBox(getLanguageArrayString("generalScriptMsgBox1_1"), getLanguageArrayString(
+                            "generalScriptMsgBox1_2"), "O IconX T1.5")
+                        exitScriptWithNotification()
                     }
                 }
             }
-            Else If (pBooleanCreatePathSilent)
-            {
+            else if (pBooleanCreatePathSilent) {
                 DirCreate(outDir)
             }
         }
     }
-    Return true
+    return true
 }

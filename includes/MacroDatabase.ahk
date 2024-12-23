@@ -4,8 +4,7 @@
 SendMode "Input"
 CoordMode "Mouse", "Window"
 
-objects_onInit()
-{
+objects_onInit() {
     global customMacroObjectArray := []
     global macroConfigFileLocation
     global builtInHK_NameArray :=
@@ -19,8 +18,7 @@ objects_onInit()
     Suspend(true)
 }
 
-loadHotkeys()
-{
+loadHotkeys() {
     global ahkBaseFileLocation
     global macroConfigFileLocation
     global customMacroObjectArray
@@ -32,19 +30,16 @@ loadHotkeys()
     ; hotkeys to avoid overwriting their values.
     builtInHotkeysNeedToBeLoadedArray := builtInHK_NameArray
     ; Prepares all existing hotkeys to be loaded.
-    For (name in hotkeyNameArray)
-    {
+    for (name in hotkeyNameArray) {
         tmpObject := CustomMacro()
         tmpObject.ahkBaseFileLocation := ahkBaseFileLocation
         tmpObject.macroConfigFileLocation := macroConfigFileLocation
         ; Checks if the hotkey from the macro config file is a built-in hotkey.
         ; If that's the case, it won't be loaded afterwards.
-        Loop (builtInHotkeysNeedToBeLoadedArray.Length)
-        {
-            If (name == builtInHotkeysNeedToBeLoadedArray.Get(A_Index))
-            {
+        loop (builtInHotkeysNeedToBeLoadedArray.Length) {
+            if (name == builtInHotkeysNeedToBeLoadedArray.Get(A_Index)) {
                 builtInHotkeysNeedToBeLoadedArray.RemoveAt(A_Index)
-                Break
+                break
             }
         }
         ; This allows the custom macro object to load the rest of it's configuration from the macro config file all by itself.
@@ -56,34 +51,30 @@ loadHotkeys()
 
         ; Checks if a macro file path correction is required.
         SplitPath(tmpObject.macroFileLocation, &outFileName, &outDir)
-        If (!FileExist(tmpObject.macroFileLocation))
-        {
+        if (!FileExist(tmpObject.macroFileLocation)) {
             tmpNewMacroFileLocation := macroFilesStorageDirectory . "\" . outFileName
             ; This will allow users to copy & paste their macros from other locations because
             ; the macro file path will be updated (if possible) in the macro config file.
             ; Searches the macro file in the macro folder.
-            If (FileExist(tmpNewMacroFileLocation))
-            {
+            if (FileExist(tmpNewMacroFileLocation)) {
                 ; Updates the path.
                 tmpObject.macroFileLocation := tmpNewMacroFileLocation
                 tmpObject.saveMacroToFile()
             }
-            Else
-            {
-                MsgBox(getLanguageArrayString("objectsMsgBox1_1", tmpObject.name, tmpObject.macroFileLocation, tmpNewMacroFileLocation),
-                    getLanguageArrayString("objectsMsgBox1_2"), "O Icon! 262144")
+            else {
+                MsgBox(getLanguageArrayString("objectsMsgBox1_1", tmpObject.name, tmpObject.macroFileLocation,
+                    tmpNewMacroFileLocation),
+                getLanguageArrayString("objectsMsgBox1_2"), "O Icon! 262144")
             }
         }
         ; Applies the changes.
         customMacroObjectArray.Push(tmpObject)
     }
     ; This option determines if built-in hotkeys will be loaded or not.
-    If (!readConfigFile("loadBuiltInHotkeys"))
-    {
-        Return
+    if (!readConfigFile("loadBuiltInHotkeys")) {
+        return
     }
-    For (name in builtInHotkeysNeedToBeLoadedArray)
-    {
+    for (name in builtInHotkeysNeedToBeLoadedArray) {
         loadBuiltInHotkey(name)
     }
 }
@@ -92,8 +83,7 @@ loadHotkeys()
 Loads one or all built-in hotkeys.
 @param pHotkeyname [String] Should be the name of a built-in hotkey to load.
 */
-loadBuiltInHotkey(pHotkeyName)
-{
+loadBuiltInHotkey(pHotkeyName) {
     global ahkBaseFileLocation
     global macroConfigFileLocation
     global customMacroObjectArray
@@ -118,8 +108,7 @@ loadBuiltInHotkey(pHotkeyName)
             builtInHKLocation_createSololobby
         ]
 
-    For (name in hotkeyNameArray)
-    {
+    for (name in hotkeyNameArray) {
         tmpObject := CustomMacro()
         tmpObject.name := hotkeyNameArray.Get(A_Index)
         tmpObject.description := hotkeyDescriptionArray.Get(A_Index)
@@ -128,8 +117,7 @@ loadBuiltInHotkey(pHotkeyName)
         tmpObject.ahkBaseFileLocation := ahkBaseFileLocation
         tmpObject.macroConfigFileLocation := macroConfigFileLocation
         ; This will only load one hotkey.
-        If (name == pHotkeyName)
-        {
+        if (name == pHotkeyName) {
             tmpObject.saveMacroToFile()
             customMacroObjectArray.Push(tmpObject)
         }
@@ -141,30 +129,26 @@ Scanns a given hotkey config file for it's hotkey names.
 The names will be later used by the CustomMacro objects to load the corresponding hotkeys from the config file.
 @returns [Array] An array which contains all hotkey's names.
 */
-scanFileForHotkeyNames()
-{
+scanFileForHotkeyNames() {
     global macroConfigFileLocation
     hotkeyNameArray := []
 
-    Loop Read (macroConfigFileLocation)
-    {
+    loop read (macroConfigFileLocation) {
         ; Finds every string at the start of a new line which equals to this pattern: [any letters or numbers].
-        If (!RegExMatch(A_LoopReadLine, "A)\[.+?\]", &match))
-        {
-            Continue
+        if (!RegExMatch(A_LoopReadLine, "A)\[.+?\]", &match)) {
+            continue
         }
         matchString := match[]
         ; Ignores the standard text.
-        If (InStr(matchString, "[CustomHotkeysBelow]"))
-        {
-            Continue
+        if (InStr(matchString, "[CustomHotkeysBelow]")) {
+            continue
         }
         ; Removes the brackets at the start and end.
         matchString := StrReplace(matchString, "[",)
         matchString := StrReplace(matchString, "]")
         hotkeyNameArray.Push(matchString)
     }
-    Return hotkeyNameArray
+    return hotkeyNameArray
 }
 
 /*
@@ -176,53 +160,45 @@ Edits an already existing hotkey in the macro config file.
 @param pHotkeyMacroFileLocation [String] Should be a valid path to a macro file.
 @returns [boolean] True if the hotkey was edited successfully. False otherwise
 */
-editHotkey(pHotkeyArrayIndex, pHotkeyName, pHotkeyDescription, pHotkeyHotkey, pHotkeyMacroFileLocation)
-{
+editHotkey(pHotkeyArrayIndex, pHotkeyName, pHotkeyDescription, pHotkeyHotkey, pHotkeyMacroFileLocation) {
     global customMacroObjectArray
     global customHotkeyNameArray
     global ahkBaseFileLocation
     global macroConfigFileLocation
 
-    If (!customHotkeyNameArray.Has(pHotkeyArrayIndex))
-    {
-        MsgBox("[" . A_ThisFunc . "()] [ERROR] Invalid customHotkeyNameArray index received: [" . pHotkeyArrayIndex . "]."
+    if (!customHotkeyNameArray.Has(pHotkeyArrayIndex)) {
+        MsgBox("[" . A_ThisFunc . "()] [ERROR] Invalid customHotkeyNameArray index received: [" . pHotkeyArrayIndex .
+            "]."
             , "GTAV Tweaks - [" . A_ThisFunc . "()]", "Icon! 262144")
-        Return false
+        return false
     }
     ; Checks for already exsiting properties in the existing hotkeys with the only exception being the currently edited hotkey.
-    For (object in customMacroObjectArray)
-    {
+    for (object in customMacroObjectArray) {
         ; This skips the hotkey that is currently being edited.
-        If (A_Index == pHotkeyArrayIndex)
-        {
-            Continue
+        if (A_Index == pHotkeyArrayIndex) {
+            continue
         }
-        Else If (object.name == pHotkeyName)
-        {
+        else if (object.name == pHotkeyName) {
             MsgBox(getLanguageArrayString("objectsMsgBox2_1", object.name),
-                getLanguageArrayString("objectsMsgBox2_2"), "O Icon! 262144 T2")
-            Return false
+            getLanguageArrayString("objectsMsgBox2_2"), "O Icon! 262144 T2")
+            return false
         }
-        Else If (object.hotkey == pHotkeyHotkey)
-        {
+        else if (object.hotkey == pHotkeyHotkey) {
             MsgBox(getLanguageArrayString("objectsMsgBox3_1", object.name),
-                getLanguageArrayString("objectsMsgBox3_2"), "O Icon! 262144 T2")
-            Return false
+            getLanguageArrayString("objectsMsgBox3_2"), "O Icon! 262144 T2")
+            return false
         }
     }
-    Try
+    try
     {
         currentlyEditedHotkeyObject := customMacroObjectArray.Get(pHotkeyArrayIndex)
         tmpFileCache := ""
-        Loop Read (currentlyEditedHotkeyObject.macroConfigFileLocation)
-        {
+        loop read (currentlyEditedHotkeyObject.macroConfigFileLocation) {
             ; Searches the section from the old hotkey and renames it.
-            If (A_LoopReadLine == "[" . currentlyEditedHotkeyObject.name . "]")
-            {
+            if (A_LoopReadLine == "[" . currentlyEditedHotkeyObject.name . "]") {
                 tmpFileCache .= "[" . pHotkeyName . "]`n"
             }
-            Else
-            {
+            else {
                 tmpFileCache .= A_LoopReadLine . "`n"
             }
         }
@@ -243,23 +219,21 @@ editHotkey(pHotkeyArrayIndex, pHotkeyName, pHotkeyDescription, pHotkeyHotkey, pH
         ; Applies the changes by pushing the edited object back into the array.
         customMacroObjectArray.InsertAt(pHotkeyArrayIndex, currentlyEditedHotkeyObject)
         ; Updates the hotkey activation status.
-        If (customMacroObjectArray.Get(pHotkeyArrayIndex).isEnabled)
-        {
+        if (customMacroObjectArray.Get(pHotkeyArrayIndex).isEnabled) {
             customMacroObjectArray.Get(pHotkeyArrayIndex).enableHotkey()
         }
-        Else
-        {
+        else {
             customMacroObjectArray.Get(pHotkeyArrayIndex).disableHotkey()
         }
         ; Refreshes the overview GUI.
         handleCustomHotkeyOverviewGUI_fillInValuesFromCustomMacroObject()
-        MsgBox(getLanguageArrayString("objectsMsgBox4_1"), getLanguageArrayString("objectsMsgBox4_2"), "O Iconi 262144 T0.75")
-        Return true
+        MsgBox(getLanguageArrayString("objectsMsgBox4_1"), getLanguageArrayString("objectsMsgBox4_2"),
+        "O Iconi 262144 T0.75")
+        return true
     }
-    Catch As error
-    {
+    catch as error {
         displayErrorMessage(error)
-        Return false
+        return false
     }
 }
 
@@ -271,30 +245,26 @@ Creates a new custom hotkey.
 @param pHotkeyMacroFileLocation [String] Should be a valid path to a macro file.
 @returns [boolean] True if the hotkey was edited successfully. False otherwise
 */
-createHotkey(pHotkeyName, pHotkeyDescription, pHotkeyHotkey, pHotkeyMacroFileLocation)
-{
+createHotkey(pHotkeyName, pHotkeyDescription, pHotkeyHotkey, pHotkeyMacroFileLocation) {
     global customMacroObjectArray
     global customHotkeyNameArray
     global ahkBaseFileLocation
     global macroConfigFileLocation
 
     ; Checks for already exsiting properties in the existing hotkeys.
-    For (object in customMacroObjectArray)
-    {
-        If (object.name == pHotkeyName)
-        {
+    for (object in customMacroObjectArray) {
+        if (object.name == pHotkeyName) {
             MsgBox(getLanguageArrayString("objectsMsgBox2_1", object.name),
-                getLanguageArrayString("objectsMsgBox2_2"), "O Icon! 262144 T2")
-            Return false
+            getLanguageArrayString("objectsMsgBox2_2"), "O Icon! 262144 T2")
+            return false
         }
-        Else If (object.hotkey == pHotkeyHotkey)
-        {
+        else if (object.hotkey == pHotkeyHotkey) {
             MsgBox(getLanguageArrayString("objectsMsgBox3_1", object.name),
-                getLanguageArrayString("objectsMsgBox3_2"), "O Icon! 262144 T2")
-            Return false
+            getLanguageArrayString("objectsMsgBox3_2"), "O Icon! 262144 T2")
+            return false
         }
     }
-    Try
+    try
     {
         newMacroObject := CustomMacro()
         ; Adds the values from the GUI.
@@ -310,23 +280,21 @@ createHotkey(pHotkeyName, pHotkeyDescription, pHotkeyHotkey, pHotkeyMacroFileLoc
         ; Adds the new hotkey to the array.
         customMacroObjectArray.Push(newMacroObject)
         ; Updates the hotkey activation status.
-        If (customMacroObjectArray.Get(customMacroObjectArray.Length).isEnabled)
-        {
+        if (customMacroObjectArray.Get(customMacroObjectArray.Length).isEnabled) {
             customMacroObjectArray.Get(customMacroObjectArray.Length).enableHotkey()
         }
-        Else
-        {
+        else {
             customMacroObjectArray.Get(customMacroObjectArray.Length).disableHotkey()
         }
         ; Refreshes the overview GUI.
         handleCustomHotkeyOverviewGUI_fillInValuesFromCustomMacroObject()
-        MsgBox(getLanguageArrayString("objectsMsgBox4_1"), getLanguageArrayString("objectsMsgBox4_2"), "O Iconi 262144 T0.75")
-        Return true
+        MsgBox(getLanguageArrayString("objectsMsgBox4_1"), getLanguageArrayString("objectsMsgBox4_2"),
+        "O Iconi 262144 T0.75")
+        return true
     }
-    Catch As error
-    {
+    catch as error {
         displayErrorMessage(error)
-        Return false
+        return false
     }
 }
 
@@ -335,10 +303,8 @@ Creates a custom macro object. It has all properties required to create a custom
 If the macro config file (where all custom macros are saved) does not exist, it will produce an error!
 @returns [Any] Can return multiple values depending on which functions are called.
 */
-class CustomMacro
-{
-    __New()
-    {
+class CustomMacro {
+    __New() {
         this.name := "new_custom_macro"
         this.description := "new_custom_macro_description"
         this.hotkey := "new_custom_macro_hotkey"
@@ -347,27 +313,24 @@ class CustomMacro
         this.ahkBaseFileLocation := "new_custom_macro_ahk_base_file_location"
         this.isEnabled := true
     }
-    saveMacroToFile()
-    {
-        If (!this.integrityCheck())
-        {
-            Return false
+    saveMacroToFile() {
+        if (!this.integrityCheck()) {
+            return false
         }
         IniWrite(this.description, this.macroConfigFileLocation, this.name, "Description")
         IniWrite(this.hotkey, this.macroConfigFileLocation, this.name, "Hotkey")
         IniWrite(this.macroFileLocation, this.macroConfigFileLocation, this.name, "MacroFileLocation")
         IniWrite(this.isEnabled, this.macroConfigFileLocation, this.name, "Enabled")
-        Return true
+        return true
     }
-    loadMacroFromFile()
-    {
+    loadMacroFromFile() {
         ; Checks if the config file exists.
-        If (!this.isMacroConfigFileExisting())
-        {
+        if (!this.isMacroConfigFileExisting()) {
             SplitPath(this.macroConfigFileLocation, &outFileName, &outDir)
-            MsgBox("[" . A_ThisFunc . "() from {" . this.name . "}]`n`n[WARNING] Macro config file [" . outFileName . "] not found "
+            MsgBox("[" . A_ThisFunc . "() from {" . this.name . "}]`n`n[WARNING] Macro config file [" . outFileName .
+                "] not found "
                 . "at [" . outDir . "]!`n`n", "GTAV Tweaks - [" . A_ThisFunc . "()]", "Icon! 262144")
-            Return false
+            return false
         }
         ; If a hotkey was marked as active in the config file, it would become deactivated while loading. This variable
         ; remebers the original state and reactivates the hotkey after it has been loaded.
@@ -375,115 +338,103 @@ class CustomMacro
         ; Disables the hotkey because in case the key changes while loading the file, the old hotkey would become
         ; a "ghost" hotkey, which is replaced by the new one from the file. By disabeling the hotkey temporarily, we avoid
         ; duplicate hotkeys calling the same macro file.
-        If (this.isEnabled)
-        {
+        if (this.isEnabled) {
             this.disableHotkey()
         }
         this.description := IniRead(this.macroConfigFileLocation, this.name, "Description", "empty_description")
         this.hotkey := IniRead(this.macroConfigFileLocation, this.name, "Hotkey", "empty_hotkey")
-        this.macroFileLocation := IniRead(this.macroConfigFileLocation, this.name, "MacroFileLocation", "empty_macroFileLocation")
+        this.macroFileLocation := IniRead(this.macroConfigFileLocation, this.name, "MacroFileLocation",
+            "empty_macroFileLocation")
         this.isEnabled := IniRead(this.macroConfigFileLocation, this.name, "Enabled", "empty_enabled")
-        If (!this.integrityCheck())
-        {
-            Return false
+        if (!this.integrityCheck()) {
+            return false
         }
         ; Calling this function here updates the hotkey if necessary. See comment above for more information.
-        If (this.isEnabled || hotkeyWasEnabled)
-        {
+        if (this.isEnabled || hotkeyWasEnabled) {
             this.enableHotkey()
         }
-        Return true
+        return true
     }
-    deleteHotkey()
-    {
+    deleteHotkey() {
         ; Checks if the config file exists.
-        If (!this.isMacroConfigFileExisting())
-        {
+        if (!this.isMacroConfigFileExisting()) {
             SplitPath(this.macroConfigFileLocation, &outFileName, &outDir)
-            MsgBox("[" . A_ThisFunc . "() from {" . this.name . "}]`n`n[WARNING] Macro config file [" . outFileName . "] not found "
+            MsgBox("[" . A_ThisFunc . "() from {" . this.name . "}]`n`n[WARNING] Macro config file [" . outFileName .
+                "] not found "
                 . "at [" . outDir . "]!`n`n", "GTAV Tweaks - [" . A_ThisFunc . "()]", "Icon! 262144")
-            Return false
+            return false
         }
         IniDelete(this.macroConfigFileLocation, this.name)
     }
-    enableHotkey()
-    {
+    enableHotkey() {
         this.isEnabled := true
         Hotkey(this.hotkey, (*) => RunWait(this.ahkBaseFileLocation . ' "' . this.macroFileLocation . '"'), "On")
         ; Changes the enabled value in the config file.
         IniWrite(this.isEnabled, this.macroConfigFileLocation, this.name, "Enabled")
-        Return true
+        return true
     }
-    disableHotkey()
-    {
+    disableHotkey() {
         this.isEnabled := false
         Hotkey(this.hotkey, (*) => RunWait(this.ahkBaseFileLocation . ' "' . this.macroFileLocation . '"'), "Off")
         ; Changes the enabled value in the config file.
         IniWrite(this.isEnabled, this.macroConfigFileLocation, this.name, "Enabled")
-        Return true
+        return true
     }
     /*
     Checks if all variables contain a valid value and if required files are present.
     @returns [boolean] True if all checks have passed. False otherwise.
     */
-    integrityCheck()
-    {
-        If (!this.isHotkeyValid())
-        {
-            MsgBox("[" . A_ThisFunc . "() from {" . this.name . "}]`n`n[WARNING] Invalid hotkey found: [" . this.hotkey . "]!`n`n"
+    integrityCheck() {
+        if (!this.isHotkeyValid()) {
+            MsgBox("[" . A_ThisFunc . "() from {" . this.name . "}]`n`n[WARNING] Invalid hotkey found: [" . this.hotkey .
+                "]!`n`n"
                 , "GTAV Tweaks - [" . A_ThisFunc . "()]", "Icon! 262144")
-            Return false
+            return false
         }
-        Else If (!this.isMacroFileExisting())
-        {
+        else if (!this.isMacroFileExisting()) {
             SplitPath(this.macroFileLocation, &outFileName, &outDir)
-            MsgBox("[" . A_ThisFunc . "() from {" . this.name . "}]`n`n[WARNING] Macro file [" . outFileName . "] not found "
+            MsgBox("[" . A_ThisFunc . "() from {" . this.name . "}]`n`n[WARNING] Macro file [" . outFileName .
+                "] not found "
                 . "at [" . outDir . "]!`n`n", "GTAV Tweaks - [" . A_ThisFunc . "()]", "Icon! 262144")
-            Return false
+            return false
         }
-        Else If (!this.isMacroConfigFileExisting())
-        {
+        else if (!this.isMacroConfigFileExisting()) {
             SplitPath(this.macroConfigFileLocation, &outFileName, &outDir)
-            MsgBox("[" . A_ThisFunc . "() from {" . this.name . "}]`n`n[WARNING] Macro config file [" . outFileName . "] not found "
+            MsgBox("[" . A_ThisFunc . "() from {" . this.name . "}]`n`n[WARNING] Macro config file [" . outFileName .
+                "] not found "
                 . "at [" . outDir . "]!`n`n", "GTAV Tweaks - [" . A_ThisFunc . "()]", "Icon! 262144")
-            Return false
+            return false
         }
-        Else If (!FileExist(this.ahkBaseFileLocation))
-        {
+        else if (!FileExist(this.ahkBaseFileLocation)) {
             SplitPath(this.ahkBaseFileLocation, &outFileName, &outDir)
-            MsgBox("[" . A_ThisFunc . "() from {" . this.name . "}]`n`n[WARNING] AutoHotkey base file [" . outFileName . "] not found "
+            MsgBox("[" . A_ThisFunc . "() from {" . this.name . "}]`n`n[WARNING] AutoHotkey base file [" . outFileName .
+                "] not found "
                 . "at [" . outDir . "]!`n`n", "GTAV Tweaks - [" . A_ThisFunc . "()]", "Icon! 262144")
-            Return false
+            return false
         }
-        Return true
+        return true
     }
     ; Creates an empty hotkey to validate the value inside the hotkey property.
-    isHotkeyValid()
-    {
-        Try
+    isHotkeyValid() {
+        try
         {
             Hotkey(this.hotkey, (*) => "Off")
-            Return true
+            return true
         }
-        Catch
-        {
-            Return false
+        catch {
+            return false
         }
     }
-    isMacroFileExisting()
-    {
-        If (FileExist(this.macroFileLocation))
-        {
-            Return true
+    isMacroFileExisting() {
+        if (FileExist(this.macroFileLocation)) {
+            return true
         }
-        Return false
+        return false
     }
-    isMacroConfigFileExisting()
-    {
-        If (FileExist(this.macroConfigFileLocation))
-        {
-            Return true
+    isMacroConfigFileExisting() {
+        if (FileExist(this.macroConfigFileLocation)) {
+            return true
         }
-        Return false
+        return false
     }
 }

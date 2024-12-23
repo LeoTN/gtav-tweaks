@@ -4,8 +4,7 @@
 SendMode "Input"
 CoordMode "Mouse", "Window"
 
-languages_onInit()
-{
+languages_onInit() {
     global configFileLocation
     ; Check for sufficient tmpKeys in the main GUI script at the language menu, when adding more langues!
     global languageCodeMap := Map(
@@ -15,20 +14,17 @@ languages_onInit()
         "Deutsch", "0407"
     )
 
-    If (!FileExist(configFileLocation) || !checkConfigFileIntegrity(true))
-    {
+    if (!FileExist(configFileLocation) || !checkConfigFileIntegrity(true)) {
         createDefaultConfigFile()
         ; When there is no config file, the script will try to use the system language. Basically the same as "SYSTEM".
         global completeLanguageArrayMap := createLanguageArrayMap(A_Language)
-        Return
+        return
     }
-    For key, value in languageCodeMap
-    {
+    for key, value in languageCodeMap {
         ; Tries to identify the language in the config file.
-        If (InStr(readConfigFile("PREFERRED_LANGUAGE"), key))
-        {
+        if (InStr(readConfigFile("PREFERRED_LANGUAGE"), key)) {
             global completeLanguageArrayMap := createLanguageArrayMap(value)
-            Return
+            return
         }
     }
     ; This is a fail safe.
@@ -48,8 +44,7 @@ in the corresponding specificLanguageArray.
 from the pVar parameters in order.
 */
 getLanguageArrayString(completeLanguageArrayMapKey, pVar1 := "language_pVar1_unset", pVar2 := "language_pVar2_unset",
-    pVar3 := "language_pVar3_unset", pVar4 := "language_pVar4_unset", pVar5 := "language_pVar5_unset")
-{
+    pVar3 := "language_pVar3_unset", pVar4 := "language_pVar4_unset", pVar5 := "language_pVar5_unset") {
     global completeLanguageArrayMap
     ; These values are reversed because we use the Pop() method. If the first element is the last in the array, the Pop() method
     ; will insert the first value as the first filler into the completeLanguageArrayMap.
@@ -60,25 +55,23 @@ getLanguageArrayString(completeLanguageArrayMapKey, pVar1 := "language_pVar1_uns
         pVar2,
         pVar1
     ]
-    If (!completeLanguageArrayMap.Has(completeLanguageArrayMapKey))
-    {
-        MsgBox("[" . A_ThisFunc . "()] [ERROR] Invalid key for completeLanguageArrayMap received: [" . completeLanguageArrayMapKey . "]",
+    if (!completeLanguageArrayMap.Has(completeLanguageArrayMapKey)) {
+        MsgBox("[" . A_ThisFunc . "()] [ERROR] Invalid key for completeLanguageArrayMap received: [" .
+            completeLanguageArrayMapKey . "]",
             "GTAV Tweaks - [" . A_ThisFunc . "()]", "IconX 262144")
-        Return "A language error happened! [Invalid completeLanguageArrayMapKey!]"
+        return "A language error happened! [Invalid completeLanguageArrayMapKey!]"
     }
     ; This represents a specific array, which contains the complete content for one MsgBox or text field.
     specificCompleteLanguageArray := completeLanguageArrayMap.Get(completeLanguageArrayMapKey)
     ; This makes sure, that for every emtpy space ("") inside the specificCompleteLanguageArray, there is a value given to fill in.
     tmpVarArray := varArray.Clone()
-    For (string in specificCompleteLanguageArray)
-    {
+    for (string in specificCompleteLanguageArray) {
         ; When there is an emtpy space, the varArray must contain a value to fill into that gap.
-        If (string == "" && InStr(tmpVarArray.Pop(), "language_pVar", true))
-        {
+        if (string == "" && InStr(tmpVarArray.Pop(), "language_pVar", true)) {
             MsgBox("[" . A_ThisFunc . "()] [WARNING] Not enough pVar parameters given for this language array: ["
                 . completeLanguageArrayMapKey . "]!",
                 "GTAV Tweaks - [" . A_ThisFunc . "()]", "Icon! 262144")
-            Return "A language error happened! [Not enough pVar parameters received!]"
+            return "A language error happened! [Not enough pVar parameters received!]"
         }
     }
 
@@ -87,31 +80,26 @@ getLanguageArrayString(completeLanguageArrayMapKey, pVar1 := "language_pVar1_uns
     ; pVar values are now filled.
     tmpSpecificCompleteLanguageArray := specificCompleteLanguageArray.Clone()
     ; Replaces all empty spaces with the values given in the varArray.
-    Loop (tmpSpecificCompleteLanguageArray.Length)
-    {
-        If (tmpSpecificCompleteLanguageArray.Get(A_Index) == "")
-        {
+    loop (tmpSpecificCompleteLanguageArray.Length) {
+        if (tmpSpecificCompleteLanguageArray.Get(A_Index) == "") {
             tmpSpecificCompleteLanguageArray[A_Index] := varArray.Pop()
         }
     }
     ; Builds the final string to display in a MsgBox or text field.
-    For (string in tmpSpecificCompleteLanguageArray)
-    {
+    for (string in tmpSpecificCompleteLanguageArray) {
         finalLanguageString .= string
         ; Looks at the end of the current string. If it ends with "[" or "]" or "`n",
         ; we should not add an emtpy space at the end.
-        If (RegExMatch(string, "((\n|\[|\])+)$") || !tmpSpecificCompleteLanguageArray.Has(A_Index + 1))
-        {
-            Continue
+        if (RegExMatch(string, "((\n|\[|\])+)$") || !tmpSpecificCompleteLanguageArray.Has(A_Index + 1)) {
+            continue
         }
         ; Checks if the next string in the array starts not with "[" or "]" or "`n".
         ; If that's the case, we can safely add an emtpy space between them with no ugly missalignments.
-        If (!RegExMatch(tmpSpecificCompleteLanguageArray.Get(A_Index + 1), "^((\n|\[|\])+)"))
-        {
+        if (!RegExMatch(tmpSpecificCompleteLanguageArray.Get(A_Index + 1), "^((\n|\[|\])+)")) {
             finalLanguageString .= A_Space
         }
     }
-    Return finalLanguageString
+    return finalLanguageString
 }
 
 /*
@@ -122,16 +110,14 @@ The function mentioned above also creates a complete string out of the array.
 @param pLanguageCode [int] Should be a valid language code to define which language will be used for the text elements.
 @returns [Map] A map object containing the languageArrays for the language specified with the pLanguageCode parameter.
 */
-createLanguageArrayMap(pLanguageCode)
-{
+createLanguageArrayMap(pLanguageCode) {
     ; See AutoHotkey documentation "A_Language" for more information.
     /*
     +++++++++++++++
     German_Standard
     +++++++++++++++
     */
-    If (pLanguageCode == "0407")
-    {
+    if (pLanguageCode == "0407") {
         ; Main GUI
         ; ********
         mainGUI_1 := [
@@ -167,6 +153,9 @@ createLanguageArrayMap(pLanguageCode)
         mainGUI_11 := [
             "Nachricht beim Start von GTA anzeigen"
         ]
+        mainGUI_12 := [
+            "Das Skript minimieren beim Schließen dieses Fensters"
+        ]
         ; Main GUI menus
         ; **************
         mainGUIMenu_1 := [
@@ -176,7 +165,7 @@ createLanguageArrayMap(pLanguageCode)
             "Optionen"
         ]
         mainGUIMenu_3 := [
-            "Hotkey && Makros"
+            "Hotkeys && Makros"
         ]
         mainGUIMenu_4 := [
             "Hilfe"
@@ -266,6 +255,9 @@ createLanguageArrayMap(pLanguageCode)
         ]
         mainGUIToolTip_8 := [
             "Zeigt mit Hilfe einer Nachricht an, dass GTA V gestartet wurde."
+        ]
+        mainGUIToolTip_9 := [
+            "Minimiert das Skript anstatt es beim Schließen des Hauptfensters zu beenden."
         ]
         ; Hotkey Overview GUI
         ; ###################
@@ -448,6 +440,12 @@ createLanguageArrayMap(pLanguageCode)
         generalScriptTrayTip2_2 := [
             "GTAV Tweaks - Status"
         ]
+        generalScriptTrayTip3_1 := [
+            "GTAV Tweaks beendet."
+        ]
+        generalScriptTrayTip3_2 := [
+            "GTAV Tweaks - Status"
+        ]
         ; Macro Recorder TrayTips
         ; #######################
         macroRecorderTrayTip1_1 := [
@@ -456,7 +454,7 @@ createLanguageArrayMap(pLanguageCode)
             "] um die Aufnahme zu beenden."
         ]
         macroRecorderTrayTip1_2 := [
-            "Makro Aufnahme Gestartet"
+            "Makro Aufnahme gestartet"
         ]
         macroRecorderTrayTip2_1 := [
             "Datei gespeichert unter [",
@@ -464,7 +462,7 @@ createLanguageArrayMap(pLanguageCode)
             "]."
         ]
         macroRecorderTrayTip2_2 := [
-            "Makro Aufnahme Gestoppt"
+            "Makro Aufnahme gestoppt"
         ]
         ; General Script MsgBoxes
         ; #######################
@@ -553,12 +551,6 @@ createLanguageArrayMap(pLanguageCode)
         ]
         functionsMsgBox2_2 := [
             "GTAV Tweaks - Fehlende README-Datei"
-        ]
-        functionsMsgBox3_1 := [
-            "Es scheint bereits eine Verknüpfung im Autostartordner zu geben.`n`nWillst du sie überschreiben?"
-        ]
-        functionsMsgBox3_2 := [
-            "GTAV Tweaks - Vorhandene Autostart-Verknüpfung gefunden"
         ]
         ; Main GUI MsgBoxes
         ; #################
@@ -787,9 +779,9 @@ createLanguageArrayMap(pLanguageCode)
         ; Built-in Hotkey Description
         ; #########################
         builtInHotkeyDescription_1 := [
-            "Hält die W Taste geDrücket und sendet hin und wieder Numpad Up.",
+            "Hält die W Taste gedrücket und sendet hin und wieder Numpad Up.",
             "Dieser Hotkey eignet sich zum Beispiel gut zum AFK Laufen, Fahren oder Fliegen von Flugzeugen.",
-            "Wenn der Hotkey erneut geDrücket wird, werden die Tasten losgelassen.",
+            "Wenn der Hotkey erneut gedrücket wird, werden die Tasten losgelassen.",
             ; The empty space is intended.
             " [Das hier ist ein eingebauter Hotkey]"
         ]
@@ -800,8 +792,7 @@ createLanguageArrayMap(pLanguageCode)
         ]
     }
     ; The fallback language is english.
-    Else
-    {
+    else {
         ; Main GUI
         ; ########
         mainGUI_1 := [
@@ -836,6 +827,9 @@ createLanguageArrayMap(pLanguageCode)
         ]
         mainGUI_11 := [
             "Display message when launching GTA"
+        ]
+        mainGUI_12 := [
+            "Minimize to tray when closing this window"
         ]
         ; Main GUI menus
         ; **************
@@ -934,6 +928,9 @@ createLanguageArrayMap(pLanguageCode)
         ]
         mainGUIToolTip_8 := [
             "Displays a little message which indicates that GTA V has been launched."
+        ]
+        mainGUIToolTip_9 := [
+            "Minimizes the script instead of exiting it when closing the main window."
         ]
         ; Hotkey Overview GUI
         ; ###################
@@ -1116,6 +1113,12 @@ createLanguageArrayMap(pLanguageCode)
         generalScriptTrayTip2_2 := [
             "GTAV Tweaks - Status"
         ]
+        generalScriptTrayTip3_1 := [
+            "GTAV Tweaks terminated."
+        ]
+        generalScriptTrayTip3_2 := [
+            "GTAV Tweaks - Status"
+        ]
         ; Macro Recorder TrayTips
         ; #######################
         macroRecorderTrayTip1_1 := [
@@ -1124,7 +1127,7 @@ createLanguageArrayMap(pLanguageCode)
             "] to stop recording."
         ]
         macroRecorderTrayTip1_2 := [
-            "Macro Recording Started"
+            "Macro recording started"
         ]
         macroRecorderTrayTip2_1 := [
             "File saved at [",
@@ -1132,7 +1135,7 @@ createLanguageArrayMap(pLanguageCode)
             "]."
         ]
         macroRecorderTrayTip2_2 := [
-            "Macro Recording Stopped"
+            "Macro recording stopped"
         ]
         ; General Script MsgBoxes
         ; #######################
@@ -1221,12 +1224,6 @@ createLanguageArrayMap(pLanguageCode)
         ]
         functionsMsgBox2_2 := [
             "GTAV Tweaks - Missing README File"
-        ]
-        functionsMsgBox3_1 := [
-            "There seems to be a shortcut in the autostart folder already.`n`nWould you like to overwrite it?"
-        ]
-        functionsMsgBox3_2 := [
-            "GTAV Tweaks - Found Existing Autostart Shortcut"
         ]
         ; Main GUI MsgBoxes
         ; #################
@@ -1476,6 +1473,7 @@ createLanguageArrayMap(pLanguageCode)
         "mainGUI_9", mainGUI_9,
         "mainGUI_10", mainGUI_10,
         "mainGUI_11", mainGUI_11,
+        "mainGUI_12", mainGUI_12,
         "mainGUIMenu_1", mainGUIMenu_1,
         "mainGUIMenu_2", mainGUIMenu_2,
         "mainGUIMenu_3", mainGUIMenu_3,
@@ -1504,6 +1502,7 @@ createLanguageArrayMap(pLanguageCode)
         "mainGUIToolTip_6", mainGUIToolTip_6,
         "mainGUIToolTip_7", mainGUIToolTip_7,
         "mainGUIToolTip_8", mainGUIToolTip_8,
+        "mainGUIToolTip_9", mainGUIToolTip_9,
         "hotkeyOverviewGUI_1", hotkeyOverviewGUI_1,
         "hotkeyOverviewGUI_2", hotkeyOverviewGUI_2,
         "hotkeyOverviewGUI_3", hotkeyOverviewGUI_3,
@@ -1553,6 +1552,8 @@ createLanguageArrayMap(pLanguageCode)
         "generalScriptTrayTip1_2", generalScriptTrayTip1_2,
         "generalScriptTrayTip2_1", generalScriptTrayTip2_1,
         "generalScriptTrayTip2_2", generalScriptTrayTip2_2,
+        "generalScriptTrayTip3_1", generalScriptTrayTip3_1,
+        "generalScriptTrayTip3_2", generalScriptTrayTip3_2,
         "macroRecorderTrayTip1_1", macroRecorderTrayTip1_1,
         "macroRecorderTrayTip1_2", macroRecorderTrayTip1_2,
         "macroRecorderTrayTip2_1", macroRecorderTrayTip2_1,
@@ -1579,8 +1580,6 @@ createLanguageArrayMap(pLanguageCode)
         "functionsMsgBox1_2", functionsMsgBox1_2,
         "functionsMsgBox2_1", functionsMsgBox2_1,
         "functionsMsgBox2_2", functionsMsgBox2_2,
-        "functionsMsgBox3_1", functionsMsgBox3_1,
-        "functionsMsgBox3_2", functionsMsgBox3_2,
         "mainGUIMsgBox1_1", mainGUIMsgBox1_1,
         "mainGUIMsgBox1_2", mainGUIMsgBox1_2,
         "mainGUIMsgBox2_1", mainGUIMsgBox2_1,
@@ -1641,5 +1640,5 @@ createLanguageArrayMap(pLanguageCode)
         "builtInHotkeyDescription_1", builtInHotkeyDescription_1,
         "builtInHotkeyDescription_2", builtInHotkeyDescription_2
     )
-    Return completeLanguageArrayMap
+    return completeLanguageArrayMap
 }

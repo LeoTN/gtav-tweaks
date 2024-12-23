@@ -15,27 +15,27 @@ $logFileName = "manageAutostartScheduledTask.log"
 $logFilePath = Join-Path -Path $scriptParentDirectory -ChildPath $logFileName
 Start-Transcript -Path $logFilePath -Force
 Clear-Host
-Write-Host "Terminal ready..."
+$null = Write-Host "Terminal ready..."
 
 function onInit() {
   $global:scheduledTaskName = "GTAV Tweaks Start With GTA V"
-  Write-Host "[onInit()] [INFO] pSwitchDeleteTask = $pSwitchDeleteTask"
+  $null = Write-Host "[onInit()] [INFO] pSwitchDeleteTask = $pSwitchDeleteTask"
   If ($pSwitchDeleteTask) {
-    deleteTask
+    $null = deleteTask
   }
   Else {
     If (checkIfTaskNeedsToBeReplaced) {
-      deleteTask
-      createTask
+      $null = deleteTask
+      $null = createTask
     }
-    triggerTask
+    $null = triggerTask
   }
   Exit
 }
 
 function checkIfTaskNeedsToBeReplaced() {
   If (-not (checkIfTaskExists)) {
-    Write-Host "[checkIfTaskNeedsToBeReplaced()] [INFO] Could not find existing task."
+    $null = Write-Host "[checkIfTaskNeedsToBeReplaced()] [INFO] Could not find existing task."
     Return $true
   }
   $task = Get-ScheduledTask -TaskName $global:scheduledTaskName
@@ -44,15 +44,15 @@ function checkIfTaskNeedsToBeReplaced() {
 
   # This means the task won't execute the correct PowerShell launcher executable.
   If ($taskExecute -ne $pLaunchWithGTAScriptLauncherLocation) {
-    Write-Host "[checkIfTaskNeedsToBeReplaced()] [INFO] Invalid PowerShell launcher executable location found: [$taskExecute]. Task needs to be replaced."
+    $null = Write-Host "[checkIfTaskNeedsToBeReplaced()] [INFO] Invalid PowerShell launcher executable location found: [$taskExecute]. Task needs to be replaced."
     Return $true
   }
   # This means that the GTAV Tweaks executable path of the task is incorrect.
   If ($taskArguments -ne """$pGTAVTweaksExecutableLocation""") {
-    Write-Host "[checkIfTaskNeedsToBeReplaced()] [INFO] Invalid GTAV Tweaks executable location found: [$taskArguments]. Task needs to be replaced."
+    $null = Write-Host "[checkIfTaskNeedsToBeReplaced()] [INFO] Invalid GTAV Tweaks executable location found: [$taskArguments]. Task needs to be replaced."
     Return $true
   }
-  Write-Host "[checkIfTaskNeedsToBeReplaced()] [INFO] The current task doesn't need to be replaced."
+  $null = Write-Host "[checkIfTaskNeedsToBeReplaced()] [INFO] The current task doesn't need to be replaced."
   Return $false
 }
 
@@ -62,12 +62,12 @@ function createTask() {
     $taskTrigger = New-ScheduledTaskTrigger -AtLogOn -User $env:USERNAME
     $taskSettings = New-ScheduledTaskSettingsSet -DontStopIfGoingOnBatteries -DontStopOnIdleEnd
     # Creates the task for the current user.
-    Register-ScheduledTask -Action $taskAction -Trigger $taskTrigger -TaskName $global:scheduledTaskName -User $env:USERNAME -Settings $taskSettings -Force | Out-Null
+    $null = Register-ScheduledTask -Action $taskAction -Trigger $taskTrigger -TaskName $global:scheduledTaskName -User $env:USERNAME -Settings $taskSettings -Force
     Return $true
   }
   Catch {
-    Write-Host "[createTask()] [ERROR] Failed to create scheduled task! Detailed error description below.`n" -ForegroundColor "Red"
-    Write-Host "***START***[`n$Error`n]***END***" -ForegroundColor "Red"
+    $null = Write-Host "[createTask()] [ERROR] Failed to create scheduled task! Detailed error description below.`n" -ForegroundColor "Red"
+    $null = Write-Host "***START***[`n$Error`n]***END***" -ForegroundColor "Red"
     # DO NOT REMOVE THIS COMMENT! Removing this space cause the function to return parts of the error object.
     Return $false
   }
@@ -75,18 +75,18 @@ function createTask() {
 
 function deleteTask() {
   If (-not (checkIfTaskExists)) {
-    Write-Host "[deleteTask()] [INFO] Could not find existing task."
+    $null = Write-Host "[deleteTask()] [INFO] Could not find existing task."
     Return $false
   }
   Try {
-    stopTask
-    Unregister-ScheduledTask -TaskName $global:scheduledTaskName -Confirm:$false | Out-Null
-    Write-Host "[deleteTask()] [INFO] Deleted task [$global:scheduledTaskName]."
+    $null = stopTask
+    $null = Unregister-ScheduledTask -TaskName $global:scheduledTaskName -Confirm:$false
+    $null = Write-Host "[deleteTask()] [INFO] Deleted task [$global:scheduledTaskName]."
     Return $true
   }
   Catch {
-    Write-Host "[deleteTask()] [ERROR] Failed to delete scheduled task! Detailed error description below.`n" -ForegroundColor "Red"
-    Write-Host "***START***[`n$Error`n]***END***" -ForegroundColor "Red"
+    $null = Write-Host "[deleteTask()] [ERROR] Failed to delete scheduled task! Detailed error description below.`n" -ForegroundColor "Red"
+    $null = Write-Host "***START***[`n$Error`n]***END***" -ForegroundColor "Red"
     # DO NOT REMOVE THIS COMMENT! Removing this space cause the function to return parts of the error object.
     Return $false
   }
@@ -94,23 +94,23 @@ function deleteTask() {
 
 function triggerTask() {
   If (-not (checkIfTaskExists)) {
-    Write-Host "[triggerTask()] [INFO] Could not find existing task. Creating new scheduled task..."
+    $null = Write-Host "[triggerTask()] [INFO] Could not find existing task. Creating new scheduled task..."
     If (-not (createTask)) {
-      Write-Host "[triggerTask()] [WARNING] Could not create task."
+      $null = Write-Host "[triggerTask()] [WARNING] Could not create task."
       Return $false
     }
-    Write-Host "[triggerTask()] [WARNING] Successfully created task."
+    $null = Write-Host "[triggerTask()] [WARNING] Successfully created task."
   }
   Try {
-    Enable-ScheduledTask -TaskName $global:scheduledTaskName | Out-Null
-    Write-Host "[triggerTask()] [INFO] Enabled task [$global:scheduledTaskName]."
-    Start-ScheduledTask -TaskName $global:scheduledTaskName | Out-Null
-    Write-Host "[triggerTask()] [INFO] Started task [$global:scheduledTaskName]."
+    $null = Enable-ScheduledTask -TaskName $global:scheduledTaskName
+    $null = Write-Host "[triggerTask()] [INFO] Enabled task [$global:scheduledTaskName]."
+    $null = Start-ScheduledTask -TaskName $global:scheduledTaskName
+    $null = Write-Host "[triggerTask()] [INFO] Started task [$global:scheduledTaskName]."
     Return $true
   }
   Catch {
-    Write-Host "[triggerTask()] [ERROR] Failed to trigger scheduled task! Detailed error description below.`n" -ForegroundColor "Red"
-    Write-Host "***START***[`n$Error`n]***END***" -ForegroundColor "Red"
+    $null = Write-Host "[triggerTask()] [ERROR] Failed to trigger scheduled task! Detailed error description below.`n" -ForegroundColor "Red"
+    $null = Write-Host "***START***[`n$Error`n]***END***" -ForegroundColor "Red"
     # DO NOT REMOVE THIS COMMENT! Removing this space cause the function to return parts of the error object.
     Return $false
   }
@@ -118,17 +118,20 @@ function triggerTask() {
 
 function stopTask() {
   If (-not (checkIfTaskExists)) {
-    Write-Host "[stopTask()] [INFO] Could not find existing task."
+    $null = Write-Host "[stopTask()] [INFO] Could not find existing task."
     Return $false
   }
   Try {
-    Stop-ScheduledTask -TaskName $global:scheduledTaskName | Out-Null
-    Write-Host "[stopTask()] [INFO] Stopped task [$global:scheduledTaskName]."
+    $null = Stop-ScheduledTask -TaskName $global:scheduledTaskName
+    $null = Write-Host "[stopTask()] [INFO] Stopped task [$global:scheduledTaskName]."
+    # This clears up any left over scripts waiting for GTA V to be launched. They would try to start GTAV Tweaks again
+    # during the update process which causes unnecessary errors.
+    $null = endRunningInstances
     Return $true
   }
   Catch {
-    Write-Host "[stopTask()] [ERROR] Failed to stop scheduled task! Detailed error description below.`n" -ForegroundColor "Red"
-    Write-Host "***START***[`n$Error`n]***END***" -ForegroundColor "Red"
+    $null = Write-Host "[stopTask()] [ERROR] Failed to stop scheduled task! Detailed error description below.`n" -ForegroundColor "Red"
+    $null = Write-Host "***START***[`n$Error`n]***END***" -ForegroundColor "Red"
     # DO NOT REMOVE THIS COMMENT! Removing this space cause the function to return parts of the error object.
     Return $false
   }
@@ -137,11 +140,33 @@ function stopTask() {
 function checkIfTaskExists() {
   $result = Get-ScheduledTask -TaskName $global:scheduledTaskName -ErrorAction SilentlyContinue
   If ($result) {
-    Write-Host "[checkIfTaskExists()] [INFO] The scheduled task [$global:scheduledTaskName] exists."
+    $null = Write-Host "[checkIfTaskExists()] [INFO] The scheduled task [$global:scheduledTaskName] exists."
     Return $true
   }
-  Write-Host "[checkIfTaskExists()] [INFO] Could not find task [$global:scheduledTaskName]."
+  $null = Write-Host "[checkIfTaskExists()] [INFO] Could not find task [$global:scheduledTaskName]."
   Return $false
 }
 
-onInit
+# Ends all script instances of "launchWithGTAV.ps1" which wait for GTA V to be launched.
+function endRunningInstances() {
+  $null = Write-Host "[endRunningInstances()] [INFO] Searching for other PowerShell script instances of GTAV Tweaks..."
+  $endCounter = 0
+  $allPowershellProcesses = Get-Process -Name "powershell"
+  ForEach ($processPID in $allPowershellProcesses.Id) {
+    # We don't want to include this instance of this script.
+    If ($processPID -eq $pid) {
+      Continue
+    }
+    $process = Get-WmiObject "Win32_Process" -Filter "ProcessId = $processPID"
+    # We only want to end PowerShell instances from GTAV Tweaks.
+    If ($process.CommandLine -notlike "*-pGTAVTweaksExecutableLocation*") {
+      Continue
+    }
+    $null = Stop-Process -Id $processPID -Force
+    $null = Write-Host "[endRunningInstances()] [INFO] Ended process with PID [$processPID]."
+    $endCounter++
+  }
+  $null = Write-Host "[endRunningInstances] [INFO] Ended [$endCounter] process(es)."
+}
+
+$null = onInit

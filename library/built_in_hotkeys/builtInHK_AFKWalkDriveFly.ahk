@@ -8,10 +8,8 @@ CoordMode "Mouse", "Window"
 ; Do not modify code below!
 processSearchQuery := 'AutoHotkey32.exe" "' . A_ScriptFullPath . '"'
 scriptPID := WinGetPID(A_ScriptHwnd)
-For (process in ComObjGet("winmgmts:").ExecQuery("Select * from Win32_Process"))
-{
-    If (InStr(process.CommandLine, processSearchQuery) && process.ProcessID != scriptPID)
-    {
+for (process in ComObjGet("winmgmts:").ExecQuery("Select * from Win32_Process")) {
+    if (InStr(process.CommandLine, processSearchQuery) && process.ProcessID != scriptPID) {
         ProcessClose(process.ProcessID)
         ; Only in case the keys are still pressed by the old script.
         Send("{w Up}")
@@ -32,8 +30,7 @@ or in the GTAV_Tweaks folder. Make sure to read it before changing this file!
 */
 
 SetNumLockState("On")
-While (WinActive("ahk_exe GTA5.exe"))
-{
+while (WinActive("ahk_exe GTA5.exe")) {
     Send("{w Down}")
     Send("{Numpad5 Down}")
     Sleep(200)
