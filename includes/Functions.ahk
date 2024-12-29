@@ -535,6 +535,7 @@ displayErrorMessage(pErrorObject := unset, pAdditionalErrorMessage := unset, pBo
         "Houston, we have a problem...",
         "Unexpected error: Please blame the developer",
         "Error: Keyboard not responding, press any key to continue... oh wait",
+        "Task failed successfully!"
     )
     ; Selects a "random" funny error message to be displayed.
     funnyErrorMessage := funnyErrorMessageArray.Get(Random(1, funnyErrorMessageArray.Length))
