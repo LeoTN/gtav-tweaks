@@ -138,6 +138,9 @@ createMainGUI() {
     showGTALaunchMessageCheckbox := mainGUI.Add("Checkbox", "yp+20 vShowGTALaunchMessageCheckbox",
         getLanguageArrayString("mainGUI_11"))
 
+    mainGUIStatusBar := mainGUI.Add("StatusBar", , getLanguageArrayString("mainGUI_13"))
+    mainGUIStatusBar.SetIcon(iconFileLocation, 9) ; ICON_DLL_USED_HERE
+
     ; Adds an action when the main GUI is closed.
     mainGUI.OnEvent("Close", (*) => handleMainGUI_close())
 
