@@ -19,22 +19,22 @@ This program adds **hotkeys** in combination with **macros** for GTA V Online. Y
     </div>
     <p><br></p>
     <div style="display: inline-block; text-align: center;">
-        <img src="library/assets/gtav_tweaks_main_window.png" style="width: 70%; height: auto;" alt="Main Window">
+        <img src="library/assets/gtav_tweaks_main_window.png" alt="Main Window">
         <div><em>This is the main window</em></div>
     </div>
     <p><br></p>
     <div style="display: inline-block; text-align: center;">
-        <img src="library/assets/gtav_tweaks_hotkey_overview_window.png" style="width: 70%; height: auto;" alt="Hotkey Overview">
+        <img src="library/assets/gtav_tweaks_hotkey_overview_window.png" alt="Hotkey Overview">
         <div><em>Provides an overview over all hotkeys</em></div>
     </div>
     <p><br></p>
     <div style="display: inline-block; text-align: center;">
-        <img src="library/assets/gtav_tweaks_hotkey_window.png" style="width: 70%; height: auto;" alt="Hotkey Editor">
+        <img src="library/assets/gtav_tweaks_hotkey_window.png" alt="Hotkey Editor">
         <div><em>You can create and edit hotkeys here</em></div>
     </div>
     <p><br></p>
     <div style="display: inline-block; text-align: center;">
-        <img src="library/assets/gtav_tweaks_help_window.png" style="width: 70%; height: auto;" alt="Help Window">
+        <img src="library/assets/gtav_tweaks_help_window.png" alt="Help Window">
         <div><em>Contains tutorials and further advice</em></div>
     </div>
 </div>
