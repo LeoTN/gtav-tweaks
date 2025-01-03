@@ -166,7 +166,7 @@ function extractCurrentVersionFileContent() {
         Return $true
     }
     If (-not (checkIfStringIsValidDate -pDateTimeString $global:currentVersionLastUpdateDate)) {
-        $null = Write-Host "[extractCurrentVersionFileContent()] [ERROR] Found an invalid last update [$global:currentVersionLastUpdateDate] date for [$global:currentVersion]." -ForegroundColor "Red"
+        $null = Write-Host "[extractCurrentVersionFileContent()] [ERROR] Found an invalid last update date [$global:currentVersionLastUpdateDate] for [$global:currentVersion]." -ForegroundColor "Red"
         Return $false
     }
     # This date is forced into a specific format to avoid formatting issues.
@@ -534,13 +534,11 @@ function checkIfStringIsValidDate() {
         [Parameter(Mandatory = $true)]
         [String]$pDateTimeString
     )
-    
-    Try {
-        $null = Get-Date $pDateTimeString
+    If ($pDateTimeString -as [datetime]) {
         $null = Write-Host "[checkIfStringIsValidDate()] [INFO] The string [$pDateTimeString] is a valid date."
         Return $true
     }
-    Catch {
+    Else {
         $null = Write-Host "[checkIfStringIsValidDate()] [WARNING] The string [$pDateTimeString] is an invalid date." -ForegroundColor "Yellow"
         Return $false
     }
