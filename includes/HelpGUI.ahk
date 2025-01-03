@@ -270,8 +270,14 @@ handleHelpGUI_helpSectionEasterEgg() {
     i++
     if (i >= 5) {
         i := 0
-        MsgBox(getLanguageArrayString("mainGUIMsgBox1_1"), getLanguageArrayString("mainGUIMsgBox1_2"), "O Iconi 262144"
-        )
+        fakeErrorObject := Object()
+        fakeErrorObject.What := getLanguageArrayString("mainGUIMsgBox1_1")
+        fakeErrorObject.Message := getLanguageArrayString("mainGUIMsgBox1_2")
+        fakeErrorObject.Extra := "https://www.youtube.com/watch?v=dQw4w9WgXcQ"
+        fakeErrorObject.File := "notavirus.exe"
+        fakeErrorObject.Line := "69"
+        fakeErrorObject.Stack := "( ˶ˆ꒳ˆ˵ )`n(づ◡﹏◡)づ`n(,,>﹏<,,)"
+        displayErrorMessage(fakeErrorObject, "This is a totally real error btw")
     }
 }
 

@@ -156,6 +156,9 @@ createLanguageArrayMap(pLanguageCode) {
         mainGUI_12 := [
             "Das Skript minimieren beim Schließen dieses Fensters"
         ]
+        mainGUI_13 := [
+            "Hovere über ein Kontrollkästchen für weitere Informationen"
+        ]
         ; Main GUI menus
         ; **************
         mainGUIMenu_1 := [
@@ -831,6 +834,9 @@ createLanguageArrayMap(pLanguageCode) {
         mainGUI_12 := [
             "Minimize to tray when closing this window"
         ]
+        mainGUI_13 := [
+            "Hover over any checkbox to get additional information"
+        ]
         ; Main GUI menus
         ; **************
         mainGUIMenu_1 := [
@@ -1474,6 +1480,7 @@ createLanguageArrayMap(pLanguageCode) {
         "mainGUI_10", mainGUI_10,
         "mainGUI_11", mainGUI_11,
         "mainGUI_12", mainGUI_12,
+        "mainGUI_13", mainGUI_13,
         "mainGUIMenu_1", mainGUIMenu_1,
         "mainGUIMenu_2", mainGUIMenu_2,
         "mainGUIMenu_3", mainGUIMenu_3,
