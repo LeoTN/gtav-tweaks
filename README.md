@@ -1,7 +1,7 @@
 # **GTAV Tweaks**
 
 <p align="left">
-        <a href="#installation" style="text-decoration: none;"><img src="https://img.shields.io/github/v/release/LeoTN/gtav-tweaks?sort=semver&display_name=release&style=for-the-badge&logo=Rocket&logoColor=green&label=CLICK TO INSTALL LATEST VERSION&color=green"></a>
+        <a href="#installation-guide" style="text-decoration: none;"><img src="https://img.shields.io/github/v/release/LeoTN/gtav-tweaks?sort=semver&display_name=release&style=for-the-badge&logo=Rocket&logoColor=green&label=CLICK TO INSTALL LATEST VERSION&color=green"></a>
         <a href="https://github.com/LeoTN/gtav-tweaks/releases" style="text-decoration: none;"><img src="https://img.shields.io/github/v/release/LeoTN/gtav-tweaks?include_prereleases&sort=semver&filter=*-beta&display_name=release&style=for-the-badge&logo=Textpattern&logoColor=orange&label=LATEST BETA VERSION&color=orange"></a>
         <br>
         <a href="https://github.com/LeoTN/gtav-tweaks/blob/main/LICENSE" style="text-decoration: none;"><img src="https://img.shields.io/github/license/LeoTN/gtav-tweaks?style=for-the-badge&logo=Google%20Docs&logoColor=orange&label=License&color=orange"></a>
@@ -19,27 +19,27 @@ This program adds **hotkeys** in combination with **macros** for GTA V Online. Y
     </div>
     <p><br></p>
     <div style="display: inline-block; text-align: center;">
-        <img src="library\assets\gtav_tweaks_main_window.png">
+        <img src="library/assets/gtav_tweaks_main_window.png" style="width: 70%; height: auto;" alt="Main Window">
         <div><em>This is the main window</em></div>
     </div>
     <p><br></p>
     <div style="display: inline-block; text-align: center;">
-        <img src="library\assets\gtav_tweaks_hotkey_overview_window.png">
+        <img src="library/assets/gtav_tweaks_hotkey_overview_window.png" style="width: 70%; height: auto;" alt="Hotkey Overview">
         <div><em>Provides an overview over all hotkeys</em></div>
     </div>
     <p><br></p>
     <div style="display: inline-block; text-align: center;">
-        <img src="library\assets\gtav_tweaks_hotkey_window.png">
+        <img src="library/assets/gtav_tweaks_hotkey_window.png" style="width: 70%; height: auto;" alt="Hotkey Editor">
         <div><em>You can create and edit hotkeys here</em></div>
     </div>
     <p><br></p>
     <div style="display: inline-block; text-align: center;">
-        <img src="library/assets/gtav_tweaks_help_window.png">
+        <img src="library/assets/gtav_tweaks_help_window.png" style="width: 70%; height: auto;" alt="Help Window">
         <div><em>Contains tutorials and further advice</em></div>
     </div>
 </div>
 
-## Installation
+## Installation Guide
 
 <a href="https://github.com/LeoTN/gtav-tweaks/releases/latest/download/GTAV_Tweaks.zip" style="text-decoration: none;"><img src="https://img.shields.io/github/v/release/LeoTN/gtav-tweaks?sort=semver& display_name=release&style=for-the-badge&logo=Task&logoColor=green&label=Download&color=green"></a>
 <br>
