@@ -169,8 +169,8 @@ function extractCurrentVersionFileContent() {
         $null = Write-Host "[extractCurrentVersionFileContent()] [ERROR] Found an invalid last update date [$global:currentVersionLastUpdateDate] for [$global:currentVersion]." -ForegroundColor "Red"
         Return $false
     }
-    # This date is forced into a specific format to avoid formatting issues.
-    $currentDateTime = Get-Date -Format "dd.MM.yyyy HH:mm:ss"
+    # Forcing an internationally valid date format here should prevent issues.
+    $currentDateTime = Get-Date -Format "yyyy-MM-ddTHH:mm:ss"
     $highestDateTime = compareDates -pDateString1 $global:currentVersionLastUpdateDate -pDateString2 $currentDateTime
     # This mean the current last update date lies in the future.
     If ((compareDates -pDateString1 $highestDateTime -pDateString2 $currentDateTime) -ne "identical_dates") {
@@ -284,7 +284,8 @@ function getLastUpdatedDateFromTag() {
             $null = Write-Host "[getLastUpdatedDateFromTag()] [INFO] No update date for [$pTagName] found."
             Return "not_updated_yet"
         }
-        $lastUpdateDate = Get-Date -Format "dd/MM/yyyy HH:mm:ss" $invalidLastUpdateDate
+        # Forcing an internationally valid date format here should prevent issues.
+        $lastUpdateDate = Get-Date -Format "yyyy-MM-ddTHH:mm:ss" $invalidLastUpdateDate
     }
     Catch {
         $null = Write-Host "[getLastUpdatedDateFromTag()] [ERROR] Failed to fetch last update date for [$pTagName]! Detailed error description below.`n" -ForegroundColor "Red"
@@ -389,6 +390,7 @@ function backupOldVersionFiles() {
     $currentExecutableParentDirectory = Split-Path -Path $pCurrentExecutableLocation -Parent
     $supportFilesFolderName = "GTAV_Tweaks"
     $supportFilesFolder = Join-Path -Path $currentExecutableParentDirectory -ChildPath $supportFilesFolderName
+    # This date format is not internationally valid, but it can be used as a folder name.
     $targetBackupFolderName = "GTAV_Tweaks_backup_from_version_$($global:currentVersion)_at_$(Get-Date -Format "dd.MM.yyyy_HH-mm-ss")"
     # First backup folder.
     $global:targetBackupFolder = Join-Path -Path $pBackupTargetDirectory -ChildPath $targetBackupFolderName
@@ -538,10 +540,8 @@ function checkIfStringIsValidDate() {
         $null = Write-Host "[checkIfStringIsValidDate()] [INFO] The string [$pDateTimeString] is a valid date."
         Return $true
     }
-    Else {
-        $null = Write-Host "[checkIfStringIsValidDate()] [WARNING] The string [$pDateTimeString] is an invalid date." -ForegroundColor "Yellow"
-        Return $false
-    }
+    $null = Write-Host "[checkIfStringIsValidDate()] [WARNING] The string [$pDateTimeString] is an invalid date." -ForegroundColor "Yellow"
+    Return $false
 }
 
 function writeToCSVFile() {
