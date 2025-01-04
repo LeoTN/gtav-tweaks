@@ -329,6 +329,56 @@ setAutostartWithGTAV(pBooleanEnableAutostart) {
     Run(parameterString_3, , "Hide")
 }
 
+manageDesktopShortcut(pBooleanForceCreateShortcut := false) {
+    global booleanFirstTimeLaunch
+    global iconFileLocation
+
+    desktopShortcutLocation := A_Desktop . "\GTAV_Tweaks.lnk"
+    shortcutTarget := A_ScriptFullPath
+    shortcutDescription := "https://github.com/LeoTN/gtav-tweaks"
+    iconIndex := 1
+
+    ; Creates the shortcut regardless of whether a shortcut already exists.
+    if (pBooleanForceCreateShortcut) {
+        createShortcut()
+        return true
+    }
+
+    ; Checks if the shortcut already exists and if it points to the correct target.
+    if (FileExist(desktopShortcutLocation)) {
+        FileGetShortcut(desktopShortcutLocation, &outFile)
+        if (shortcutTarget == outFile) {
+            return true
+        }
+        else {
+            ; Updates the shortcut that already existed before.
+            createShortcut()
+            return true
+        }
+    }
+
+    ; This prevents the script from asking the user to create a shortcut every time the script is started.
+    if (!booleanFirstTimeLaunch) {
+        return false
+    }
+
+    result := MsgBox(getLanguageArrayString("functionsMsgBox3_1"), getLanguageArrayString("functionsMsgBox3_2"),
+    "YN Icon? 262144")
+    if (result == "Yes") {
+        createShortcut()
+        return true
+    }
+    return false
+    ; Creates a shortcut and displays a little traytip message.
+    createShortcut() {
+        FileCreateShortcut(shortcutTarget, desktopShortcutLocation, , , shortcutDescription, iconFileLocation, ,
+            iconIndex)
+        TrayTip(getLanguageArrayString("generalScriptTrayTip4_1"),
+        getLanguageArrayString("generalScriptTrayTip4_2"), "Iconi Mute")
+        SetTimer(() => TrayTip(), -2000)
+    }
+}
+
 /*
 Writes values to a comma seperated file (CSV).
 @param pFileLocation [String] Should be the path to a .CSV file. The function will create the file if necessary.

@@ -212,6 +212,9 @@ createLanguageArrayMap(pLanguageCode) {
         mainGUIOptionsMenu_4 := [
             "Update erzwingen"
         ]
+        mainGUIOptionsMenu_5 := [
+            "Desktopverknüpfung erstellen"
+        ]
         ; Main GUI info menu
         ; ******************
         mainGUIHelpMenu_1 := [
@@ -449,6 +452,12 @@ createLanguageArrayMap(pLanguageCode) {
         generalScriptTrayTip3_2 := [
             "GTAV Tweaks - Status"
         ]
+        generalScriptTrayTip4_1 := [
+            "Es wurde eine Desktopverknüpfung erstellt oder aktualisiert."
+        ]
+        generalScriptTrayTip4_2 := [
+            "GTAV Tweaks - Status"
+        ]
         ; Macro Recorder TrayTips
         ; #######################
         macroRecorderTrayTip1_1 := [
@@ -554,6 +563,12 @@ createLanguageArrayMap(pLanguageCode) {
         ]
         functionsMsgBox2_2 := [
             "GTAV Tweaks - Fehlende README-Datei"
+        ]
+        functionsMsgBox3_1 := [
+            "Möchtest du eine Desktopverknüpfung erstellen?"
+        ]
+        functionsMsgBox3_2 := [
+            "GTAV Tweaks - Desktopverknüpfung erstellen"
         ]
         ; Main GUI MsgBoxes
         ; #################
@@ -890,6 +905,9 @@ createLanguageArrayMap(pLanguageCode) {
         mainGUIOptionsMenu_4 := [
             "Force Update"
         ]
+        mainGUIOptionsMenu_5 := [
+            "Create Desktop Shortcut"
+        ]
         ; Main GUI info menu
         ; ******************
         mainGUIHelpMenu_1 := [
@@ -1125,6 +1143,12 @@ createLanguageArrayMap(pLanguageCode) {
         generalScriptTrayTip3_2 := [
             "GTAV Tweaks - Status"
         ]
+        generalScriptTrayTip4_1 := [
+            "A desktop shortcut has been created or updated."
+        ]
+        generalScriptTrayTip4_2 := [
+            "GTAV Tweaks - Status"
+        ]
         ; Macro Recorder TrayTips
         ; #######################
         macroRecorderTrayTip1_1 := [
@@ -1230,6 +1254,12 @@ createLanguageArrayMap(pLanguageCode) {
         ]
         functionsMsgBox2_2 := [
             "GTAV Tweaks - Missing README File"
+        ]
+        functionsMsgBox3_1 := [
+            "Woukd you like to create a desktop shortcut?"
+        ]
+        functionsMsgBox3_2 := [
+            "GTAV Tweaks - Create Desktop Shortcut"
         ]
         ; Main GUI MsgBoxes
         ; #################
@@ -1496,6 +1526,7 @@ createLanguageArrayMap(pLanguageCode) {
         "mainGUIOptionsMenu_2", mainGUIOptionsMenu_2,
         "mainGUIOptionsMenu_3", mainGUIOptionsMenu_3,
         "mainGUIOptionsMenu_4", mainGUIOptionsMenu_4,
+        "mainGUIOptionsMenu_5", mainGUIOptionsMenu_5,
         "mainGUIHelpMenu_1", mainGUIHelpMenu_1,
         "mainGUIHelpMenu_2", mainGUIHelpMenu_2,
         "mainGUIHelpMenu_3", mainGUIHelpMenu_3,
@@ -1561,6 +1592,8 @@ createLanguageArrayMap(pLanguageCode) {
         "generalScriptTrayTip2_2", generalScriptTrayTip2_2,
         "generalScriptTrayTip3_1", generalScriptTrayTip3_1,
         "generalScriptTrayTip3_2", generalScriptTrayTip3_2,
+        "generalScriptTrayTip4_1", generalScriptTrayTip4_1,
+        "generalScriptTrayTip4_2", generalScriptTrayTip4_2,
         "macroRecorderTrayTip1_1", macroRecorderTrayTip1_1,
         "macroRecorderTrayTip1_2", macroRecorderTrayTip1_2,
         "macroRecorderTrayTip2_1", macroRecorderTrayTip2_1,
@@ -1587,6 +1620,8 @@ createLanguageArrayMap(pLanguageCode) {
         "functionsMsgBox1_2", functionsMsgBox1_2,
         "functionsMsgBox2_1", functionsMsgBox2_1,
         "functionsMsgBox2_2", functionsMsgBox2_2,
+        "functionsMsgBox3_1", functionsMsgBox3_1,
+        "functionsMsgBox3_2", functionsMsgBox3_2,
         "mainGUIMsgBox1_1", mainGUIMsgBox1_1,
         "mainGUIMsgBox1_2", mainGUIMsgBox1_2,
         "mainGUIMsgBox2_1", mainGUIMsgBox2_1,

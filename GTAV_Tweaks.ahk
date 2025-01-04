@@ -81,6 +81,8 @@ onInit() {
     ; Runs all onInit() functions from included files.
     ; languages_onInit() is included in configFile_onInit().
     configFile_onInit()
+    ; The language module is loaded at this point.
+    manageDesktopShortcut()
     functions_onInit()
     objects_onInit()
     macroRecorder_onInit()

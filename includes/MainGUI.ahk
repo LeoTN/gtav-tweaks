@@ -94,8 +94,10 @@ createMainGUI() {
     optionsMenu.SetIcon(getLanguageArrayString("mainGUIOptionsMenu_3"), iconFileLocation, 7) ; ICON_DLL_USED_HERE
     optionsMenu.Add()
     optionsMenu.Add(getLanguageArrayString("mainGUIOptionsMenu_4"), (*) => forceUpdate())
-    optionsMenu.Add()
     optionsMenu.SetIcon(getLanguageArrayString("mainGUIOptionsMenu_4"), iconFileLocation, 4) ; ICON_DLL_USED_HERE
+    optionsMenu.Add(getLanguageArrayString("mainGUIOptionsMenu_5"), (*) => manageDesktopShortcut(true)) ; REMOVE
+    optionsMenu.SetIcon(getLanguageArrayString("mainGUIOptionsMenu_5"), iconFileLocation, 20) ; ICON_DLL_USED_HERE ; REMOVE
+    optionsMenu.Add()
     optionsMenu.Add(getLanguageArrayString("mainGUIOptionsMenu_1"), (*) => terminateScriptPrompt())
     optionsMenu.SetIcon(getLanguageArrayString("mainGUIOptionsMenu_1"), iconFileLocation, 5) ; ICON_DLL_USED_HERE
     optionsMenu.Add(getLanguageArrayString("mainGUIOptionsMenu_2"), (*) => reloadScriptPrompt())
