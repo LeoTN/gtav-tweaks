@@ -173,7 +173,7 @@ startUpdate(pBooleanForceUpdate := false) {
     psUpdateScriptLocationTemp := A_Temp . "\" . outFileName
     updateWorkingDir := A_Temp . "\GTAV_Tweaks_AUTO_UPDATE"
 
-    ; Copies the script to the temp directory. This ensure that there are no file errors while the script is moving or copying files,
+    ; Copies the PowerShell script to the temp directory. This ensure that there are no file errors while the script is moving or copying files,
     ; because it cannot copy itself, while it is running.
     FileCopy(psUpdateScriptLocation, psUpdateScriptLocationTemp, true)
     parameterString := '-pGitHubRepositoryLink "https://github.com/LeoTN/gtav-tweaks" -pCurrentVersionFileLocation "' .
@@ -190,8 +190,9 @@ startUpdate(pBooleanForceUpdate := false) {
         return false
     }
     ; We need to disable the automatic start with GTA V here because it can cause problems while the script is updating.
-    ; We should not need a sleep delay or wait for the task here because the PowerShell script works fast.
     setAutostartWithGTAV(false)
+    ; Waits for the task to be deleted.
+    Sleep(500)
     if (pBooleanForceUpdate) {
         ; Calls the PowerShell script to install the update.
         Run('powershell.exe -executionPolicy bypass -file "' . psUpdateScriptLocationTemp
@@ -327,6 +328,60 @@ setAutostartWithGTAV(pBooleanEnableAutostart) {
         parameterString_3 .= " -pSwitchDeleteTask"
     }
     Run(parameterString_3, , "Hide")
+}
+
+/*
+Creates / updates the desktop shortcut.
+@param pBooleanForceCreateShortcut [boolean] If set to true, will overwrite already existing shortcuts.
+*/
+manageDesktopShortcut(pBooleanForceCreateShortcut := false) {
+    global booleanFirstTimeLaunch
+    global iconFileLocation
+
+    desktopShortcutLocation := A_Desktop . "\GTAV_Tweaks.lnk"
+    shortcutTarget := A_ScriptFullPath
+    shortcutDescription := "https://github.com/LeoTN/gtav-tweaks"
+    iconIndex := 1
+
+    ; Creates the shortcut regardless of whether a shortcut already exists.
+    if (pBooleanForceCreateShortcut) {
+        createShortcut()
+        return true
+    }
+
+    ; Checks if the shortcut already exists and if it points to the correct target.
+    if (FileExist(desktopShortcutLocation)) {
+        FileGetShortcut(desktopShortcutLocation, &outFile)
+        if (shortcutTarget == outFile) {
+            return true
+        }
+        else {
+            ; Updates the shortcut that already existed before.
+            createShortcut()
+            return true
+        }
+    }
+
+    ; This prevents the script from asking the user to create a shortcut every time the script is started.
+    if (!booleanFirstTimeLaunch) {
+        return false
+    }
+
+    result := MsgBox(getLanguageArrayString("functionsMsgBox3_1"), getLanguageArrayString("functionsMsgBox3_2"),
+    "YN Icon? 262144")
+    if (result == "Yes") {
+        createShortcut()
+        return true
+    }
+    return false
+    ; Creates a shortcut and displays a little traytip message.
+    createShortcut() {
+        FileCreateShortcut(shortcutTarget, desktopShortcutLocation, , , shortcutDescription, iconFileLocation, ,
+            iconIndex)
+        TrayTip(getLanguageArrayString("generalScriptTrayTip4_1"),
+        getLanguageArrayString("generalScriptTrayTip4_2"), "Iconi Mute")
+        SetTimer(() => TrayTip(), -2000)
+    }
 }
 
 /*
