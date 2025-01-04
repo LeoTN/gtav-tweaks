@@ -173,7 +173,7 @@ startUpdate(pBooleanForceUpdate := false) {
     psUpdateScriptLocationTemp := A_Temp . "\" . outFileName
     updateWorkingDir := A_Temp . "\GTAV_Tweaks_AUTO_UPDATE"
 
-    ; Copies the script to the temp directory. This ensure that there are no file errors while the script is moving or copying files,
+    ; Copies the PowerShell script to the temp directory. This ensure that there are no file errors while the script is moving or copying files,
     ; because it cannot copy itself, while it is running.
     FileCopy(psUpdateScriptLocation, psUpdateScriptLocationTemp, true)
     parameterString := '-pGitHubRepositoryLink "https://github.com/LeoTN/gtav-tweaks" -pCurrentVersionFileLocation "' .
@@ -190,8 +190,9 @@ startUpdate(pBooleanForceUpdate := false) {
         return false
     }
     ; We need to disable the automatic start with GTA V here because it can cause problems while the script is updating.
-    ; We should not need a sleep delay or wait for the task here because the PowerShell script works fast.
     setAutostartWithGTAV(false)
+    ; Waits for the task to be deleted.
+    Sleep(500)
     if (pBooleanForceUpdate) {
         ; Calls the PowerShell script to install the update.
         Run('powershell.exe -executionPolicy bypass -file "' . psUpdateScriptLocationTemp
@@ -329,6 +330,10 @@ setAutostartWithGTAV(pBooleanEnableAutostart) {
     Run(parameterString_3, , "Hide")
 }
 
+/*
+Creates / updates the desktop shortcut.
+@param pBooleanForceCreateShortcut [boolean] If set to true, will overwrite already existing shortcuts.
+*/
 manageDesktopShortcut(pBooleanForceCreateShortcut := false) {
     global booleanFirstTimeLaunch
     global iconFileLocation

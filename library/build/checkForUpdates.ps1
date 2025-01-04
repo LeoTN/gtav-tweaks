@@ -113,10 +113,9 @@ function evaluateUpdate() {
         $currentExecutableConfigFileLocation = Join-Path -Path $currentExecutableParentDirectory -ChildPath "GTAV_Tweaks\GTAV_Tweaks.ini"
         $null = Write-Host "[evaluateUpdate()] [INFO] Enabling tutorial in the config file again..."
         $null = changeINIFile -pFilePath $currentExecutableConfigFileLocation -pKey "ASK_FOR_TUTORIAL" -pValue 1
-        $null = Start-Process -FilePath $pCurrentExecutableLocation
         $null = Write-Host "`n`n[evaluateUpdate()] [INFO] Successfully changed version from [$global:currentVersion] to [$availableUpdateVersion].`n`n" -ForegroundColor "Green"
         # Launch the new and updated script.
-        $null = Start-Process -FilePath $pCurrentExecutableLocation 
+        $null = Start-Process -FilePath $pCurrentExecutableLocation
         Return 102
     }
 }
