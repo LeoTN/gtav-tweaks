@@ -121,6 +121,7 @@ Checks all GitHub Repository tags to find new versions.
 @returns [boolean] Returns true, when an update is available. False otherwise.
 */
 checkForAvailableUpdates() {
+    global updateDirectory
     global currentVersionFileLocation
     global psUpdateScriptLocation
 
@@ -129,10 +130,15 @@ checkForAvailableUpdates() {
         return false
     }
     SplitPath(psUpdateScriptLocation, &outFileName)
-    psUpdateScriptLocationTemp := A_Temp . "\" . outFileName
-    updateWorkingDir := A_Temp . "\GTAV_Tweaks_AUTO_UPDATE"
+    ; Make sure that the update files are placed in a folder next to the GTAV_Tweaks.exe file.
+    updateDirectoryTemp := A_ScriptDir . "\GTAV_Tweaks_AUTO_UPDATE"
+    psUpdateScriptLocationTemp := updateDirectoryTemp . "\" . outFileName
+    updateWorkingDir := updateDirectoryTemp . "\GTAV_Tweaks_TEMP_STORAGE"
+    if (!DirExist(updateWorkingDir)) {
+        DirCreate(updateWorkingDir)
+    }
 
-    ; Copies the script to the temp directory. This ensure that there are no file errors while the script is moving or copying files,
+    ; Copies the script to a seperate folder. This ensure that there are no file errors while the script is moving or copying files,
     ; because it cannot copy itself, while it is running.
     FileCopy(psUpdateScriptLocation, psUpdateScriptLocationTemp, true)
     parameterString := '-pGitHubRepositoryLink "https://github.com/LeoTN/gtav-tweaks" -pCurrentVersionFileLocation "' .
@@ -162,6 +168,7 @@ Calls the PowerShell script to start updating this software.
 @returns [boolean] True or false, depending on the function's success.
 */
 startUpdate(pBooleanForceUpdate := false) {
+    global updateDirectory
     global currentVersionFileLocation
     global psUpdateScriptLocation
 
@@ -170,10 +177,16 @@ startUpdate(pBooleanForceUpdate := false) {
         return false
     }
     SplitPath(psUpdateScriptLocation, &outFileName)
-    psUpdateScriptLocationTemp := A_Temp . "\" . outFileName
-    updateWorkingDir := A_Temp . "\GTAV_Tweaks_AUTO_UPDATE"
 
-    ; Copies the PowerShell script to the temp directory. This ensure that there are no file errors while the script is moving or copying files,
+    ; Make sure that the update files are placed in a folder next to the GTAV_Tweaks.exe file.
+    updateDirectoryTemp := A_ScriptDir . "\GTAV_Tweaks_AUTO_UPDATE"
+    psUpdateScriptLocationTemp := updateDirectoryTemp . "\" . outFileName
+    updateWorkingDir := updateDirectoryTemp . "\GTAV_Tweaks_TEMP_STORAGE"
+    if (!DirExist(updateWorkingDir)) {
+        DirCreate(updateWorkingDir)
+    }
+
+    ; Copies the PowerShell script to a seperate folder. This ensure that there are no file errors while the script is moving or copying files,
     ; because it cannot copy itself, while it is running.
     FileCopy(psUpdateScriptLocation, psUpdateScriptLocationTemp, true)
     parameterString := '-pGitHubRepositoryLink "https://github.com/LeoTN/gtav-tweaks" -pCurrentVersionFileLocation "' .
