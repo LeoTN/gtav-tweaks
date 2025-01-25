@@ -100,7 +100,7 @@ onInit() {
     if (readConfigFile("ASK_FOR_TUTORIAL")) {
         scriptTutorial()
     }
-    if (readConfigFile("CHECK_FOR_UPDATES_AT_LAUNCH")) {
+    if (readConfigFile("CHECK_FOR_UPDATES_AT_LAUNCH") && !booleanFirstTimeLaunch) {
         checkForAvailableUpdates()
     }
     waitForGTAToExist()
