@@ -229,7 +229,12 @@ jobs:
         name: ${{ env.FINAL_INSTALLER_NAME }}
         path: ${{ github.workspace }}
 
+    - name: Set Up Git
+      run: |
+        git config --global --add safe.directory "/github/workspace"
+
     - name: Delete Old Beta Release
+      working-directory: ${{ github.workspace }}
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: |
