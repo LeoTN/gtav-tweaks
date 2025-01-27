@@ -50,17 +50,15 @@ jobs:
                 if ($currentVersion -like "*-beta") {
                   $currentVersion = $currentVersion.Replace("-beta", "")
                 }
-                else {
-                    try {
-                        $version = [version]$currentVersion
-                    }
-                    catch {
-                      $null = Write-Host "Failed to convert [$currentVersion] into version object! Exiting workflow..."
-                      throw
-                    }
-                    $version = [version]::new($version.Major, $version.Minor, $version.Build, $version.Revision + 1)
-                    $currentVersion = $version.ToString()
+                try {
+                    $version = [version]$currentVersion
                 }
+                catch {
+                  $null = Write-Host "Failed to convert [$currentVersion] into version object! Exiting workflow..."
+                  throw
+                }
+                $version = [version]::new($version.Major, $version.Minor, $version.Build, $version.Revision + 1)
+                $currentVersion = $version.ToString()
                 $finalVersion = $currentVersion
                 $null = Write-Host "The beta version will be [$finalVersion]."
                 if (-not ($finalVersion -match '^\d+\.\d+\.\d+\.\d+$')) {
