@@ -237,6 +237,7 @@ jobs:
         cd ${{ github.workspace }}
         pwd
         ls -la
+        git fetch --tags
         latest_tag=$(git describe --tags --abbrev=0)
         echo "[INFO] Found latest tag [$latest_tag]."
 
