@@ -233,10 +233,7 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: |
-        git config --global --add safe.directory "${{ github.workspace }}"
-        cd ${{ github.workspace }}
-        pwd
-        ls -la
+        git fetch --prune --unshallow
         git fetch --tags
         latest_tag=$(git describe --tags --abbrev=0)
         echo "[INFO] Found latest tag [$latest_tag]."
