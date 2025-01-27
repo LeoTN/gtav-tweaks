@@ -233,8 +233,7 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: |
-        git fetch --prune --unshallow
-        git fetch --tags
+        git fetch --prune --unshallow --tags
         latest_tag=$(git describe --tags --abbrev=0)
         echo "[INFO] Found latest tag [$latest_tag]."
 
@@ -252,7 +251,7 @@ jobs:
           fi
 
           # Deletes the old beta tag.
-          git tag -d "$latest_tag"
+          git tag --delete "$latest_tag"
           git push --delete origin "$latest_tag"
           echo "[INFO] Deleted tag [$latest_tag]."
 
