@@ -1,4 +1,4 @@
-name: Build GTAV_Tweaks Archive
+name: Build GTAV_Tweaks Installer
 
 on:
   workflow_dispatch:
@@ -6,7 +6,7 @@ on:
       version:
         description: "Release Version"
         type: string
-        default: "0.0.0"
+        default: "0.0.0.0"
         required: true
 
       is_pre_release:
@@ -20,7 +20,7 @@ on:
       version:
         description: "Release Version"
         type: string
-        default: "0.0.0"
+        default: "0.0.0.0"
         required: true
 
       is_pre_release:
@@ -31,7 +31,8 @@ on:
 
 env:
   FINAL_EXECUTABLE_NAME: GTAV_Tweaks.exe
-  FINAL_INSTALLER_ARCHIVE_NAME: GTAV_Tweaks.zip
+  POWERSHELL_LAUNCHER_EXECUTABLE_NAME: launchWithGTAV_PowerShell_launcher.exe
+  FINAL_INSTALLER_NAME: GTAV_Tweaks_v${{ inputs.version }}_Installer.msi
   RELEASE_VERSION: ${{ inputs.version }}
   RELEASE_NAME: ""
   IS_PRE_RELEASE: ${{ inputs.is_pre_release }}
@@ -71,9 +72,7 @@ jobs:
             Catch {
                 $null = Write-Host "[readFromCSVFile()] [ERROR] Failed to read the content of the CSV file [$pFileLocation]. Detailed error description below.`n" -ForegroundColor "Red"
                 $null = Write-Host "***START***[`n$Error`n]***END***" -ForegroundColor "Red"
-                # DO NOT REMOVE THIS COMMENT! Removing this space cause the function to return parts of the error object.
-                # We are using $null because $false would cause an error.
-                Return $null
+                Return $false
             }
         }
 
@@ -101,7 +100,6 @@ jobs:
             Catch {
                 $null = Write-Host "[writeToCSVFile()] [ERROR] Failed to write the given hashtable to [$pFileLocation]. Detailed error description below.`n" -ForegroundColor "Red"
                 $null = Write-Host "***START***[`n$Error`n]***END***" -ForegroundColor "Red"
-                # DO NOT REMOVE THIS COMMENT! Removing this space cause the function to return parts of the error object.
                 Return $false
             }
         }
@@ -133,7 +131,7 @@ jobs:
       run: |
         # Set the paths to execute more easily.
         $scriptPathIn = "${{ github.workspace }}\library\build\launchWithGTAV_PowerShell_launcher.ahk"
-        $scriptPathOut = "${{ github.workspace }}\library\build\launchWithGTAV_PowerShell_launcher.exe"
+        $scriptPathOut = "${{ github.workspace }}\$env:POWERSHELL_LAUNCHER_EXECUTABLE_NAME"
 
         # Compile the script.
         $null = Start-Process -FilePath ".\ahk\Compiler\Ahk2Exe.exe" -ArgumentList "/in $scriptPathIn /out $scriptPathOut /base "".\ahk-v2\AutoHotkey64.exe"" /silent verbose" -Wait
@@ -154,10 +152,56 @@ jobs:
       with:
         name: ${{ env.FINAL_EXECUTABLE_NAME }}
         path: ${{ github.workspace }}\${{ env.FINAL_EXECUTABLE_NAME }}
+
+    - name: Upload PowerShell Launcher Executable as Artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: ${{ env.POWERSHELL_LAUNCHER_EXECUTABLE_NAME }}
+        path: ${{ github.workspace }}\${{ env.POWERSHELL_LAUNCHER_EXECUTABLE_NAME }}
  
-  create_release:
-    name: Download Executable Artifacts and Create Release
+
+  build_msi_file:
+    name: Build and Upload MSI Installer File
     needs: build_exe_files
+    runs-on: windows-2019
+
+    steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v4
+
+    - name: Download Main Executable Artifact
+      uses: actions/download-artifact@v4
+      with:
+        name: ${{ env.FINAL_EXECUTABLE_NAME }}
+        path: ${{ github.workspace }}
+
+    - name: Download PowerShell Launcher Executable Artifact
+      uses: actions/download-artifact@v4
+      with:
+        name: ${{ env.POWERSHELL_LAUNCHER_EXECUTABLE_NAME }}
+        path: ${{ github.workspace }}\library\build
+
+    - name: Build .AIP project
+      uses: caphyon/advinst-github-action@main
+      with:
+          advinst-enable-automation: 'true'
+          aip-path: ${{ github.workspace }}\compiler\GTAV_TweaksInstaller.aip
+          aip-build-name: DefaultBuild
+          aip-package-name: ${{ env.FINAL_INSTALLER_NAME }}
+          aip-output-dir:  ${{ github.workspace }}
+          aip-commands: |
+            SetVersion "${{ env.RELEASE_VERSION }}"
+
+    - name: Upload Installer as Artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: ${{ env.FINAL_INSTALLER_NAME }}
+        path: ${{ github.workspace }}\${{ env.FINAL_INSTALLER_NAME }}
+
+
+  create_release:
+    name: Download Installer Aritfact and Create Release
+    needs: build_msi_file
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -169,8 +213,8 @@ jobs:
     - name: Download Installer Artifact
       uses: actions/download-artifact@v4
       with:
-        name: ${{ env.FINAL_EXECUTABLE_NAME }}
-        path: ${{ github.workspace }}/library/build
+        name: ${{ env.FINAL_INSTALLER_NAME }}
+        path: ${{ github.workspace }}
 
     - name: Set Release Name
       run: |
@@ -180,62 +224,9 @@ jobs:
           releaseName="v${{ env.RELEASE_VERSION }}"
         fi
         echo "RELEASE_NAME=$releaseName" >> $GITHUB_ENV
-        cat <<"EOF" > "${{ github.workspace }}/library/build/version.txt"
-
-          ####################################################
-          #                                                  #
-          #  ______________________      ___    __           #
-          #  __  ____/__  __/__    |     __ |  / /           #
-          #  _  / __ __  /  __  /| |     __ | / /            #
-          #  / /_/ / _  /   _  ___ |     __ |/ /             #
-          #  \____/  /_/    /_/  |_|     _____/              #
-          #                                                  #
-          #  ________                     ______             #
-          #  ___  __/__      ____________ ___  /_________    #
-          #  __  /  __ | /| / /  _ \  __ `/_  //_/_  ___/    #
-          #  _  /   __ |/ |/ //  __/ /_/ /_  ,<  _(__  )     #
-          #  /_/    ____/|__/ \___/\__,_/ /_/|_| /____/      #
-          #                                                  #
-          #  ___    __                  _____                #
-          #  __ |  / /_____________________(_)____________   #
-          #  __ | / /_  _ \_  ___/_  ___/_  /_  __ \_  __ \  #
-          #  __ |/ / /  __/  /   _(__  )_  / / /_/ /  / / /  #
-          #  _____/  \___//_/    /____/ /_/  \____//_/ /_/   #
-          #                                                  #
-          ####################################################
-
-          REPLACE_HERE
-        EOF
-
-        sed -i "s/REPLACE_HERE/This installer archive contains version $releaseName of GTAV_Tweaks./g" "${{ github.workspace }}/library/build/version.txt"
-        rm "${{ github.workspace }}/library/build/AutoHotkey32.zip"
-        rm "${{ github.workspace }}/library/build/checkForUpdates.ps1"
-        rm "${{ github.workspace }}/library/build/currentVersion.csv"
-        rm "${{ github.workspace }}/library/build/macroRecorderTemplate.txt"
-        rm "${{ github.workspace }}/library/build/soundvolumeview-x64.zip"
-        rm "${{ github.workspace }}/library/build/launchWithGTAV.ps1"
-        rm "${{ github.workspace }}/library/build/launchWithGTAV_PowerShell_launcher.ahk"
-        rm "${{ github.workspace }}/library/build/manageAutostartScheduledTask.ps1"
-
-        cp "${{ github.workspace }}/library/setup/GTAV_Tweaks_Setup.exe" "${{ github.workspace }}/library/build/"
-
-    - name: Compress Installer Archive
-      run: |
-        cd "${{ github.workspace }}/library/build"
-        zip -r "${{ github.workspace }}/${{ env.FINAL_INSTALLER_ARCHIVE_NAME }}" .
-
-
-    - name: Set Release Name
-      run: |
-        if [ "${{ env.IS_PRE_RELEASE }}" == "true" ]; then
-          releaseName="v${{ env.RELEASE_VERSION }}-beta"
-        else
-          releaseName="v${{ env.RELEASE_VERSION }}"
-        fi
-          echo "RELEASE_NAME=$releaseName" >> $GITHUB_ENV
 
     - name: Print Release Name
-      run: echo "The release name is ${{ env.RELEASE_NAME }}"
+      run: echo "The release name is [${{ env.RELEASE_NAME }}]"
 
     - name: Update Release Tag
       uses: richardsimko/update-tag@v1
@@ -244,16 +235,16 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         
-    - name: Create Draft Main Release
+    - name: Create Release
       uses: ncipollo/release-action@v1
       with:
         allowUpdates: true
-        artifacts: ${{ github.workspace }}/${{ env.FINAL_INSTALLER_ARCHIVE_NAME }}
+        artifacts: ${{ github.workspace }}/${{ env.FINAL_INSTALLER_NAME }}
         artifactErrorsFailBuild: true
         artifactContentType: "application/executable"
         removeArtifacts: true
         replacesArtifacts: true
-        body: "Download the ${{ env.FINAL_INSTALLER_ARCHIVE_NAME }} file, extract it and run the setup executable. Have fun :)"
+        body: "Download the ${{ env.FINAL_INSTALLER_NAME }} file and install it. Have fun :)"
         generateReleaseNotes: false
         makeLatest: true
         prerelease: ${{ env.IS_PRE_RELEASE == 'true' }}
