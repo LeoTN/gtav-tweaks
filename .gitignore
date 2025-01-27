@@ -7,8 +7,8 @@ GTAV_Tweaks.exe
 .vscode/
 compiler/ahk-v2.zip
 compiler/ahk.zip
-compiler/GTAV Tweaks.autosave.aip
-compiler/GTAV Tweaks-cache
+compiler/GTAV_TweaksInstaller.autosave.aip
+compiler/GTAV_TweaksInstaller-cache
 library/build/AutoHotkey32.exe
 library/build/currentVersion.csv
 library/build/launchWithGTAV_PowerShell_launcher.exe
