@@ -234,10 +234,11 @@ jobs:
         git config --global --add safe.directory "/github/workspace"
 
     - name: Delete Old Beta Release
-      working-directory: ${{ github.workspace }}
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: |
+        pwd
+        ls -la
         latest_tag=$(git describe --tags --abbrev=0)
         echo "[INFO] Found latest tag [$latest_tag]."
 
