@@ -239,8 +239,8 @@
     <ROW Registry="Version" Root="-1" Key="Software\[Manufacturer]\[ProductName]" Name="Version" Value="[ProductVersion]" Component_="ProductInformation"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiShortsComponent">
-    <ROW Shortcut="GTAVTweaks" Directory_="SHORTCUTDIR" Name="GTAVTW~1|GTAV Tweaks" Component_="GTAV_Tweaks.exe" Target="[#GTAV_Tweaks.exe]" Description="Launches GTAV Tweaks." Hotkey="0" IconIndex="0" ShowCmd="1" WkDir="APPDIR"/>
-    <ROW Shortcut="GTAVTweaks_1" Directory_="DesktopFolder" Name="GTAVTW~1|GTAV Tweaks" Component_="GTAV_Tweaks.exe" Target="[#GTAV_Tweaks.exe]" Description="Launches GTAV Tweaks." Hotkey="0" IconIndex="0" ShowCmd="1" WkDir="APPDIR"/>
+    <ROW Shortcut="GTAVTweaks" Directory_="SHORTCUTDIR" Name="GTAVTW~1|GTAV Tweaks" Component_="GTAV_Tweaks.exe" Target="[#GTAV_Tweaks.exe]" Description="https://github.com/LeoTN/gtav-tweaks" Hotkey="0" IconIndex="0" ShowCmd="1" WkDir="APPDIR"/>
+    <ROW Shortcut="GTAVTweaks_1" Directory_="DesktopFolder" Name="GTAVTW~1|GTAV Tweaks" Component_="GTAV_Tweaks.exe" Target="[#GTAV_Tweaks.exe]" Description="https://github.com/LeoTN/gtav-tweaks" Hotkey="0" IconIndex="0" ShowCmd="1" WkDir="APPDIR"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiThemeComponent">
     <ATTRIBUTE name="UsedTheme" value="classic"/>

@@ -346,7 +346,7 @@ manageDesktopShortcut(pBooleanForceCreateShortcut := false) {
     global booleanFirstTimeLaunch
     global iconFileLocation
 
-    desktopShortcutLocation := A_Desktop . "\GTAV_Tweaks.lnk"
+    desktopShortcutLocation := A_Desktop . "\GTAV Tweaks.lnk"
     shortcutTarget := A_ScriptFullPath
     shortcutDescription := "https://github.com/LeoTN/gtav-tweaks"
     iconIndex := 1

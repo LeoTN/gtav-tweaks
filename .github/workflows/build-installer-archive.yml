@@ -197,10 +197,9 @@ jobs:
 
     - name: Define Final Installer Name
       run: |
+          # The name only changes when the release is a beta release.
           if ($env:IS_PRE_RELEASE) {
             echo "FINAL_INSTALLER_NAME=GTAV_Tweaks_v${{ inputs.version }}-beta_Installer.msi" >> $env:GITHUB_ENV
-          } else {
-            echo "FINAL_INSTALLER_NAME=GTAV_Tweaks_v${{ inputs.version }}_Installer.msi" >> $env:GITHUB_ENV
           }
           $null = Write-Host "[INFO] The final installer name is [${{ env.FINAL_INSTALLER_NAME }}]."
 
@@ -235,12 +234,12 @@ jobs:
 
     - name: Define Final Installer Name
       run: |
+        # The name only changes when the release is a beta release.
         if [ "${{ env.IS_PRE_RELEASE }}" == "true" ]; then
-          finalInstallerName="${{ env.FINAL_INSTALLER_NAME }}-beta"
-        else
-          finalInstallerName="${{ env.FINAL_INSTALLER_NAME }}"
+          finalInstallerName="GTAV_Tweaks_v${{ inputs.version }}-beta_Installer.msi"
+          echo "FINAL_INSTALLER_NAME=$finalInstallerName" >> $GITHUB_ENV
         fi
-        echo "FINAL_INSTALLER_NAME=$finalInstallerName" >> $GITHUB_ENV
+        echo "[INFO] The final installer name is [${{ env.FINAL_INSTALLER_NAME }}]."
 
     - name: Define Release Name
       run: |
