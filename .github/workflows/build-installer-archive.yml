@@ -202,7 +202,7 @@ jobs:
           } else {
             echo "FINAL_INSTALLER_NAME=GTAV_Tweaks_v${{ inputs.version }}_Installer.msi" >> $env:GITHUB_ENV
           }
-          $null = Write-Host "[INFO] The final installer name is [$env:FINAL_INSTALLER_NAME]."
+          $null = Write-Host "[INFO] The final installer name is [${{ env.FINAL_INSTALLER_NAME }}]."
 
     - name: Build .AIP project
       uses: caphyon/advinst-github-action@main
@@ -232,6 +232,25 @@ jobs:
     steps:
     - name: Checkout Repository
       uses: actions/checkout@v4
+
+    - name: Define Final Installer Name
+      run: |
+        if [ "${{ env.IS_PRE_RELEASE }}" == "true" ]; then
+          finalInstallerName="${{ env.FINAL_INSTALLER_NAME }}-beta"
+        else
+          finalInstallerName="${{ env.FINAL_INSTALLER_NAME }}"
+        fi
+        echo "FINAL_INSTALLER_NAME=$finalInstallerName" >> $GITHUB_ENV
+
+    - name: Define Release Name
+      run: |
+        if [ "${{ env.IS_PRE_RELEASE }}" == "true" ]; then
+          releaseName="v${{ env.RELEASE_VERSION }}-beta"
+        else
+          releaseName="v${{ env.RELEASE_VERSION }}"
+        fi
+        echo "RELEASE_NAME=$releaseName" >> $GITHUB_ENV
+        echo "[INFO] The release name is [${{ env.RELEASE_NAME }}]."
 
     - name: Download Installer Artifact
       uses: actions/download-artifact@v4
@@ -268,18 +287,6 @@ jobs:
         else
           echo "[WARNING] Could not find a beta release and tag to delete."
         fi
-
-    - name: Set Release Name
-      run: |
-        if [ "${{ env.IS_PRE_RELEASE }}" == "true" ]; then
-          releaseName="v${{ env.RELEASE_VERSION }}-beta"
-        else
-          releaseName="v${{ env.RELEASE_VERSION }}"
-        fi
-        echo "RELEASE_NAME=$releaseName" >> $GITHUB_ENV
-
-    - name: Print Release Name
-      run: echo "[INFO] The release name is [${{ env.RELEASE_NAME }}]."
 
     - name: Create or Update Release Tag
       uses: richardsimko/update-tag@v1
