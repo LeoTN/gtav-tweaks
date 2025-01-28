@@ -143,7 +143,7 @@ checkForAvailableUpdates() {
     FileCopy(psUpdateScriptLocation, psUpdateScriptLocationTemp, true)
     parameterString := '-pGitHubRepositoryLink "https://github.com/LeoTN/gtav-tweaks" -pCurrentVersionFileLocation "' .
         currentVersionFileLocation
-        . '" -pCurrentExecutableLocation "' . A_ScriptFullPath . '" -pOutputDirectory "' . updateWorkingDir . '"'
+        . '" -pCurrentInstallationDirectory "' . A_ScriptDir . '" -pOutputDirectory "' . updateWorkingDir . '"'
 
     if (readConfigFile("UPDATE_TO_BETA_VERSIONS")) {
         parameterString .= " -pSwitchConsiderBetaReleases"
@@ -191,7 +191,7 @@ startUpdate(pBooleanForceUpdate := false) {
     FileCopy(psUpdateScriptLocation, psUpdateScriptLocationTemp, true)
     parameterString := '-pGitHubRepositoryLink "https://github.com/LeoTN/gtav-tweaks" -pCurrentVersionFileLocation "' .
         currentVersionFileLocation
-        . '" -pCurrentExecutableLocation "' . A_ScriptFullPath . '" -pOutputDirectory "' . updateWorkingDir . '"'
+        . '" -pCurrentInstallationDirectory "' . A_ScriptDir . '" -pOutputDirectory "' . updateWorkingDir . '"'
     ; Depending on the parameters and settings.
     if (readConfigFile("UPDATE_TO_BETA_VERSIONS")) {
         parameterString .= " -pSwitchConsiderBetaReleases"
@@ -206,23 +206,18 @@ startUpdate(pBooleanForceUpdate := false) {
     setAutostartWithGTAV(false)
     ; Waits for the task to be deleted.
     Sleep(500)
+    ; This string will essentially be run by the AutoHotkey run function.
+    powershellArgumentString := 'powershell.exe -executionPolicy bypass -file "' . psUpdateScriptLocationTemp
+        . '" ' . parameterString
+    ; Starts the update or shows the user interface to make the user choose between manual and automatic update.
     if (pBooleanForceUpdate) {
         ; Calls the PowerShell script to install the update.
-        Run('powershell.exe -executionPolicy bypass -file "' . psUpdateScriptLocationTemp
-            . '" ' . parameterString . ' -pSwitchForceUpdate')
+        Run(powershellArgumentString)
         ExitApp()
         ExitApp()
     }
-    result := MsgBox(getLanguageArrayString("functionsMsgBox1_1", versionFullName, updateVersion),
-    getLanguageArrayString("functionsMsgBox1_2"), "YN Iconi T30 262144")
-    if (result != "Yes") {
-        return false
-    }
-    ; Calls the PowerShell script to install the update.
-    Run('powershell.exe -executionPolicy bypass -file "' . psUpdateScriptLocationTemp
-        . '" ' . parameterString)
-    ExitApp()
-    ExitApp()
+    ; Calls the user interface to inform the user about the update.
+    createUpdateGUI(updateVersion, powershellArgumentString)
 }
 
 /*

@@ -26,6 +26,7 @@ CoordMode "Mouse", "Window"
 #Include "MainGUI.ahk"
 #Include "NewCustomHotkeyGUI.ahk"
 #Include "Tutorials.ahk"
+#Include "UpdateGUI.ahk"
 
 onInit()
 
@@ -149,7 +150,8 @@ onInit_checkScriptFileIntegrity() {
     ]
     for (file in fileLocations) {
         if (!FileExist(file)) {
-            MsgBox("The file [" . file . "] is missing.`n`nPlease reinstall the software using the .MSI installer.",
+            MsgBox("The file [" . file .
+                "] is missing.`n`nPlease reinstall or repair the software using the .MSI installer.",
                 "GTAV Tweaks - Reinstallation required",
                 "Icon! 262144")
             exitScriptWithNotification(true)

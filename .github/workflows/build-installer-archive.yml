@@ -73,7 +73,8 @@ jobs:
             Catch {
                 $null = Write-Host "[readFromCSVFile()] [ERROR] Failed to read the content of the CSV file [$pFileLocation]. Detailed error description below.`n" -ForegroundColor "Red"
                 $null = Write-Host "***START***[`n$Error`n]***END***" -ForegroundColor "Red"
-                Return $false
+                # We are using $null because $false would cause an error.
+                Return $null
             }
         }
 
@@ -193,6 +194,15 @@ jobs:
       with:
         name: ${{ env.CURRENT_VERSION_FILE_NAME }}
         path: ${{ github.workspace }}\library\build
+
+    - name: Define Final Installer Name
+      run: |
+          if (${{ inputs.is_pre_release }}) {
+            echo "FINAL_INSTALLER_NAME=GTAV_Tweaks_v${{ inputs.version }}-beta_Installer.msi" >> $env:GITHUB_ENV
+          } else {
+            echo "FINAL_INSTALLER_NAME=GTAV_Tweaks_v${{ inputs.version }}_Installer.msi" >> $env:GITHUB_ENV
+          }
+          $null = Write-Host "[INFO] The final installer name is [$env:FINAL_INSTALLER_NAME]."
 
     - name: Build .AIP project
       uses: caphyon/advinst-github-action@main

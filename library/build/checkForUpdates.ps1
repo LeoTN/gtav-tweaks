@@ -1,17 +1,28 @@
 [CmdletBinding()]
 Param (
+    # The GitHub repository link where to check for updates.
     [Parameter(Mandatory = $true)]
     [String]$pGitHubRepositoryLink,
+    # The file that is used to determine if an update is required.
     [Parameter(Mandatory = $true)]
     [String]$pCurrentVersionFileLocation,
+    # The directory where the current version is installed.
     [Parameter(Mandatory = $true)]
-    [String]$pCurrentExecutableLocation,
+    [String]$pCurrentInstallationDirectory,
+    # A working directory. Should not lie within the installation directory.
     [Parameter(Mandatory = $true)]
     [String]$pOutputDirectory = $env:TEMP,
+    # If provided, will cause the script to only check for available updates without executing them.
     [Parameter(Mandatory = $false)]
     [switch]$pSwitchDoNotStartUpdate,
+    # If provided, will force the script to execute an update to the highest possible version, even if the software is already on the highest version.
     [Parameter(Mandatory = $false)]
     [switch]$pSwitchForceUpdate,
+    # If provided, the script will automatically download the .MSI installer and perform the update automatically.
+    # Otherwise the .MSI installer will be downloaded and the user has to continue from there on.
+    [Parameter(Mandatory = $false)]
+    [switch]$pSwitchAutoUpdate,
+    # If provided, the script will consider beta releases as available update versions.
     [Parameter(Mandatory = $false)]
     [switch]$pSwitchConsiderBetaReleases
 )
@@ -35,7 +46,7 @@ function onInit() {
     }
     # Makes sure, that we do not have a shortened path.
     $pCurrentVersionFileLocation = [System.IO.Path]::GetFullPath($pCurrentVersionFileLocation)
-    $pCurrentExecutableLocation = [System.IO.Path]::GetFullPath($pCurrentExecutableLocation)
+    $pCurrentInstallationDirectory = [System.IO.Path]::GetFullPath($pCurrentInstallationDirectory)
     $pOutputDirectory = [System.IO.Path]::GetFullPath($pOutputDirectory)
     # Adds a subfolder, so that we can delete this entire folder instead of deleting every file individually.
     $pOutputDirectory = Join-Path -Path $pOutputDirectory -ChildPath "GTAV_Tweaks_temp_update"
@@ -47,9 +58,8 @@ function onInit() {
     $exitCode = evaluateUpdate
     $null = Write-Host "[onInit()] [INFO] Exiting with exit code [$exitCode]."
 
-    $currentExecutableParentDirectory = Split-Path -Path $pCurrentExecutableLocation -Parent
     $supportFilesFolderName = "GTAV_Tweaks"
-    $supportFilesFolder = Join-Path -Path $currentExecutableParentDirectory -ChildPath $supportFilesFolderName
+    $supportFilesFolder = Join-Path -Path $pCurrentInstallationDirectory -ChildPath $supportFilesFolderName
     $supportFilesFolderUpdateFolder = Join-Path -Path $supportFilesFolder -ChildPath "update"
     $logFileNameUpdate = "executedUpdate.log"
     # Copies the log file into the back up folders.
@@ -62,6 +72,12 @@ function onInit() {
     # Copies the log file into the support file folder.
     If (Test-Path -Path $supportFilesFolderUpdateFolder) {
         $null = Copy-Item -Path $logFilePath -Destination (Join-Path -Path $supportFilesFolderUpdateFolder -ChildPath $logFileName) -Force
+    }
+    # Starts the GTAV_Tweaks executable if the script update was perfomed automatically.
+    $newExecutableLocation = Join-Path -Path $pCurrentInstallationDirectory -ChildPath "GTAV_Tweaks.exe"
+    If ($pSwitchAutoUpdate -and ($exitCode -eq 102) -and (Test-Path -Path $newExecutableLocation)) {
+        $null = Write-Host "[onInit()] [INFO] Starting the new GTAV_Tweaks executable after sucessful automatic update..."
+        $null = Start-Process -FilePath $newExecutableLocation
     }
     # Speeds up the script when it's ran without the user seeing it.
     If (checkIfScriptWindowIsHidden) {
@@ -78,7 +94,7 @@ function evaluateUpdate() {
     # If the extraction is not successful, the script will delete the incorrect current version file
     # because the AutoHotkey executable will replace it with a new and correct one at it's next launch.
     If (-not (extractCurrentVersionFileContent)) {
-        $null = Write-Host "`n`n[evaluateUpdate()] [WARNING] The file [$pCurrentVersionFileLocation] seems corrupted or unavailable. The GTAV_Tweaks.exe will create a new and valid file at next launch. Deleting file...`n`n" -ForegroundColor "Yellow"
+        $null = Write-Host "`n`n[evaluateUpdate()] [WARNING] The file [$pCurrentVersionFileLocation] seems corrupted or unavailable. A new file needs to be created by (re)installing the software using the .MSI file.`n`n" -ForegroundColor "Yellow"
         $null = Remove-Item -Path $pCurrentVersionFileLocation -ErrorAction SilentlyContinue
         Return 1
     }
@@ -99,7 +115,8 @@ function evaluateUpdate() {
         Return 101
     }
     # Downloads and executes the update.
-    If (-not (downloadReleaseAsset -pReleaseName $availableUpdateVersion -pAssetName "GTAV_Tweaks.zip" -pOutputDirectory $pOutputDirectory)) {
+    $releaseAssetName = "GTAV_Tweaks_$($availableUpdateVersion)_Installer.msi"
+    If (-not (downloadReleaseAsset -pReleaseName $availableUpdateVersion -pAssetName $releaseAssetName -pOutputDirectory $pOutputDirectory)) {
         $null = Write-Host "`n`n[evaluateUpdate()] [INFO] There is an update available [$availableUpdateVersion], but the script failed to download it.`n`n" -ForegroundColor "Green"
         Return 2
     }
@@ -108,14 +125,7 @@ function evaluateUpdate() {
         Return 3
     }
     Else {
-        # Activats the tutorial after a successful update or version change.
-        $currentExecutableParentDirectory = Split-Path -Path $pCurrentExecutableLocation -Parent
-        $currentExecutableConfigFileLocation = Join-Path -Path $currentExecutableParentDirectory -ChildPath "GTAV_Tweaks\GTAV_Tweaks.ini"
-        $null = Write-Host "[evaluateUpdate()] [INFO] Enabling tutorial in the config file again..."
-        $null = changeINIFile -pFilePath $currentExecutableConfigFileLocation -pKey "ASK_FOR_TUTORIAL" -pValue 1
         $null = Write-Host "`n`n[evaluateUpdate()] [INFO] Successfully changed version from [$global:currentVersion] to [$availableUpdateVersion].`n`n" -ForegroundColor "Green"
-        # Launch the new and updated script.
-        $null = Start-Process -FilePath $pCurrentExecutableLocation
         Return 102
     }
 }
@@ -141,7 +151,7 @@ function extractCurrentVersionFileContent() {
     }
     # Checks if the provided tag has a valid syntaxt.
     $tmpTag = $global:currentVersion.Replace("v", "").Replace("-beta", "")
-    If (-not ($tmpTag -match '^\d+\.\d+\.\d+$')) {
+    If (-not ($tmpTag -match '^\d+\.\d+\.\d+(\.\d+)?$')) {
         $null = Write-Host "[extractCurrentVersionFileContent()] [ERROR] Found tag name which couldn't be converted to version: [$global:currentVersion]." -ForegroundColor "Red"
         Return $false
     }
@@ -242,7 +252,7 @@ function getLatestTag() {
             }
             # Checking if the version is valid.
             $tmpTag = $tmpTag.Replace("-beta", "")
-            If (-not ($tmpTag -match '^\d+\.\d+\.\d+$')) {
+            If (-not ($tmpTag -match '^\d+\.\d+\.\d+(\.\d+)?$')) {
                 $null = Write-Host "[getLatestTag()] [WARNING] Found tag name which couldn't be converted to version: [$tmpTag]." -ForegroundColor "Yellow"
                 Continue
             }
@@ -255,7 +265,6 @@ function getLatestTag() {
     Catch {
         $null = Write-Host "[getLatestTag()] [ERROR] Failed to fetsh latest tag! Detailed error description below.`n" -ForegroundColor "Red"
         $null = Write-Host "***START***[`n$Error`n]***END***" -ForegroundColor "Red"
-        # DO NOT REMOVE THIS COMMENT! Removing this space cause the function to return parts of the error object.
         Return $false
     }
 }
@@ -289,7 +298,6 @@ function getLastUpdatedDateFromTag() {
     Catch {
         $null = Write-Host "[getLastUpdatedDateFromTag()] [ERROR] Failed to fetch last update date for [$pTagName]! Detailed error description below.`n" -ForegroundColor "Red"
         $null = Write-Host "***START***[`n$Error`n]***END***" -ForegroundColor "Red"
-        # DO NOT REMOVE THIS COMMENT! Removing this space cause the function to return parts of the error object.
         Return "not_updated_yet"
     }
     $null = Write-Host "[getLastUpdatedDateFromTag()] [INFO] Update date [$lastUpdateDate] for [$pTagName] found."
@@ -327,9 +335,8 @@ function downloadReleaseAsset() {
 }
 
 function executeUpdate() {
-    $updateZipArchiveLocation = Join-Path -Path $pOutputDirectory -ChildPath "GTAV_Tweaks.zip"
-    $updateArchiveLocation = Join-Path -Path $pOutputDirectory -ChildPath "GTAV_Tweaks"
-    $newExecutableLocation = join-path -Path $updateArchiveLocation -ChildPath "GTAV_Tweaks.exe"
+    $updateMsiInstallerName = "GTAV_Tweaks_$($availableUpdateVersion)_Installer.msi"
+    $updateMsiInstallerLocation = Join-Path -Path $pOutputDirectory -ChildPath $updateMsiInstallerName
 
     $null = Write-Host "[executeUpdate()] [INFO] Starting update process..."
     # We need to end all autostart script instances because they would cause a file copy error while they are still running.
@@ -342,37 +349,33 @@ function executeUpdate() {
             $null = Write-Host "[executeUpdate()] [INFO] The GTAV Tweaks autostart PowerShell process with the pid [$processPID] has been ended."
         }
     }
-    If (-not (Test-Path -Path $updateZipArchiveLocation)) {
-        $null = Write-Host "[executeUpdate()] [ERROR] Could not find installer archive at [$pOutputDirectory\GTAV_Tweaks.zip]." -ForegroundColor "Red"
+    If (-not (Test-Path -Path $updateMsiInstallerLocation)) {
+        $null = Write-Host "[executeUpdate()] [ERROR] Could not find installer archive at [$updateMsiInstallerLocation]." -ForegroundColor "Red"
         Return $false
     }
+    # Creates a backup of the current version.
+    $currentExecutableLocation = Join-Path -Path $pCurrentInstallationDirectory -ChildPath "GTAV_Tweaks.exe"
+    If (-not (backupOldVersionFiles -pCurrentExecutableLocation $currentExecutableLocation -pBackupTargetDirectory $pCurrentInstallationDirectory)) {
+        $null = Write-Host "[executeUpdate()] [ERROR] Failed to backup old version files." -ForegroundColor "Red"
+        Return $false
+    }
+    # Starts the actual update. If the parameter pSwitchAutoUpdate is set, the update will be executed automatically.
     Try {
-        $currentExecutableParentDirectory = Split-Path -Path $pCurrentExecutableLocation -Parent
-        If (-not (backupOldVersionFiles -pCurrentExecutableLocation $pCurrentExecutableLocation -pBackupTargetDirectory $currentExecutableParentDirectory)) {
-            $null = Write-Host "[executeUpdate()] [ERROR] Failed to backup old version files." -ForegroundColor "Red"
-            Return $false
+        If ($pSwitchAutoUpdate) {
+            $null = Write-Host "[executeUpdate()] [INFO] Starting automatic update process..."
+            $msiParameter = "/i ""$updateMsiInstallerLocation"" /passive"
         }
-        $null = Expand-Archive -Path $updateZipArchiveLocation -DestinationPath $updateArchiveLocation -Force
-        # Unblock every file.
-        Get-ChildItem -Path $updateArchiveLocation -Recurse | ForEach-Object {
-            If (-not $_.PSIsContainer) {
-                Unblock-File -Path $_.FullName -ErrorAction Continue
-            }
+        Else {
+            $null = Write-Host "[executeUpdate()] [INFO] Starting manual update process..."
+            $msiParameter = "/i ""$updateMsiInstallerLocation"" /qf"
         }
-        # Moves the new executable to the old place.
-        $null = Move-Item -Path $newExecutableLocation -Destination $pCurrentExecutableLocation -Force
-        $null = Write-Host "[executeUpdate()] [INFO] Moved [$newExecutableLocation] to [$pCurrentExecutableLocation]."
-        # Clean up the folder.
-        If (Test-Path -Path $pOutputDirectory) {
-            $null = Remove-Item -Path $pOutputDirectory -Recurse -Force
-        }
+        $null = Start-Process -FilePath "msiexec.exe" -ArgumentList $msiParameter -Wait
         $null = Write-Host "[executeUpdate()] [INFO] Successfully executed update."
         Return $true
     }
     Catch {
         $null = Write-Host "[executeUpdate()] [ERROR] Failed update execution. Detailed error description below.`n" -ForegroundColor "Red"
         $null = Write-Host "***START***[`n$Error`n]***END***" -ForegroundColor "Red"
-        # DO NOT REMOVE THIS COMMENT! Removing this space cause the function to return parts of the error object, which are interpreted as true.
         Return $false
     }
 }
@@ -410,7 +413,7 @@ function backupOldVersionFiles() {
         # Moves the old support files into a backup folder.
         # Gets every file object.
         $files = Get-ChildItem -Path $supportFilesFolder -File -Recurse
-        foreach ($file in $files) {
+        ForEach ($file in $files) {
             $relativePath = $file.FullName.Substring($supportFilesFolder.Length + 1)
             $destinationFileLocation = Join-Path -Path $targetBackupFolderSupportFiles -ChildPath $relativePath
             $destinationFileParentDirectory = Split-Path -Path $destinationFileLocation -Parent
@@ -445,7 +448,6 @@ function backupOldVersionFiles() {
     Catch {
         $null = Write-Host "[backupOldVersionFiles()] [ERROR] Failed to backup old version files. Detailed error description below.`n" -ForegroundColor "Red"
         $null = Write-Host "***START***[`n$Error`n]***END***" -ForegroundColor "Red"
-        # DO NOT REMOVE THIS COMMENT! Removing this space cause the function to return parts of the error object, which are interpreted as true.
         Return $false
     }
 }
@@ -567,7 +569,6 @@ function writeToCSVFile() {
     Catch {
         $null = Write-Host "[writeToCSVFile()] [ERROR] Failed to write the given hashtable to [$pFileLocation]. Detailed error description below.`n" -ForegroundColor "Red"
         $null = Write-Host "***START***[`n$Error`n]***END***" -ForegroundColor "Red"
-        # DO NOT REMOVE THIS COMMENT! Removing this space cause the function to return parts of the error object.
         Return $false
     }
 }
@@ -597,44 +598,9 @@ function readFromCSVFile() {
     Catch {
         $null = Write-Host "[readFromCSVFile()] [ERROR] Failed to read the content of the CSV file [$pFileLocation]. Detailed error description below.`n" -ForegroundColor "Red"
         $null = Write-Host "***START***[`n$Error`n]***END***" -ForegroundColor "Red"
-        # DO NOT REMOVE THIS COMMENT! Removing this space cause the function to return parts of the error object.
         # We are using $null because $false would cause an error.
         Return $null
     }
-}
-
-function changeINIFile {
-    param (
-        [Parameter(Mandatory = $true)]
-        [String]$pFilePath,
-        [Parameter(Mandatory = $true)]
-        [String]$pKey,
-        [Parameter(Mandatory = $true)]
-        [String]$pValue
-    )
-
-    If (-not (Test-Path -Path $pFilePath)) {
-        $null = Write-Host "[changeINIFile()] [WARNING] Could not find .INI file at [$pFilePath]." -ForegroundColor "Yellow"
-        Return $false
-    }
-    $iniFileContent = Get-Content -Path $pFilePath
-    $booleanSuccess = $false
-    # Scans the file for the key.
-    For ($i = 0; $i -lt $iniFileContent.Length; $i++) {
-        If ($iniFileContent[$i] -match "^$pKey=") {
-            $iniFileContent[$i] = "$pKey=$pValue"
-            $booleanSuccess = $true
-            Break
-        }
-    }
-    # Writes the new content to the file.
-    If ($booleanSuccess) {
-        $iniFileContent | Set-Content -Path $pFilePath
-        $null = Write-Host "[changeINIFile()] [INFO] Successfully changed [$pKey]'s value to [$pValue] in [$pFilePath]."
-        Return $true
-    }
-    $null = Write-Host "[changeINIFile()] [WARNING] Could not find key [$pKey] in .INI file at [$pFilePath]." -ForegroundColor "Yellow"
-    Return $false
 }
 
 function checkIfScriptWindowIsHidden() {
