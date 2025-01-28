@@ -159,7 +159,7 @@ createMainGUI() {
             }
             case "CheckForUpdateAtLaunchCheckbox":
             {
-                GUIControlObject.OnEvent("Click", (*) => handleMainGUI_checkbox_checkForUpdatesAtLaunch())
+                GUIControlObject.OnEvent("Click", (*) => handleMainGUI_checkbox_checkForAvailableUpdatesAtLaunch())
             }
             case "UpdateToBetaReleasesCheckbox":
             {
@@ -267,7 +267,7 @@ GUI ELEMENT SUPPORT FUNCTIONS
 -------------------------------------------------
 */
 
-handleMainGUI_checkbox_checkForUpdatesAtLaunch() {
+handleMainGUI_checkbox_checkForAvailableUpdatesAtLaunch() {
     if (!A_IsCompiled) {
         ; Tells the user that he cannot use this checkbox, because the script is not compiled.
         MsgBox(getLanguageArrayString("generalScriptMsgBox2_1"), getLanguageArrayString("generalScriptMsgBox2_2"),

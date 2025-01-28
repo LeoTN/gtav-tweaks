@@ -50,7 +50,7 @@ onInit() {
     global psManageAutoStartTaskFileLocation := autostartDirectory . "\manageAutostartScheduledTask.ps1"
 
     global updateDirectory := scriptMainDirectory . "\update"
-    global psUpdateScriptLocation := updateDirectory . "\checkForUpdates.ps1"
+    global psUpdateScriptLocation := updateDirectory . "\checkForAvailableUpdates.ps1"
     global currentVersionFileLocation := updateDirectory . "\currentVersion.csv"
 
     global soundVolumeViewDirectory := scriptMainDirectory . "\soundvolumeview-x64"

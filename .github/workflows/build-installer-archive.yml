@@ -199,9 +199,10 @@ jobs:
       run: |
           # The name only changes when the release is a beta release.
           if ($env:IS_PRE_RELEASE) {
-            echo "FINAL_INSTALLER_NAME=GTAV_Tweaks_v${{ inputs.version }}-beta_Installer.msi" >> $env:GITHUB_ENV
+            $finalInstallerName = "GTAV_Tweaks_v${{ inputs.version }}-beta_Installer.msi"
+            echo "FINAL_INSTALLER_NAME=$finalInstallerName" >> $env:GITHUB_ENV
           }
-          $null = Write-Host "[INFO] The final installer name is [${{ env.FINAL_INSTALLER_NAME }}]."
+          $null = Write-Host "[INFO] The final installer name is [$finalInstallerName]."
 
     - name: Build .AIP project
       uses: caphyon/advinst-github-action@main
@@ -239,7 +240,7 @@ jobs:
           finalInstallerName="GTAV_Tweaks_v${{ inputs.version }}-beta_Installer.msi"
           echo "FINAL_INSTALLER_NAME=$finalInstallerName" >> $GITHUB_ENV
         fi
-        echo "[INFO] The final installer name is [${{ env.FINAL_INSTALLER_NAME }}]."
+        echo "[INFO] The final installer name is [$finalInstallerName]."
 
     - name: Define Release Name
       run: |
@@ -249,7 +250,7 @@ jobs:
           releaseName="v${{ env.RELEASE_VERSION }}"
         fi
         echo "RELEASE_NAME=$releaseName" >> $GITHUB_ENV
-        echo "[INFO] The release name is [${{ env.RELEASE_NAME }}]."
+        echo "[INFO] The release name is [$releaseName]."
 
     - name: Download Installer Artifact
       uses: actions/download-artifact@v4

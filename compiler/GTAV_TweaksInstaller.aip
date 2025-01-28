@@ -85,7 +85,7 @@
     <ROW File="SoundVolumeView.exe" Component_="SoundVolumeView.exe" FileName="SOUNDV~1.EXE|SoundVolumeView.exe" Version="65535.65535.65535.65535" Attributes="0" SourcePath="..\library\build\soundvolumeview-x64\SoundVolumeView.exe" SelfReg="false" DigSign="true"/>
     <ROW File="readme.txt_2" Component_="readme.txt" FileName="readme.txt" Version="65535.65535.65535.65535" Attributes="0" SourcePath="..\library\build\soundvolumeview-x64\readme.txt" SelfReg="false"/>
     <ROW File="SoundVolumeView.chm" Component_="SoundVolumeView.chm" FileName="SOUNDV~1.CHM|SoundVolumeView.chm" Version="65535.65535.65535.65535" Attributes="0" SourcePath="..\library\build\soundvolumeview-x64\SoundVolumeView.chm" SelfReg="false"/>
-    <ROW File="checkForUpdates.ps1" Component_="checkForUpdates.ps1" FileName="CHECKF~1.PS1|checkForUpdates.ps1" Version="65535.65535.65535.65535" Attributes="0" SourcePath="..\library\build\checkForUpdates.ps1" SelfReg="false"/>
+    <ROW File="checkForUpdates.ps1" Component_="checkForUpdates.ps1" FileName="CHECKF~2.PS1|checkForAvailableUpdates.ps1" Version="65535.65535.65535.65535" Attributes="0" SourcePath="..\library\build\checkForAvailableUpdates.ps1" SelfReg="false"/>
     <ROW File="currentVersion.csv" Component_="checkForUpdates.ps1" FileName="CURREN~1.CSV|currentVersion.csv" Version="65535.65535.65535.65535" Attributes="0" SourcePath="..\library\build\currentVersion.csv" SelfReg="false"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.BootstrapperUISequenceComponent">
