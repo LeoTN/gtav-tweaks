@@ -210,7 +210,7 @@ createLanguageArrayMap(pLanguageCode) {
             "Sprache"
         ]
         mainGUIOptionsMenu_4 := [
-            "Update erzwingen"
+            "Nach Updates suchen"
         ]
         mainGUIOptionsMenu_5 := [
             "Desktopverknüpfung erstellen"
@@ -416,12 +416,9 @@ createLanguageArrayMap(pLanguageCode) {
             "Patch Notes"
         ]
         updateGUI_4 := [
-            "Manuelles Update"
+            "MSI Installer herunterladen"
         ]
         updateGUI_5 := [
-            "Automatisches Update"
-        ]
-        updateGUI_6 := [
             "Jetzt nicht"
         ]
         ; Reload & Terminate GUI
@@ -921,7 +918,7 @@ createLanguageArrayMap(pLanguageCode) {
             "Language"
         ]
         mainGUIOptionsMenu_4 := [
-            "Force Update"
+            "Search for Updates"
         ]
         mainGUIOptionsMenu_5 := [
             "Create Desktop Shortcut"
@@ -1125,12 +1122,9 @@ createLanguageArrayMap(pLanguageCode) {
             "Patch Notes"
         ]
         updateGUI_4 := [
-            "Manual Update"
+            "Download MSI Installer"
         ]
         updateGUI_5 := [
-            "Automatic Update"
-        ]
-        updateGUI_6 := [
             "No Thanks"
         ]
         ; Reload & Terminate GUI
@@ -1619,7 +1613,6 @@ createLanguageArrayMap(pLanguageCode) {
         "updateGUI_3", updateGUI_3,
         "updateGUI_4", updateGUI_4,
         "updateGUI_5", updateGUI_5,
-        "updateGUI_6", updateGUI_6,
         "reloadAndTerminateGUI_1", reloadAndTerminateGUI_1,
         "reloadAndTerminateGUI_2", reloadAndTerminateGUI_2,
         "reloadAndTerminateGUI_3", reloadAndTerminateGUI_3,

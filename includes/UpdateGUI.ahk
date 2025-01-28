@@ -6,11 +6,12 @@ CoordMode "Mouse", "Window"
 /*
 Creates the user inface which asks the user to confirm the update.
 @param pUpdateVersion [String] The version of the update or rather the complete tag name.
-@param pPowershellArgumentString [String] The argument string to call the PowerShell update script.
 */
-createUpdateGUI(pUpdateVersion, pPowershellArgumentString) {
+createUpdateGUI(pUpdateVersion) {
     ; Required information for the update GUI.
     updatePatchNotesURL := "https://github.com/LeoTN/gtav-tweaks/releases/tag/" . pUpdateVersion
+    msiDownloadURL := "https://github.com/LeoTN/gtav-tweaks/releases/download/"
+        . pUpdateVersion . "/GTAV_Tweaks_" . pUpdateVersion . "_Installer.msi"
 
     global updateGUI := Gui(, getLanguageArrayString("updateGUI_1"))
     updateGUIUpdateText := updateGUI.Add("Text", "w320 R3 Center",
@@ -21,33 +22,22 @@ createUpdateGUI(pUpdateVersion, pPowershellArgumentString) {
     updateGUIPatchNotesLink.SetFont("s10 underline cBlue")
     updateGUIPatchNotesLink.OnEvent("Click", (*) => Run(updatePatchNotesURL))
 
-    updateGUIManualUpdateButton := updateGUI.Add("Button", "yp+30 w100 R2", getLanguageArrayString("updateGUI_4"))
-    updateGUIManualUpdateButton.OnEvent("Click", (*) => handleUpdateGUI_manualUpdateButton(pPowershellArgumentString))
-    updateGUIAutoUpdateButton := updateGUI.Add("Button", "xp+110 w100 R2", getLanguageArrayString("updateGUI_5"))
-    updateGUIAutoUpdateButton.OnEvent("Click", (*) => handleUpdateGUI_autoUpdateButton(pPowershellArgumentString))
-    updateGUIAutoUpdateButton.Focus()
-    updateGUINoUpdateButton := updateGUI.Add("Button", "xp+110 w100 R2", getLanguageArrayString("updateGUI_6"))
+    updateGUIDownloadMSIButton := updateGUI.Add("Button", "yp+30 xp+50 w100 R2", getLanguageArrayString("updateGUI_4"))
+    updateGUIDownloadMSIButton.OnEvent("Click", (*) => handleUpdateGUI_downloadMSIButton(msiDownloadURL))
+
+    updateGUINoUpdateButton := updateGUI.Add("Button", "xp+110 w100 R2", getLanguageArrayString("updateGUI_5"))
     updateGUINoUpdateButton.OnEvent("Click", (*) => updateGUI.Destroy())
 
     updateGUI.Show()
 }
 
-/*
-@param pPowershellArgumentString [String] The argument string to call the PowerShell update script.
-*/
-handleUpdateGUI_autoUpdateButton(pPowershellArgumentString) {
-    ; Calls the PowerShell script to install the update automatically without further user input required.
-    Run(pPowershellArgumentString . " -pSwitchAutoUpdate")
-    ExitApp()
-    ExitApp()
-}
-
-/*
-@param pPowershellArgumentString [String] The argument string to call the PowerShell update script.
-*/
-handleUpdateGUI_manualUpdateButton(pPowershellArgumentString) {
-    ; Calls the PowerShell script to download the new update, but the user has to install the .MSI file manually.
-    Run(pPowershellArgumentString)
-    ExitApp()
-    ExitApp()
+handleUpdateGUI_downloadMSIButton(pMSIDownloadURL) {
+    Run(pMSIDownloadURL)
+    result := MsgBox(
+        "This instance of GTAV Tweaks will exit now.`n`nSimply run the installer and follow the instructions.`n`nIt is recommended to use the same installation directory as the previous version. Otherwise you have to manually move macro and config files to the new location.",
+        "GTAV Tweaks - Update Process", "OC Icon! 262144")
+    ; Exits the script if the user confirms.
+    if (result == "OK") {
+        exitScriptWithNotification()
+    }
 }
