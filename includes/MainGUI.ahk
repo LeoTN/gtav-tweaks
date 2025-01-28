@@ -93,16 +93,15 @@ createMainGUI() {
     optionsMenu.Add(getLanguageArrayString("mainGUIOptionsMenu_3"), languageMenu)
     optionsMenu.SetIcon(getLanguageArrayString("mainGUIOptionsMenu_3"), iconFileLocation, 7) ; ICON_DLL_USED_HERE
     optionsMenu.Add()
-    optionsMenu.Add(getLanguageArrayString("mainGUIOptionsMenu_4"), (*) => forceUpdate())
+    optionsMenu.Add(getLanguageArrayString("mainGUIOptionsMenu_4"), (*) => handleMainGUI_menu_searchForUpdates())
     optionsMenu.SetIcon(getLanguageArrayString("mainGUIOptionsMenu_4"), iconFileLocation, 4) ; ICON_DLL_USED_HERE
-    optionsMenu.Add(getLanguageArrayString("mainGUIOptionsMenu_5"), (*) => manageDesktopShortcut(true)) ; REMOVE
-    optionsMenu.SetIcon(getLanguageArrayString("mainGUIOptionsMenu_5"), iconFileLocation, 20) ; ICON_DLL_USED_HERE ; REMOVE
+    optionsMenu.Add(getLanguageArrayString("mainGUIOptionsMenu_5"), (*) => manageDesktopShortcut(true))
+    optionsMenu.SetIcon(getLanguageArrayString("mainGUIOptionsMenu_5"), iconFileLocation, 20) ; ICON_DLL_USED_HERE
     optionsMenu.Add()
     optionsMenu.Add(getLanguageArrayString("mainGUIOptionsMenu_1"), (*) => terminateScriptPrompt())
     optionsMenu.SetIcon(getLanguageArrayString("mainGUIOptionsMenu_1"), iconFileLocation, 5) ; ICON_DLL_USED_HERE
     optionsMenu.Add(getLanguageArrayString("mainGUIOptionsMenu_2"), (*) => reloadScriptPrompt())
     optionsMenu.SetIcon(getLanguageArrayString("mainGUIOptionsMenu_2"), iconFileLocation, 16) ; ICON_DLL_USED_HERE
-
     allMenus := MenuBar()
     allMenus.Add("&" . getLanguageArrayString("mainGUIMenu_1"), fileMenu)
     allMenus.SetIcon("&" . getLanguageArrayString("mainGUIMenu_1"), iconFileLocation, 6) ; ICON_DLL_USED_HERE
@@ -112,10 +111,8 @@ createMainGUI() {
     allMenus.SetIcon("&" . getLanguageArrayString("mainGUIMenu_3"), iconFileLocation, 15) ; ICON_DLL_USED_HERE
     allMenus.Add("&" . getLanguageArrayString("mainGUIMenu_4"), (*) => helpGUI.Show())
     allMenus.SetIcon("&" . getLanguageArrayString("mainGUIMenu_4"), iconFileLocation, 8) ; ICON_DLL_USED_HERE
-
     mainGUI := Gui(, "GTAV Tweaks")
     mainGUI.MenuBar := allMenus
-
     ; This part begins to fill the GUI with checkboxes and all that stuff.
     applyChangesText := mainGUI.Add("Text", "", getLanguageArrayString("mainGUI_1"))
     startupBehaviorGroupbox := mainGUI.Add("GroupBox", "yp+20 w320 R6.3", getLanguageArrayString("mainGUI_2"))
@@ -131,7 +128,6 @@ createMainGUI() {
         getLanguageArrayString("mainGUI_6"))
     updateToBetaReleasesCheckbox := mainGUI.Add("Checkbox", "yp+20 vUpdateToBetaReleasesCheckbox",
         getLanguageArrayString("mainGUI_7"))
-
     gameOptionsGroupbox := mainGUI.Add("GroupBox", "xp-10 yp+30 w320 R3.3", getLanguageArrayString("mainGUI_8"))
     muteGameWhileLaunchCheckbox := mainGUI.Add("Checkbox", "xp+10 yp+20 vMuteGameWhileLaunchCheckbox",
         getLanguageArrayString("mainGUI_9"))
@@ -139,13 +135,10 @@ createMainGUI() {
         getLanguageArrayString("mainGUI_10"))
     showGTALaunchMessageCheckbox := mainGUI.Add("Checkbox", "yp+20 vShowGTALaunchMessageCheckbox",
         getLanguageArrayString("mainGUI_11"))
-
     mainGUIStatusBar := mainGUI.Add("StatusBar", , getLanguageArrayString("mainGUI_13"))
     mainGUIStatusBar.SetIcon(iconFileLocation, 9) ; ICON_DLL_USED_HERE
-
     ; Adds an action when the main GUI is closed.
     mainGUI.OnEvent("Close", (*) => handleMainGUI_close())
-
     ; Makes it, that every checkbox triggers the save function to apply the changes when clicked.
     for (GUIControlObject in mainGUI) {
         if (!InStr(GUIControlObject.Type, "Checkbox")) {
@@ -159,7 +152,7 @@ createMainGUI() {
             }
             case "CheckForUpdateAtLaunchCheckbox":
             {
-                GUIControlObject.OnEvent("Click", (*) => handleMainGUI_checkbox_checkForUpdatesAtLaunch())
+                GUIControlObject.OnEvent("Click", (*) => handleMainGUI_checkbox_checkForAvailableUpdatesAtLaunch())
             }
             case "UpdateToBetaReleasesCheckbox":
             {
@@ -171,7 +164,6 @@ createMainGUI() {
             }
         }
     }
-
     ; Adds a tooltip to some GUI elements.
     launchWithGTACheckbox.ToolTip := getLanguageArrayString("mainGUIToolTip_1")
     launchMinimizedToTrayCheckbox.ToolTip := getLanguageArrayString("mainGUIToolTip_2")
@@ -267,7 +259,7 @@ GUI ELEMENT SUPPORT FUNCTIONS
 -------------------------------------------------
 */
 
-handleMainGUI_checkbox_checkForUpdatesAtLaunch() {
+handleMainGUI_checkbox_checkForAvailableUpdatesAtLaunch() {
     if (!A_IsCompiled) {
         ; Tells the user that he cannot use this checkbox, because the script is not compiled.
         MsgBox(getLanguageArrayString("generalScriptMsgBox2_1"), getLanguageArrayString("generalScriptMsgBox2_2"),
@@ -309,6 +301,16 @@ handleMainGUI_checkbox_launchWithGTA() {
         return false
     }
     handleMainGUI_writeValuesToConfigFile()
+}
+
+handleMainGUI_menu_searchForUpdates() {
+    if (!A_IsCompiled) {
+        ; Tells the user that he cannot use this option, because the script is not compiled.
+        MsgBox(getLanguageArrayString("generalScriptMsgBox2_1"), getLanguageArrayString("generalScriptMsgBox2_2"),
+        "O Iconi 262144 T3")
+        return false
+    }
+    checkForAvailableUpdates()
 }
 
 handleMainGUI_close() {

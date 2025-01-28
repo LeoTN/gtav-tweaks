@@ -26,6 +26,7 @@ CoordMode "Mouse", "Window"
 #Include "MainGUI.ahk"
 #Include "NewCustomHotkeyGUI.ahk"
 #Include "Tutorials.ahk"
+#Include "UpdateGUI.ahk"
 
 onInit()
 
@@ -36,7 +37,7 @@ onInit() {
     ; This folder will contain all other files.
     global scriptMainDirectory := A_ScriptDir . "\GTAV_Tweaks"
     global ahkBaseFileLocation := scriptMainDirectory . "\AutoHotkey32.exe"
-    global readmeFileLocation := scriptMainDirectory . "\README.txt"
+    global readmeFileLocation := A_ScriptDir . "\README.txt"
 
     global assetDirectory := scriptMainDirectory . "\assets"
     global iconDirectory := assetDirectory . "\icons"
@@ -49,7 +50,7 @@ onInit() {
     global psManageAutoStartTaskFileLocation := autostartDirectory . "\manageAutostartScheduledTask.ps1"
 
     global updateDirectory := scriptMainDirectory . "\update"
-    global psUpdateScriptLocation := updateDirectory . "\checkForUpdates.ps1"
+    global psUpdateScriptLocation := updateDirectory . "\checkForAvailableUpdates.ps1"
     global currentVersionFileLocation := updateDirectory . "\currentVersion.csv"
 
     global soundVolumeViewDirectory := scriptMainDirectory . "\soundvolumeview-x64"
@@ -65,7 +66,7 @@ onInit() {
 
     global recordedMacroFilesStorageDirectory := scriptMainDirectory . "\recorded_macros"
 
-    onInit_unpackSupportFiles()
+    onInit_checkScriptFileIntegrity()
     ; The version can now be specified because the version file should now be available.
     try
     {
@@ -74,7 +75,7 @@ onInit() {
     }
     catch {
         ; This is a fallback. If this version occurs, we know there was an error with the version file.
-        global versionFullName := "v0.0.1"
+        global versionFullName := "v0.0.1.0"
     }
     ; Changes the tray icon and freezes it.
     TraySetIcon(iconFileLocation, 1, true) ; ICON_DLL_USED_HERE
@@ -111,7 +112,8 @@ onInit() {
     }
 }
 
-onInit_unpackSupportFiles() {
+; Checks if important directories and files are present.
+onInit_checkScriptFileIntegrity() {
     SplitPath(scriptMainDirectory, &outFolderName)
     if (!A_IsCompiled && !DirExist(scriptMainDirectory)) {
         MsgBox(
@@ -122,94 +124,37 @@ onInit_unpackSupportFiles() {
             "GTAV Tweaks - Uncompiled Script Information", "Iconi 262144")
         exitScriptWithNotification(true)
     }
-    ; Prompts the user to confirm the creation of files.
-    if (!DirExist(scriptMainDirectory)) {
-        result := MsgBox("Hello there!`n`nYou are about to create additional files in a folder called [" .
-            outFolderName . "]"
-            . " in the same directory as this script.`n`n"
-            "Would you like to proceed?", "GTAV Tweaks - Confirm File Creation", "YN Iconi 262144")
-        if (result != "Yes") {
-            exitScriptWithNotification(true)
-        }
-        MsgBox("To uninstall this software you just need to delete the files.", "GTAV Tweaks - How To Uninstall?",
-            "Iconi 262144")
-        DirCreate(scriptMainDirectory)
-    }
-    if (!DirExist(assetDirectory)) {
-        DirCreate(assetDirectory)
-    }
-    if (!DirExist(iconDirectory)) {
-        DirCreate(iconDirectory)
-    }
-    if (!DirExist(autostartDirectory)) {
-        DirCreate(autostartDirectory)
-    }
-    if (!DirExist(macroFilesStorageDirectory)) {
-        DirCreate(macroFilesStorageDirectory)
-    }
-    if (!DirExist(macroTemplateFilesStorageDirectory)) {
-        DirCreate(macroTemplateFilesStorageDirectory)
-    }
+    ; Checks if required folders need to be created.
     if (!DirExist(recordedMacroFilesStorageDirectory)) {
         DirCreate(recordedMacroFilesStorageDirectory)
     }
-    if (!DirExist(updateDirectory)) {
-        DirCreate(updateDirectory)
-    }
-
-    ; Copies a bunch of support files into a folder (GTAV_Tweaks) relative to the script directory.
-    if (!FileExist(ahkBaseFileLocation)) {
-        FileInstall("library\build\AutoHotkey32.zip", scriptMainDirectory . "\AutoHotkey32.zip", true)
-        RunWait('powershell.exe -Command "Expand-Archive -Path """' . scriptMainDirectory
-            . '\AutoHotkey32.zip""" -DestinationPath """' . scriptMainDirectory . '""" -Force"', , "Hide")
-        FileDelete(scriptMainDirectory . "\AutoHotkey32.zip")
-    }
-    if (!FileExist(readmeFileLocation)) {
-        FileInstall("library\build\README.txt", readmeFileLocation, true)
-    }
-
-    if (!FileExist(iconFileLocation)) {
-        FileInstall("library\assets\icons\gtav_tweaks_icons.dll", iconFileLocation, true)
-    }
-
-    if (!FileExist(psLaunchWithGTAVFileLocation)) {
-        FileInstall("library\build\launchWithGTAV.ps1", psLaunchWithGTAVFileLocation, true)
-    }
-    if (!FileExist(silentAutoStartScriptLauncherExecutableLocation)) {
-        FileInstall("library\build\launchWithGTAV_PowerShell_launcher.exe",
-            silentAutoStartScriptLauncherExecutableLocation, true)
-    }
-    if (!FileExist(psManageAutoStartTaskFileLocation)) {
-        FileInstall("library\build\manageAutostartScheduledTask.ps1", psManageAutoStartTaskFileLocation, true)
-    }
-
-    if (!FileExist(psUpdateScriptLocation)) {
-        FileInstall("library\build\checkForUpdates.ps1", psUpdateScriptLocation, true)
-    }
-    if (!FileExist(currentVersionFileLocation)) {
-        FileInstall("library\build\currentVersion.csv", currentVersionFileLocation, true)
-    }
-
-    if (!FileExist(audioHookFileLocation)) {
-        FileInstall("library\build\soundvolumeview-x64.zip", scriptMainDirectory . "\soundvolumeview-x64.zip", true)
-        RunWait('powershell.exe -Command "Expand-Archive -Path """' . scriptMainDirectory
-            . '\soundvolumeview-x64.zip""" -DestinationPath """' . scriptMainDirectory .
-            '\soundvolumeview-x64""" -Force"', , "Hide")
-        FileDelete(scriptMainDirectory . "\soundvolumeview-x64.zip")
-    }
-
+    ; Creates required files (if possible).
     if (!FileExist(macroConfigFileLocation)) {
         IniWrite("Always back up your files!", macroConfigFileLocation, "CustomHotkeysBelow", "Advice")
     }
-
-    if (!FileExist(builtInHKLocation_walkDriveFlyAFK)) {
-        FileInstall("library\built_in_hotkeys\builtInHK_AFKWalkDriveFly.ahk", builtInHKLocation_walkDriveFlyAFK, true)
-    }
-    if (!FileExist(builtInHKLocation_createSololobby)) {
-        FileInstall("library\built_in_hotkeys\builtInHK_createSololobby.ahk", builtInHKLocation_createSololobby, true)
-    }
-
-    if (!FileExist(macroRecorderTemplateFileLocation)) {
-        FileInstall("library\build\macroRecorderTemplate.txt", macroRecorderTemplateFileLocation, true)
+    ; Checks if all required files are present.
+    fileLocations := [
+        ahkBaseFileLocation,
+        readmeFileLocation,
+        iconFileLocation,
+        psLaunchWithGTAVFileLocation,
+        silentAutoStartScriptLauncherExecutableLocation,
+        psManageAutoStartTaskFileLocation,
+        psUpdateScriptLocation,
+        currentVersionFileLocation,
+        audioHookFileLocation,
+        macroConfigFileLocation,
+        builtInHKLocation_createSololobby,
+        builtInHKLocation_walkDriveFlyAFK,
+        macroRecorderTemplateFileLocation
+    ]
+    for (file in fileLocations) {
+        if (!FileExist(file)) {
+            MsgBox("The file [" . file .
+                "] is missing.`n`nPlease reinstall or repair the software using the .MSI installer.",
+                "GTAV Tweaks - Reinstallation required",
+                "Icon! 262144")
+            exitScriptWithNotification(true)
+        }
     }
 }
