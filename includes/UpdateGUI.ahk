@@ -12,20 +12,21 @@ createUpdateGUI(pUpdateVersion, pPowershellArgumentString) {
     ; Required information for the update GUI.
     updatePatchNotesURL := "https://github.com/LeoTN/gtav-tweaks/releases/tag/" . pUpdateVersion
 
-    global updateGUI := Gui(, "GTAV Tweaks - Update")
-    updateGUIUpdateText := updateGUI.Add("Text", "w320 R3 Center", "Update Available - [" . pUpdateVersion . "]")
+    global updateGUI := Gui(, getLanguageArrayString("updateGUI_1"))
+    updateGUIUpdateText := updateGUI.Add("Text", "w320 R3 Center",
+        getLanguageArrayString("updateGUI_2", pUpdateVersion))
     updateGUIUpdateText.SetFont("bold s12")
 
-    updateGUIPatchNotesLink := updateGUI.Add("Text", "yp+40 w320 R2 Center", 'Patch Notes')
+    updateGUIPatchNotesLink := updateGUI.Add("Text", "yp+40 w320 R2 Center", getLanguageArrayString("updateGUI_3"))
     updateGUIPatchNotesLink.SetFont("s10 underline cBlue")
     updateGUIPatchNotesLink.OnEvent("Click", (*) => Run(updatePatchNotesURL))
 
-    updateGUIManualUpdateButton := updateGUI.Add("Button", "yp+30 w100", "Manual Update")
+    updateGUIManualUpdateButton := updateGUI.Add("Button", "yp+30 w100 R2", getLanguageArrayString("updateGUI_4"))
     updateGUIManualUpdateButton.OnEvent("Click", (*) => handleUpdateGUI_manualUpdateButton(pPowershellArgumentString))
-    updateGUIAutoUpdateButton := updateGUI.Add("Button", "xp+110 w100", "Auto Update")
+    updateGUIAutoUpdateButton := updateGUI.Add("Button", "xp+110 w100 R2", getLanguageArrayString("updateGUI_5"))
     updateGUIAutoUpdateButton.OnEvent("Click", (*) => handleUpdateGUI_autoUpdateButton(pPowershellArgumentString))
     updateGUIAutoUpdateButton.Focus()
-    updateGUINoUpdateButton := updateGUI.Add("Button", "xp+110 w100", "No Thanks")
+    updateGUINoUpdateButton := updateGUI.Add("Button", "xp+110 w100 R2", getLanguageArrayString("updateGUI_6"))
     updateGUINoUpdateButton.OnEvent("Click", (*) => updateGUI.Destroy())
 
     updateGUI.Show()

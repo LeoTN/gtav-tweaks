@@ -211,8 +211,8 @@ startUpdate(pBooleanForceUpdate := false) {
         . '" ' . parameterString
     ; Starts the update or shows the user interface to make the user choose between manual and automatic update.
     if (pBooleanForceUpdate) {
-        ; Calls the PowerShell script to install the update.
-        Run(powershellArgumentString)
+        ; Calls the PowerShell script to install the update automatically.
+        Run(powershellArgumentString . " -pSwitchAutoUpdate")
         ExitApp()
         ExitApp()
     }
