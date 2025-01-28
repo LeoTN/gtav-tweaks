@@ -4,7 +4,6 @@ on:
     push:
         branches: 
             - development
-            - change-installer-to-msi
         paths-ignore:
             - ".github/ISSUE_TEMPLATE/**"
             - ".github/workflows/**"

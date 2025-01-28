@@ -4,6 +4,7 @@
 *.log
 *.msi
 GTAV_Tweaks.exe
+README.txt
 .vscode/
 compiler/ahk-v2.zip
 compiler/ahk.zip

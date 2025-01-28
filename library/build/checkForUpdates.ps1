@@ -22,8 +22,8 @@ $Host.UI.RawUI.WindowTitle = "GTAV Tweaks - Update Script"
 $scriptParentDirectory = Split-Path -Parent $MyInvocation.MyCommand.Path
 $logFileName = "checkForUpdates.log"
 $logFilePath = Join-Path -Path $scriptParentDirectory -ChildPath $logFileName
-Start-Transcript -Path $logFilePath -Force
-Clear-Host
+$null = Start-Transcript -Path $logFilePath -Force
+$null = Clear-Host
 $null = Write-Host "Terminal ready..."
 
 function onInit() {
@@ -316,7 +316,7 @@ function downloadReleaseAsset() {
     Try {
         $gitHubUrl = "$pGitHubRepositoryLink/releases/download/$pReleaseName/$pAssetName"
         $outputFile = Join-Path -Path $pOutputDirectory -ChildPath $pAssetName
-        Invoke-WebRequest -Uri $gitHubUrl -OutFile $outputFile
+        $null = Invoke-WebRequest -Uri $gitHubUrl -OutFile $outputFile
         $null = Write-Host "[downloadReleaseAsset()] [INFO] Successfully downloaded [$pAssetName] into [$pOutputDirectory]."
         Return $true
     }
@@ -639,7 +639,7 @@ function changeINIFile {
 
 function checkIfScriptWindowIsHidden() {
     # Define the necessary Windows API functions
-    Add-Type @"
+    $null = Add-Type @"
 using System;
 using System.Runtime.InteropServices;
 
