@@ -309,7 +309,7 @@ jobs:
         artifactContentType: "application/executable"
         removeArtifacts: true
         replacesArtifacts: true
-        body: "Download the ${{ env.FINAL_INSTALLER_NAME }} file and install it. Have fun :)"
+        body: '**Download** the **[${{ env.FINAL_INSTALLER_NAME }}](https://github.com/LeoTN/gtav-tweaks/releases/download/${{ env.RELEASE_NAME }}/${{ env.FINAL_INSTALLER_NAME }})** file and install it. Have fun :)'
         generateReleaseNotes: false
         makeLatest: true
         prerelease: ${{ env.IS_PRE_RELEASE == 'true' }}

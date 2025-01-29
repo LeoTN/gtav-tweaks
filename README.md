@@ -1,11 +1,11 @@
 # **GTAV Tweaks**
 
 <p align="left">
-        <a href="#installation-guide" style="text-decoration: none;"><img src="https://img.shields.io/github/v/release/LeoTN/gtav-tweaks?sort=semver&display_name=release&style=for-the-badge&logo=Rocket&logoColor=green&label=CLICK TO INSTALL LATEST VERSION&color=green"></a>
+        <a href="https://github.com/LeoTN/gtav-tweaks/releases/latest" style="text-decoration: none;"><img src="https://img.shields.io/github/v/release/LeoTN/gtav-tweaks?sort=semver&display_name=release&style=for-the-badge&logo=Rocket&logoColor=green&label=CLICK TO INSTALL LATEST VERSION&color=green"></a>
+        <br>
         <a href="https://github.com/LeoTN/gtav-tweaks/releases" style="text-decoration: none;"><img src="https://img.shields.io/github/v/release/LeoTN/gtav-tweaks?include_prereleases&sort=semver&filter=*-beta&display_name=release&style=for-the-badge&logo=Textpattern&logoColor=orange&label=LATEST BETA VERSION&color=orange"></a>
         <br>
-        <a href="https://github.com/LeoTN/gtav-tweaks/blob/main/LICENSE" style="text-decoration: none;"><img src="https://img.shields.io/github/license/LeoTN/gtav-tweaks?style=for-the-badge&logo=Google%20Docs&logoColor=orange&label=License&color=orange"></a>
-        <a href="https://github.com/LeoTN/gtav-tweaks/releases/latest/download/GTAV_Tweaks.zip" style="text-decoration: none;"><img src="https://img.shields.io/github/downloads/LeoTN/gtav-tweaks/GTAV_Tweaks.zip?style=for-the-badge&logo=mlflow&logoColor=green&label=Total%20Downloads&color=green"></a>
+        <a href="https://github.com/LeoTN/gtav-tweaks/blob/main/LICENSE" style="text-decoration: none;"><img src="https://img.shields.io/github/license/LeoTN/gtav-tweaks?style=for-the-badge&logo=Google%20Docs&logoColor=blue&label=License&color=blue"></a>
 </p>
 
 **Hotkeys for GTA V Online**
@@ -39,25 +39,11 @@ This program adds **hotkeys** in combination with **macros** for GTA V Online. Y
     </div>
 </div>
 
-## Installation Guide
-
-<a href="https://github.com/LeoTN/gtav-tweaks/releases/latest/download/GTAV_Tweaks.zip" style="text-decoration: none;"><img src="https://img.shields.io/github/v/release/LeoTN/gtav-tweaks?sort=semver& display_name=release&style=for-the-badge&logo=Task&logoColor=green&label=Download&color=green"></a>
-<br>
-<img src="https://img.shields.io/badge/Extract-the%20zip%20file-w?style=for-the-badge&logo=dropbox&logoColor=orange&color=orange">
-<br>
-<img src="https://img.shields.io/badge/Execute-GTAV__Tweaks__Setup.exe-w?style=for-the-badge&logo=educative&logoColor=green&color=green">
-
-> All required files will be stored in the **GTAV_Tweaks** folder next to the **GTAV_Tweaks** executable. You can **uninstall** the program by simply deleting the files.
-
-You can find all releases (including beta versions) **[here](https://github.com/LeoTN/gtav-tweaks/releases)**.
-
-<br>
-
 ## Currently Available Built-in Hotkeys
 
 | Hotkey     | Description                                                                                     |
 |------------|-------------------------------------------------------------------------------------------------|
-| CTRL + F9 | Holds down the W key and sends Numpad Up periodically. To stop it, simply press the key again.  |
+| CTRL + F9 | Holds down the W key and sends Numpad Up periodically. To stop it, simply press the key again.   |
 | CTRL + F10 | Creates a GTA V Online solo lobby (as if you would do it with Task Manager).                    |
 
 **You can change every hotkey in the config file or use the hotkey overview window.**
