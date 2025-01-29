@@ -106,7 +106,7 @@ jobs:
             }
         }
 
-        if ($env:IS_PRE_RELEASE -eq "true") {
+        if ($env:IS_PRE_RELEASE) {
             $releaseName = "v${env:RELEASE_VERSION}-beta"
         }
         else {
@@ -202,6 +202,9 @@ jobs:
             $finalInstallerName = "GTAV_Tweaks_v${{ inputs.version }}-beta_Installer.msi"
             echo "FINAL_INSTALLER_NAME=$finalInstallerName" >> $env:GITHUB_ENV
           }
+          else {
+            $finalInstallerName = "${{ env.FINAL_INSTALLER_NAME }}"
+          }
           $null = Write-Host "[INFO] The final installer name is [$finalInstallerName]."
 
     - name: Build .AIP project
@@ -239,6 +242,8 @@ jobs:
         if [ "${{ env.IS_PRE_RELEASE }}" == "true" ]; then
           finalInstallerName="GTAV_Tweaks_v${{ inputs.version }}-beta_Installer.msi"
           echo "FINAL_INSTALLER_NAME=$finalInstallerName" >> $GITHUB_ENV
+        else
+          finalInstallerName="${{ env.FINAL_INSTALLER_NAME }}"
         fi
         echo "[INFO] The final installer name is [$finalInstallerName]."
 
