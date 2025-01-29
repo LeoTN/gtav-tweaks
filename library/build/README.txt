@@ -2,8 +2,7 @@
 
 Thank you for downloading GTAV Tweaks!
 
-You can either execute the setup excutable or run the application directly.
-I recommend choosing the first option, in case you have just downloaded the installer archive.
+After installing it you can run the application directly.
 
 You might encounter a Windows Defender message. This is because I did not buy a digital certificate. Feel free to continue at your own risk...
 

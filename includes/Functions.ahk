@@ -94,33 +94,11 @@ checkForExistingGTA() {
 }
 
 /*
-Forces the script to update to the latest version, depending on the update settings.
-@returns [boolean] True or false, depending on the function's success.
-*/
-forceUpdate() {
-    global versionFullName
-
-    if (!A_IsCompiled) {
-        MsgBox(getLanguageArrayString("generalScriptMsgBox2_1"), getLanguageArrayString("generalScriptMsgBox2_2"),
-        "O Iconi 262144 T3")
-        return false
-    }
-    result := MsgBox(getLanguageArrayString("mainGUIMsgBox2_1"),
-    getLanguageArrayString("mainGUIMsgBox2_2"), "OC Icon! 262144")
-    if (result != "OK") {
-        return false
-    }
-    if (!startUpdate(true)) {
-        return false
-    }
-    return true
-}
-
-/*
 Checks all GitHub Repository tags to find new versions.
 @returns [boolean] Returns true, when an update is available. False otherwise.
 */
 checkForAvailableUpdates() {
+    global updateDirectory
     global currentVersionFileLocation
     global psUpdateScriptLocation
 
@@ -128,88 +106,30 @@ checkForAvailableUpdates() {
     if (!checkInternetConnection() || !A_IsCompiled) {
         return false
     }
-    SplitPath(psUpdateScriptLocation, &outFileName)
-    psUpdateScriptLocationTemp := A_Temp . "\" . outFileName
-    updateWorkingDir := A_Temp . "\GTAV_Tweaks_AUTO_UPDATE"
-
-    ; Copies the script to the temp directory. This ensure that there are no file errors while the script is moving or copying files,
-    ; because it cannot copy itself, while it is running.
-    FileCopy(psUpdateScriptLocation, psUpdateScriptLocationTemp, true)
     parameterString := '-pGitHubRepositoryLink "https://github.com/LeoTN/gtav-tweaks" -pCurrentVersionFileLocation "' .
-        currentVersionFileLocation
-        . '" -pCurrentExecutableLocation "' . A_ScriptFullPath . '" -pOutputDirectory "' . updateWorkingDir . '"'
+        currentVersionFileLocation . '" -pCurrentInstallationDirectory "' . A_ScriptDir . '"'
 
     if (readConfigFile("UPDATE_TO_BETA_VERSIONS")) {
         parameterString .= " -pSwitchConsiderBetaReleases"
     }
     ; Calls the PowerShell script to check for available updates.
-    exitCode := RunWait('powershell.exe -executionPolicy bypass -file "' . psUpdateScriptLocationTemp
-        . '" ' . parameterString . ' -pSwitchDoNotStartUpdate', , "Hide")
+    exitCode := RunWait('powershell.exe -executionPolicy bypass -file "'
+        . psUpdateScriptLocation . '" ' . parameterString, , "Hide")
     switch (exitCode) {
-        ; Available update, but pSwitchDoNotStartUpdate was set to true.
+        ; Available update found.
         case 101:
         {
-            startUpdate()
+            ; Extracts the available update from the current version file.
+            currentVersionFileMap := readFromCSVFile(currentVersionFileLocation)
+            updateVersion := currentVersionFileMap.Get("AVAILABLE_UPDATE")
+            if (updateVersion == "no_available_update") {
+                return false
+            }
+            createUpdateGUI(updateVersion)
             return true
         }
     }
     ; Maybe more cases in the future.
-}
-
-/*
-Calls the PowerShell script to start updating this software.
-@param pBooleanForceUpdate [boolean] If set to true, will not show a prompt and update instantly.
-@returns [boolean] True or false, depending on the function's success.
-*/
-startUpdate(pBooleanForceUpdate := false) {
-    global currentVersionFileLocation
-    global psUpdateScriptLocation
-
-    ; Does not check for updates, if there is no Internet connection or the script isn't compiled.
-    if (!checkInternetConnection() || !A_IsCompiled) {
-        return false
-    }
-    SplitPath(psUpdateScriptLocation, &outFileName)
-    psUpdateScriptLocationTemp := A_Temp . "\" . outFileName
-    updateWorkingDir := A_Temp . "\GTAV_Tweaks_AUTO_UPDATE"
-
-    ; Copies the PowerShell script to the temp directory. This ensure that there are no file errors while the script is moving or copying files,
-    ; because it cannot copy itself, while it is running.
-    FileCopy(psUpdateScriptLocation, psUpdateScriptLocationTemp, true)
-    parameterString := '-pGitHubRepositoryLink "https://github.com/LeoTN/gtav-tweaks" -pCurrentVersionFileLocation "' .
-        currentVersionFileLocation
-        . '" -pCurrentExecutableLocation "' . A_ScriptFullPath . '" -pOutputDirectory "' . updateWorkingDir . '"'
-    ; Depending on the parameters and settings.
-    if (readConfigFile("UPDATE_TO_BETA_VERSIONS")) {
-        parameterString .= " -pSwitchConsiderBetaReleases"
-    }
-    ; Extracts the available update from the current version file.
-    currentVersionFileMap := readFromCSVFile(currentVersionFileLocation)
-    updateVersion := currentVersionFileMap.Get("AVAILABLE_UPDATE")
-    if (updateVersion == "no_available_update" && !pBooleanForceUpdate) {
-        return false
-    }
-    ; We need to disable the automatic start with GTA V here because it can cause problems while the script is updating.
-    setAutostartWithGTAV(false)
-    ; Waits for the task to be deleted.
-    Sleep(500)
-    if (pBooleanForceUpdate) {
-        ; Calls the PowerShell script to install the update.
-        Run('powershell.exe -executionPolicy bypass -file "' . psUpdateScriptLocationTemp
-            . '" ' . parameterString . ' -pSwitchForceUpdate')
-        ExitApp()
-        ExitApp()
-    }
-    result := MsgBox(getLanguageArrayString("functionsMsgBox1_1", versionFullName, updateVersion),
-    getLanguageArrayString("functionsMsgBox1_2"), "YN Iconi T30 262144")
-    if (result != "Yes") {
-        return false
-    }
-    ; Calls the PowerShell script to install the update.
-    Run('powershell.exe -executionPolicy bypass -file "' . psUpdateScriptLocationTemp
-        . '" ' . parameterString)
-    ExitApp()
-    ExitApp()
 }
 
 /*
@@ -338,7 +258,7 @@ manageDesktopShortcut(pBooleanForceCreateShortcut := false) {
     global booleanFirstTimeLaunch
     global iconFileLocation
 
-    desktopShortcutLocation := A_Desktop . "\GTAV_Tweaks.lnk"
+    desktopShortcutLocation := A_Desktop . "\GTAV Tweaks.lnk"
     shortcutTarget := A_ScriptFullPath
     shortcutDescription := "https://github.com/LeoTN/gtav-tweaks"
     iconIndex := 1

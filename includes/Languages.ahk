@@ -210,7 +210,7 @@ createLanguageArrayMap(pLanguageCode) {
             "Sprache"
         ]
         mainGUIOptionsMenu_4 := [
-            "Update erzwingen"
+            "Nach Updates suchen"
         ]
         mainGUIOptionsMenu_5 := [
             "Desktopverknüpfung erstellen"
@@ -402,6 +402,25 @@ createLanguageArrayMap(pLanguageCode) {
             "/",
             ""
         ]
+        ; Update GUI
+        ; ##########
+        updateGUI_1 := [
+            "GTAV Tweaks - Update"
+        ]
+        updateGUI_2 := [
+            "Update Verfügbar - [",
+            "",
+            "]"
+        ]
+        updateGUI_3 := [
+            "Patch Notes"
+        ]
+        updateGUI_4 := [
+            "MSI Installer herunterladen"
+        ]
+        updateGUI_5 := [
+            "Jetzt nicht"
+        ]
         ; Reload & Terminate GUI
         ; ######################
         reloadAndTerminateGUI_1 := [
@@ -549,14 +568,10 @@ createLanguageArrayMap(pLanguageCode) {
         ; Functions MsgBoxes
         ; ##################
         functionsMsgBox1_1 := [
-            "Es ist ein Update verfügbar.`n`nUpdate von [",
-            "",
-            "] auf [",
-            "",
-            "] jetzt durchführen?"
+            "language_string_unused"
         ]
         functionsMsgBox1_2 := [
-            "GTAV Tweaks - Update verfügbar"
+            "language_string_unused"
         ]
         functionsMsgBox2_1 := [
             "Keine README-Datei gefunden."
@@ -903,7 +918,7 @@ createLanguageArrayMap(pLanguageCode) {
             "Language"
         ]
         mainGUIOptionsMenu_4 := [
-            "Force Update"
+            "Search for Updates"
         ]
         mainGUIOptionsMenu_5 := [
             "Create Desktop Shortcut"
@@ -1093,6 +1108,25 @@ createLanguageArrayMap(pLanguageCode) {
             "/",
             ""
         ]
+        ; Update GUI
+        ; ##########
+        updateGUI_1 := [
+            "GTAV Tweaks - Update"
+        ]
+        updateGUI_2 := [
+            "Update Available - [",
+            "",
+            "]"
+        ]
+        updateGUI_3 := [
+            "Patch Notes"
+        ]
+        updateGUI_4 := [
+            "Download MSI Installer"
+        ]
+        updateGUI_5 := [
+            "No Thanks"
+        ]
         ; Reload & Terminate GUI
         ; ######################
         reloadAndTerminateGUI_1 := [
@@ -1240,14 +1274,10 @@ createLanguageArrayMap(pLanguageCode) {
         ; Functions MsgBoxes
         ; ##################
         functionsMsgBox1_1 := [
-            "There is an update available.`n`nUpdate from [",
-            "",
-            "] to [",
-            "",
-            "] now?"
+            "language_string_unused"
         ]
         functionsMsgBox1_2 := [
-            "GTAV Tweaks - Update Available"
+            "language_string_unused"
         ]
         functionsMsgBox2_1 := [
             "No README file found."
@@ -1578,6 +1608,11 @@ createLanguageArrayMap(pLanguageCode) {
         "tutorialGUI_2", tutorialGUI_2,
         "tutorialGUI_3", tutorialGUI_3,
         "tutorialGUI_4", tutorialGUI_4,
+        "updateGUI_1", updateGUI_1,
+        "updateGUI_2", updateGUI_2,
+        "updateGUI_3", updateGUI_3,
+        "updateGUI_4", updateGUI_4,
+        "updateGUI_5", updateGUI_5,
         "reloadAndTerminateGUI_1", reloadAndTerminateGUI_1,
         "reloadAndTerminateGUI_2", reloadAndTerminateGUI_2,
         "reloadAndTerminateGUI_3", reloadAndTerminateGUI_3,
