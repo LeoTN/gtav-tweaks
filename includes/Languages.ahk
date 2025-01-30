@@ -248,9 +248,7 @@ createLanguageArrayMap(pLanguageCode) {
             "Versucht beim Start neue Updates zu finden."
         ]
         mainGUIToolTip_5 := [
-            "Hiermit kann das Skript auf die aktuellste Beta Version updaten.",
-            "Um auf die neuste Vollversion (zurück) zu kommen,",
-            "deaktiviere diese Option und führe ein erzwungenes Update durch."
+            "Verfügbare Beta Versionen werden als verfügbare Updates betrachtet."
         ]
         mainGUIToolTip_6 := [
             "Schaltet das Spiel im Ladebildschirm stumm.",
@@ -956,8 +954,7 @@ createLanguageArrayMap(pLanguageCode) {
             "Tries to find new updates when launching the script."
         ]
         mainGUIToolTip_5 := [
-            "This allows the script to receive the latest beta version updates.",
-            "Disable this checkbox and force update the script to return to the latest full version."
+            "Available beta versions will be considered as abailable updates."
         ]
         mainGUIToolTip_6 := [
             "Mutes the game while it's in the loading screen. Once you start playing it will unmute."
