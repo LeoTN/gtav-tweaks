@@ -59,6 +59,10 @@ muteGTAWhileInLoadingScreen() {
     manipulateApplicationAudio("GTA5.exe", "/unmute")
 }
 
+increaseGTAProcessPriority() {
+    ProcessSetPriority("High", "GTA5.exe")
+}
+
 waitForGTAToExist() {
     WinWait("ahk_exe GTA5.exe")
     if (readConfigFile("DISPLAY_GTA_LAUNCH_NOTIFICATION")) {

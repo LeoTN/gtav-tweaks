@@ -105,6 +105,9 @@ onInit() {
         checkForAvailableUpdates()
     }
     waitForGTAToExist()
+    if (readConfigFile("INCREASE_GAME_PRIORITY")) {
+        increaseGTAProcessPriority()
+    }
     ; Checks every 3 seconds if GTA is still existing and if it is the active window.
     SetTimer(checkForExistingGTA, 3000)
     if (readConfigFile("MUTE_GAME_WHILE_LAUNCH")) {

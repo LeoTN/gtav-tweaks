@@ -148,7 +148,7 @@ createLanguageArrayMap(pLanguageCode) {
             "GTA während des Starts stummschalten"
         ]
         mainGUI_10 := [
-            "Priorität des GTA Prozesses erhöhen [WIP]"
+            "Priorität des GTA Prozesses erhöhen"
         ]
         mainGUI_11 := [
             "Nachricht beim Start von GTA anzeigen"
@@ -255,7 +255,7 @@ createLanguageArrayMap(pLanguageCode) {
             "Sobald du das Spielen beginnst, wird der Ton wieder aktiviert."
         ]
         mainGUIToolTip_7 := [
-            "Im Moment nicht implementiert [WIP]."
+            "Kann auf manchen Systemen die Performance verbessern."
         ]
         mainGUIToolTip_8 := [
             "Zeigt mit Hilfe einer Nachricht an, dass GTA V gestartet wurde."
@@ -854,7 +854,7 @@ createLanguageArrayMap(pLanguageCode) {
             "Mute GTA during launch"
         ]
         mainGUI_10 := [
-            "Increase GTA process priority [WIP]"
+            "Increase GTA process priority"
         ]
         mainGUI_11 := [
             "Display message when launching GTA"
@@ -960,7 +960,7 @@ createLanguageArrayMap(pLanguageCode) {
             "Mutes the game while it's in the loading screen. Once you start playing it will unmute."
         ]
         mainGUIToolTip_7 := [
-            "Currently not implemented [WIP]."
+            "Can increase the performance on some systems."
         ]
         mainGUIToolTip_8 := [
             "Displays a little message which indicates that GTA V has been launched."
