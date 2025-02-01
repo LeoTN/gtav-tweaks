@@ -33,11 +33,11 @@ createUpdateGUI(pUpdateVersion) {
 
 handleUpdateGUI_downloadMSIButton(pMSIDownloadURL) {
     Run(pMSIDownloadURL)
-    result := MsgBox(
-        "This instance of GTAV Tweaks will exit now.`n`nSimply run the installer and follow the instructions.`n`nIt is recommended to use the same installation directory as the previous version. Otherwise you have to manually move macro and config files to the new location.",
-        "GTAV Tweaks - Update Process", "OC Icon! 262144")
+    backupDirectory := A_ScriptDir . "\GTAV_Tweaks_old_version_backups"
+    result := MsgBox(getLanguageArrayString("functionsMsgBox1_1", backupDirectory),
+    getLanguageArrayString("functionsMsgBox1_2"), "OC Icon! 262144")
     ; Exits the script if the user confirms.
     if (result == "OK") {
-        exitScriptWithNotification()
+        backupOldVersionFiles(backupDirectory)
     }
 }

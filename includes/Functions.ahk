@@ -137,6 +137,26 @@ checkForAvailableUpdates() {
 }
 
 /*
+Copies all files from the old version into a backup folder using robocopy.
+@param pBackupParentDirectory [String] Usually the script directory with an additional folder called "GTAV_Tweaks_old_version_backups" at the end.
+*/
+backupOldVersionFiles(pBackupParentDirectory) {
+    global versionFullName
+
+    oldVersion := versionFullName
+    backupDate := FormatTime(A_Now, "dd.MM.yyyy_HH-mm-ss")
+    backupFolderName := "GTAV_Tweaks_backup_from_version_" . oldVersion . "_at_" . backupDate
+    sourceDirectory := "C:\Users\Donnerbaer\AppData\Roaming\LeoTN\GTAV Tweaks"
+    destinationDirectory := pBackupParentDirectory . "\" . backupFolderName
+    ; All subdirectories and files are copied. The folder "GTAV_Tweaks_old_version_backups" is excluded.
+    parameterString := "`"" . sourceDirectory . "`" `"" . destinationDirectory . "`" /E /XD `"" . sourceDirectory .
+        "\GTAV_Tweaks_old_version_backups`""
+    ; Waits 3 seconds before starting the backup process to ensure that the main script has exited already.
+    Run('cmd.exe /c "timeout /t 3 /nobreak && robocopy ' . parameterString . '"', , "Hide")
+    exitScriptWithNotification()
+}
+
+/*
 Tries to ping google.com to determine the computer's Internet connection status.
 @returns [boolean] True, if the computer is connected to the Internet. False otherwise.
 */

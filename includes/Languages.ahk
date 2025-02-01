@@ -566,10 +566,15 @@ createLanguageArrayMap(pLanguageCode) {
         ; Functions MsgBoxes
         ; ##################
         functionsMsgBox1_1 := [
-            "language_string_unused"
+            "Diese Instanz von GTAV Tweaks wird jetzt beendet.`n`nFühre einfach den Installer aus und folge den Anweisungen.",
+            "`n`nEs wird empfohlen, dasselbe Installationsverzeichnis wie bei der vorherigen Version zu verwenden.",
+            "Andernfalls müssen Makro- und Konfigurationsdateien manuell an den neuen Speicherort verschoben werden.",
+            "`n`nEin Backup der alten Version wird erstellt unter`n[",
+            "",
+            "]."
         ]
         functionsMsgBox1_2 := [
-            "language_string_unused"
+            "GTAV Tweaks - Update Prozess"
         ]
         functionsMsgBox2_1 := [
             "Keine README-Datei gefunden."
@@ -593,12 +598,10 @@ createLanguageArrayMap(pLanguageCode) {
             "Was ist das?"
         ]
         mainGUIMsgBox2_1 := [
-            "Damit wird das Skript dazu gezwungen, auf die höchste verfügbare Version zu aktualisieren, abhängig von deinen Update-Einstellungen.",
-            "`n`nEs wird sogar aktualisiert, wenn die aktuelle Version bereits die neueste ist.",
-            "`n`nDas Update sollte ca. 5-15 Sekunden nach dem Bestätigen starten."
+            "language_string_unused"
         ]
         mainGUIMsgBox2_2 := [
-            "GTAV Tweaks - Update erzwingen"
+            "language_string_unused"
         ]
         ; New Custom Hotkey GUI MsgBoxes
         ; ##############################
@@ -1271,10 +1274,15 @@ createLanguageArrayMap(pLanguageCode) {
         ; Functions MsgBoxes
         ; ##################
         functionsMsgBox1_1 := [
-            "language_string_unused"
+            "This instance of GTAV Tweaks will exit now.`n`nSimply run the installer and follow the instructions.",
+            "`n`nIt is recommended to use the same installation directory as the previous version.",
+            "Otherwise you have to manually move macro and config files to the new location.",
+            "`n`nA backup of the old version will be created at`n[",
+            "",
+            "]."
         ]
         functionsMsgBox1_2 := [
-            "language_string_unused"
+            "GTAV Tweaks - Update Process"
         ]
         functionsMsgBox2_1 := [
             "No README file found."
@@ -1298,12 +1306,10 @@ createLanguageArrayMap(pLanguageCode) {
             "What's that?"
         ]
         mainGUIMsgBox2_1 := [
-            "This will force the script to update to the highest available version, depending on your update settings.",
-            "`n`nIt will even update when the current version is the highest.",
-            "`n`nThe update should start 5-15 seconds after confirming."
+            "language_string_unused"
         ]
         mainGUIMsgBox2_2 := [
-            "GTAV Tweaks - Force Update"
+            "language_string_unused"
         ]
         ; New Custom Hotkey GUI MsgBoxes
         ; ##############################
