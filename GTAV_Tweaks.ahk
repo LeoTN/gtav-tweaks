@@ -105,6 +105,9 @@ onInit() {
         checkForAvailableUpdates()
     }
     waitForGTAToExist()
+    if (readConfigFile("INCREASE_GAME_PRIORITY")) {
+        increaseGTAProcessPriority()
+    }
     ; Checks every 3 seconds if GTA is still existing and if it is the active window.
     SetTimer(checkForExistingGTA, 3000)
     if (readConfigFile("MUTE_GAME_WHILE_LAUNCH")) {
@@ -120,7 +123,7 @@ onInit_checkScriptFileIntegrity() {
             "You are using a non compiled version of this script.`n`nMake sure that all supportive files are present "
             . "in the [" . outFolderName .
             "] folder.`n`nThis folder needs to exist in the same directory as this script.`n`n"
-            "You can achieve this by executing a compiled version in this directory that will create them for you.",
+            "You can achieve this by installing the MSI installer in this directory that will create them for you.",
             "GTAV Tweaks - Uncompiled Script Information", "Iconi 262144")
         exitScriptWithNotification(true)
     }
