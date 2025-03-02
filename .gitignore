@@ -6,12 +6,13 @@
 GTAV_Tweaks.exe
 README.txt
 .vscode/
+GTAV_Tweaks/
 compiler/ahk-v2.zip
 compiler/ahk.zip
-compiler/GTAV_TweaksInstaller.autosave.aip
 compiler/GTAV_TweaksInstaller-cache
+compiler/GTAV_TweaksInstaller.autosave.aip
+compiler/*.back*.aip
 library/build/AutoHotkey32.exe
 library/build/currentVersion.csv
 library/build/launchWithGTAV_PowerShell_launcher.exe
 library/build/soundvolumeview-x64
-GTAV_Tweaks/
