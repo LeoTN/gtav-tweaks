@@ -210,7 +210,7 @@ jobs:
     - name: Build .AIP project
       uses: caphyon/advinst-github-action@main
       with:
-          advinst-enable-automation: 'true'
+          advinst-enable-automation: true
           aip-path: ${{ github.workspace }}\compiler\GTAV_TweaksInstaller.aip
           aip-build-name: DefaultBuild
           aip-package-name: ${{ env.FINAL_INSTALLER_NAME }}
