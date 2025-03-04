@@ -146,7 +146,7 @@ backupOldVersionFiles(pBackupParentDirectory) {
     oldVersion := versionFullName
     backupDate := FormatTime(A_Now, "dd.MM.yyyy_HH-mm-ss")
     backupFolderName := "GTAV_Tweaks_backup_from_version_" . oldVersion . "_at_" . backupDate
-    sourceDirectory := "C:\Users\Donnerbaer\AppData\Roaming\LeoTN\GTAV Tweaks"
+    sourceDirectory := A_ScriptDir
     destinationDirectory := pBackupParentDirectory . "\" . backupFolderName
     ; All subdirectories and files are copied. The folder "GTAV_Tweaks_old_version_backups" is excluded.
     parameterString := "`"" . sourceDirectory . "`" `"" . destinationDirectory . "`" /E /XD `"" . sourceDirectory .
