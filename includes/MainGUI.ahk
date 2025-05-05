@@ -17,7 +17,7 @@ createMainGUI() {
         A_ScriptDir . '"'))
     fileSelectionMenuOpen.SetIcon(getLanguageArrayString("mainGUIFileSubMenu1_3") . "`t3", iconFileLocation, 12) ; ICON_DLL_USED_HERE
     fileSelectionMenuOpen.Add(getLanguageArrayString("mainGUIFileSubMenu1_4") . "`t4", (*) => Run('explorer.exe "' .
-        A_ScriptDir . '\GTAV_Tweaks"'))
+        scriptMainDirectory . '"'))
     fileSelectionMenuOpen.SetIcon(getLanguageArrayString("mainGUIFileSubMenu1_4") . "`t4", iconFileLocation, 2) ; ICON_DLL_USED_HERE
 
     fileSelectionMenuReset := Menu()

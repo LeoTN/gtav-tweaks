@@ -25,7 +25,7 @@ Otherwise this can lead to fatal errors and failures!
 
 configFile_onInit() {
     ; Determines the location of the script's configuration file.
-    global configFileLocation := A_ScriptDir . "\GTAV_Tweaks\GTAV_Tweaks.ini"
+    global configFileLocation := scriptMainDirectory . "\GTAV_Tweaks.ini"
 
     ; Specifies the preferred language for text boxes. Leave it to "SYSTEM", to use the system language, if available.
     global PREFERRED_LANGUAGE := "SYSTEM"
