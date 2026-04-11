@@ -27,6 +27,8 @@ configFile_onInit() {
     ; Determines the location of the script's configuration file.
     global configFileLocation := scriptMainDirectory . "\GTAV_Tweaks.ini"
 
+    ; Defines which executable (GTA5.exe or GTA5_Enhanced.exe) should be referenced
+    global USE_GTA_ENHANCED_EXECUTABLE := true
     ; Specifies the preferred language for text boxes. Leave it to "SYSTEM", to use the system language, if available.
     global PREFERRED_LANGUAGE := "SYSTEM"
 
@@ -69,6 +71,7 @@ configFile_onInit() {
             "booleanDebugMode",
             "loadBuiltInHotkeys",
             "PREFERRED_LANGUAGE",
+            "USE_GTA_ENHANCED_EXECUTABLE",
             "ASK_FOR_TUTORIAL",
             "LAUNCH_WITH_GTA",
             "LAUNCH_MINIMIZED",
@@ -87,6 +90,7 @@ configFile_onInit() {
         [
             "DebugSettings",
             "DebugSettings",
+            "GeneralSettings",
             "GeneralSettings",
             "StartupSettings",
             "StartupSettings",

@@ -114,8 +114,9 @@ createMainGUI() {
     mainGUI := Gui(, "GTAV Tweaks")
     mainGUI.MenuBar := allMenus
     ; This part begins to fill the GUI with checkboxes and all that stuff.
-    applyChangesText := mainGUI.Add("Text", "", getLanguageArrayString("mainGUI_1"))
-    startupBehaviorGroupbox := mainGUI.Add("GroupBox", "yp+20 w320 R6.3", getLanguageArrayString("mainGUI_2"))
+    gtaClassicVersionRadio := mainGUI.Add("Radio", "yp+10 vGtaClassicVersionRadio", "GTAV")
+    gtaEnhancedVersionRadio := mainGUI.Add("Radio", "xp+60 vGtaEnhancedVersionRadio", "GTAV Enhanced")
+    startupBehaviorGroupbox := mainGUI.Add("GroupBox", "xp-70 yp+20 w340 R6.3", getLanguageArrayString("mainGUI_2"))
     launchWithGTACheckbox := mainGUI.Add("Checkbox", "xp+10 yp+20 vLaunchWithGTACheckbox",
         getLanguageArrayString("mainGUI_3"))
     launchMinimizedToTrayCheckbox := mainGUI.Add("Checkbox", "yp+20 vLaunchMinimizedToTrayCheckbox",
@@ -128,7 +129,7 @@ createMainGUI() {
         getLanguageArrayString("mainGUI_6"))
     updateToBetaReleasesCheckbox := mainGUI.Add("Checkbox", "yp+20 vUpdateToBetaReleasesCheckbox",
         getLanguageArrayString("mainGUI_7"))
-    gameOptionsGroupbox := mainGUI.Add("GroupBox", "xp-10 yp+30 w320 R3.3", getLanguageArrayString("mainGUI_8"))
+    gameOptionsGroupbox := mainGUI.Add("GroupBox", "xp-10 yp+30 w340 R3.3", getLanguageArrayString("mainGUI_8"))
     muteGameWhileLaunchCheckbox := mainGUI.Add("Checkbox", "xp+10 yp+20 vMuteGameWhileLaunchCheckbox",
         getLanguageArrayString("mainGUI_9"))
     setGameProcessPriorityHighCheckbox := mainGUI.Add("Checkbox", "yp+20 vSetGameProcessPriorityHighCheckbox",
@@ -139,13 +140,21 @@ createMainGUI() {
     mainGUIStatusBar.SetIcon(iconFileLocation, 9) ; ICON_DLL_USED_HERE
     ; Adds an action when the main GUI is closed.
     mainGUI.OnEvent("Close", (*) => handleMainGUI_close())
-    ; Makes it, that every checkbox triggers the save function to apply the changes when clicked.
+    ; Makes it, that every checkbox and radio element triggers the save function to apply the changes when clicked.
     for (GUIControlObject in mainGUI) {
-        if (!InStr(GUIControlObject.Type, "Checkbox")) {
+        if (!InStr(GUIControlObject.Type, "Checkbox") && !InStr(GUIControlObject.Type, "Radio")) {
             continue
         }
         ; Some checkboxes require more actions such as restarting the script.
         switch (GUIControlObject.Name) {
+            case "GtaClassicVersionRadio":
+            {
+                GUIControlObject.OnEvent("Click", (*) => handleMainGUI_radio_gtaClassicVersion())
+            }
+            case "GtaEnhancedVersionRadio":
+            {
+                GUIControlObject.OnEvent("Click", (*) => handleMainGUI_radio_gtaEnhancedVersion())
+            }
             case "LaunchWithGTACheckbox":
             {
                 GUIControlObject.OnEvent("Click", (*) => handleMainGUI_checkbox_launchWithGTA())
@@ -189,16 +198,13 @@ mainGUI_onInit() {
     if (!readConfigFile("LAUNCH_MINIMIZED")) {
         mainGUI.Show()
     }
-    ; Adds a tray menu point to open the main GUI.
-    A_TrayMenu.Insert("1&", "Open Main Window", (*) => mainGUI.Show())
-    ; When clicking on the tray icon twice, this will make sure, that the main GUI is shown to the user.
-    A_TrayMenu.Default := "Open Main Window"
     setAutostartWithGTAV(readConfigFile("LAUNCH_WITH_GTA"))
 }
 
 handleMainGUI_writeValuesToConfigFile() {
     try
     {
+        editConfigFile("USE_GTA_ENHANCED_EXECUTABLE", gtaEnhancedVersionRadio.Value)
         editConfigFile("LAUNCH_WITH_GTA", launchWithGTACheckbox.Value)
         editConfigFile("LAUNCH_MINIMIZED", launchMinimizedToTrayCheckbox.Value)
         editConfigFile("MINIMIZE_INSTEAD_OF_CLOSE", minimizeToTrayInsteadOfCloseCheckbox.Value)
@@ -229,6 +235,14 @@ handleMainGUI_applyValuesFromConfigFile() {
             launchWithGTACheckbox.Value := readConfigFile("LAUNCH_WITH_GTA")
             checkForUpdateAtLaunchCheckbox.Value := readConfigFile("CHECK_FOR_UPDATES_AT_LAUNCH")
             updateToBetaReleasesCheckbox.Value := readConfigFile("UPDATE_TO_BETA_VERSIONS")
+        }
+        if (readConfigFile("USE_GTA_ENHANCED_EXECUTABLE")) {
+            gtaEnhancedVersionRadio.Value := 1
+            global gtaExecutableName := "GTA5_Enhanced.exe"
+        }
+        else {
+            gtaClassicVersionRadio.Value := 1
+            global gtaExecutableName := "GTA5.exe"
         }
         launchMinimizedToTrayCheckbox.Value := readConfigFile("LAUNCH_MINIMIZED")
         minimizeToTrayInsteadOfCloseCheckbox.Value := readConfigFile("MINIMIZE_INSTEAD_OF_CLOSE")
@@ -288,6 +302,16 @@ handleMainGUI_checkbox_updateToBetaReleases() {
     reloadScriptPrompt()
     ; The function above usually exits the script. This mean the code below won't be executed, unless the user cancels the reload.
     updateToBetaReleasesCheckbox.Value := !updateToBetaReleasesCheckbox.Value
+    handleMainGUI_writeValuesToConfigFile()
+}
+
+handleMainGUI_radio_gtaClassicVersion() {
+    global gtaExecutableName := "GTA5.exe"
+    handleMainGUI_writeValuesToConfigFile()
+}
+
+handleMainGUI_radio_gtaEnhancedVersion() {
+    global gtaExecutableName := "GTA5_Enhanced.exe"
     handleMainGUI_writeValuesToConfigFile()
 }
 

@@ -13,9 +13,16 @@ More information can be found in the README.txt contained in the installer archi
 Make sure to read it before changing this file!
 */
 
-Process_Suspend("GTA5.exe")
-Sleep(8000)
-Process_Resume("GTA5.exe")
+if (ProcessExist("GTA5.exe")) {
+    Process_Suspend("GTA5.exe")
+    Sleep(8000)
+    Process_Resume("GTA5.exe")
+}
+else if (ProcessExist("GTA5_Enhanced.exe")) {
+    Process_Suspend("GTA5_Enhanced.exe")
+    Sleep(8000)
+    Process_Resume("GTA5_Enhanced.exe")
+}
 
 Process_Suspend(PID_or_Name) {
     PID := ProcessExist(PID_or_Name)

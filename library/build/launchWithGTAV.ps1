@@ -20,13 +20,13 @@ function onInit() {
         $null = Write-Host "[onInit()] [INFO] There is an existing instance of this script. Exiting this script..."
         Exit
     }
-    $GTAExecutable = "GTA5.exe"
     If (-not (Test-Path -Path $pGTAVTweaksExecutableLocation)) {
         $null = Write-Host "[onInit()] [WARNING] The executable [$pGTAVTweaksExecutableLocation] does not exist." -ForegroundColor "Yellow"
         Exit
     }
-    If (-not (waitForProcess -pProcessName $GTAExecutable)) {
-        $null = Write-Host "[onInit()] [WARNING] Could not find the GTA V process."
+    $GTAExecutables = @("GTA5.exe", "GTA5_Enhanced.exe")
+    If (-not (waitForProcess -pProcessNames $GTAExecutables)) {
+        $null = Write-Host "[onInit()] [WARNING] Could not find any GTA V process."
         Exit
     }
     # Checks if there is already a running GTAV Tweaks instance.
@@ -49,25 +49,31 @@ function waitForProcess() {
     [CmdletBinding()]
     Param (
         [Parameter(Mandatory = $true)]
-        [String]$pProcessName,
+        [String[]]$pProcessNames,
         [Parameter(Mandatory = $false)]
         [int]$pTimeoutSeconds = -1
     )
 
+    $processListString = $pProcessNames -join ", "
     If ($pTimeoutSeconds -eq -1) {
-        $null = Write-Host "[waitForProcess()] [INFO] Waiting for [$pProcessName] indefinetely..."
+        $null = Write-Host "[waitForProcess()] [INFO] Waiting for [$processListString] indefinitely..."
     }
     Else {
-        $null = Write-Host "[waitForProcess()] [INFO] Waiting for [$pProcessName] for [$pTimeoutSeconds] seconds..."
+        $null = Write-Host "[waitForProcess()] [INFO] Waiting for [$processListString] for [$pTimeoutSeconds] seconds..."
     }
-    # Removes the .EXE extension if present.
-    $pProcessNameWithoutExtension = $pProcessName -replace "\.exe$", ""
 
     While (($pTimeoutSeconds -ge 0) -or ($pTimeoutSeconds -eq -1)) {
-        $process = Get-Process -Name $pProcessNameWithoutExtension -ErrorAction SilentlyContinue
-        If ($process) {
-            $null = Write-Host "[waitForProcess()] [INFO] Process [$pProcessName] found."
-            Return $true
+
+        foreach ($processName in $pProcessNames) {
+            # Remove .exe if present
+            $processNameWithoutExtension = $processName -replace "\.exe$", ""
+
+            $process = Get-Process -Name $processNameWithoutExtension -ErrorAction SilentlyContinue
+
+            If ($process) {
+                $null = Write-Host "[waitForProcess()] [INFO] Process [$processName] found."
+                Return $true
+            }
         }
         # Only decrements when the function should not wait indefinetely.
         If ($pTimeoutSeconds -ne -1) {
@@ -75,7 +81,7 @@ function waitForProcess() {
         }
         $null = Start-Sleep -Seconds 1
     }
-    $null = Write-Host Write-Host "[waitForProcess()] [INFO] Process [$pProcessName] not found within timeout range."
+    $null = Write-Host "[waitForProcess()] [INFO] None of the processes [$processListString] were found within timeout range."
     Return $false
 }
 

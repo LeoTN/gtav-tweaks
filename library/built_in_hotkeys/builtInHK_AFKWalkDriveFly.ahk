@@ -30,7 +30,7 @@ or in the GTAV_Tweaks folder. Make sure to read it before changing this file!
 */
 
 SetNumLockState("On")
-while (WinActive("ahk_exe GTA5.exe")) {
+while (WinActive("ahk_exe GTA5.exe") || WinActive("ahk_exe GTA5_Enhanced.exe")) {
     Send("{w Down}")
     Send("{Numpad5 Down}")
     Sleep(200)

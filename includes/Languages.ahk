@@ -121,7 +121,7 @@ createLanguageArrayMap(pLanguageCode) {
         ; Main GUI
         ; ********
         mainGUI_1 := [
-            "Diese Einstellungen werden automatisch gespeichert."
+            "Hauptfenster öffnen"
         ]
         mainGUI_2 := [
             "Startverhalten"
@@ -830,7 +830,7 @@ createLanguageArrayMap(pLanguageCode) {
         ; Main GUI
         ; ########
         mainGUI_1 := [
-            "Changes will be applied automatically."
+            "Open Main Window"
         ]
         mainGUI_2 := [
             "Startup Behavior"

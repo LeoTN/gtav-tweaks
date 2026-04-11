@@ -33,6 +33,8 @@ onInit()
 onInit() {
     global booleanFirstTimeLaunch := false
     global macroRecordHotkey := "F5"
+    ; Can be changed by the user via two radio buttons
+    global gtaExecutableName := "GTA5.exe"
 
     ; This folder will contain all other files.
     global scriptMainDirectory := A_ScriptDir . "\GTAV_Tweaks"
@@ -77,8 +79,7 @@ onInit() {
         ; This is a fallback. If this version occurs, we know there was an error with the version file.
         global versionFullName := "v0.0.1.0"
     }
-    ; Changes the tray icon and freezes it.
-    TraySetIcon(iconFileLocation, 1, true) ; ICON_DLL_USED_HERE
+
     ; Runs all onInit() functions from included files.
     ; languages_onInit() is included in configFile_onInit().
     configFile_onInit()
@@ -92,6 +93,25 @@ onInit() {
     newCustomHotkeyGUI_onInit()
     help_onInit()
     tutorials_onInit()
+
+    ; Changes the tray icon and freezes it.
+    TraySetIcon(iconFileLocation, 1, true) ; ICON_DLL_USED_HERE
+    A_IconTip := "GTAV_Tweaks by LeoTN"
+    ; Clears the existing tray menu elements.
+    A_TrayMenu.Delete()
+    ; Adds a tray menu point to open the video list GUI.
+    A_TrayMenu.Add(getLanguageArrayString("mainGUI_1"), (*) => mainGUI.Show())
+    A_TrayMenu.SetIcon(getLanguageArrayString("mainGUI_1"), iconFileLocation, 1) ; ICON_DLL_USED_HERE
+    A_TrayMenu.Add()
+    A_TrayMenu.Add(getLanguageArrayString("mainGUIOptionsMenu_1"), (*) => terminateScriptPrompt())
+    A_TrayMenu.SetIcon(getLanguageArrayString("mainGUIOptionsMenu_1"), iconFileLocation, 5) ; ICON_DLL_USED_HERE
+    A_TrayMenu.Add(getLanguageArrayString("mainGUIOptionsMenu_2"), (*) => reloadScriptPrompt())
+    A_TrayMenu.SetIcon(getLanguageArrayString("mainGUIOptionsMenu_2"), iconFileLocation, 16) ; ICON_DLL_USED_HERE
+    A_TrayMenu.Add()
+    A_TrayMenu.Add(getLanguageArrayString("mainGUIMenu_4"), (*) => helpGUI.Show())
+    A_TrayMenu.SetIcon(getLanguageArrayString("mainGUIMenu_4"), iconFileLocation, 8) ; ICON_DLL_USED_HERE
+    ; Shows the video list GUI when the tray icon is clicked twice.
+    A_TrayMenu.Default := getLanguageArrayString("mainGUI_1")
 
     if (readConfigFile("DISPLAY_LAUNCH_NOTIFICATION")) {
         TrayTip(getLanguageArrayString("generalScriptTrayTip2_1"), getLanguageArrayString("generalScriptTrayTip2_2"),

@@ -53,18 +53,24 @@ manipulateApplicationAudio(pApplicationName, pAction) {
 }
 
 muteGTAWhileInLoadingScreen() {
-    manipulateApplicationAudio("GTA5.exe", "/mute")
+    global gtaExecutableName
+
+    manipulateApplicationAudio(gtaExecutableName, "/mute")
     Sleep(10000)
     waitForUserInputInGTA()
-    manipulateApplicationAudio("GTA5.exe", "/unmute")
+    manipulateApplicationAudio(gtaExecutableName, "/unmute")
 }
 
 increaseGTAProcessPriority() {
-    ProcessSetPriority("High", "GTA5.exe")
+    global gtaExecutableName
+
+    ProcessSetPriority("High", gtaExecutableName)
 }
 
 waitForGTAToExist() {
-    WinWait("ahk_exe GTA5.exe")
+    global gtaExecutableName
+
+    WinWait("ahk_exe " . gtaExecutableName)
     if (readConfigFile("DISPLAY_GTA_LAUNCH_NOTIFICATION")) {
         TrayTip(getLanguageArrayString("generalScriptTrayTip1_1"), getLanguageArrayString("generalScriptTrayTip1_2"),
         "Iconi Mute")
@@ -74,11 +80,13 @@ waitForGTAToExist() {
 
 ; Waits for the user to press w while the window is active, to continue the script execution and unmute the game.
 waitForUserInputInGTA() {
+    global gtaExecutableName
+
     ; This prevents the script from loading infinitely.
-    if (WinWaitActive("ahk_exe GTA5.exe", , 600) == 0) {
+    if (WinWaitActive("ahk_exe " . gtaExecutableName, , 600) == 0) {
         Reload()
     }
-    while (WinActive("ahk_exe GTA5.exe")) {
+    while (WinActive("ahk_exe " . gtaExecutableName)) {
         if (KeyWait("w", "D T1") == 1) {
             return
         }
@@ -87,8 +95,10 @@ waitForUserInputInGTA() {
 }
 
 checkForExistingGTA() {
+    global gtaExecutableName
+
     ; Enables the hotkeys if GTA is the active window.
-    if (WinActive("ahk_exe GTA5.exe")) {
+    if (WinActive("ahk_exe " . gtaExecutableName)) {
         Suspend(false)
     }
     ; Disables the hotkeys if GTA is not the active window.
