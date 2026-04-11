@@ -1,7 +1,7 @@
 name: Delete Old Workflow Runs
 on:
   schedule:
-    - cron: '0 0 1 * *'
+    - cron: "0 0 1 * *"
 
   workflow_dispatch:
 # Run monthly, at 00:00 on the 1st day of month.
