@@ -96,7 +96,7 @@ onInit() {
 
     ; Changes the tray icon and freezes it.
     TraySetIcon(iconFileLocation, 1, true) ; ICON_DLL_USED_HERE
-    A_IconTip := "GTAV_Tweaks by LeoTN"
+    A_IconTip := "GTAV Tweaks by LeoTN"
     ; Clears the existing tray menu elements.
     A_TrayMenu.Delete()
     ; Adds a tray menu point to open the video list GUI.

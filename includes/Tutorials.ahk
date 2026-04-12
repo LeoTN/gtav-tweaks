@@ -110,6 +110,11 @@ tutorial_gettingStarted() {
     gettingStartedTutorial.addExitAction((*) => hideAllHighlightedElements())
 
     showAndFlashMainGUI() {
+        /*
+        The howToUseHelpGUITutorial refers to this tutorial at its end. It asks the user to start this tutorial
+        and to avoid multiple unnecessary windows, we close the old tutorial if the user forgets it.
+        */
+        howToUseHelpGUITutorial.exit()
         hideAllHighlightedElements()
         mainGUI.Show()
         currentlyHighlightedControlObject := highlightControl(mainGUI)
